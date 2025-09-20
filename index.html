@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrueFastFix - Under Construction</title>
+    <style>
+        :root {
+            --accent: #ff6600;
+            --bg: #f9f9f9;
+            --text: #333;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            text-align: center;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 60px 16px 80px;
+        }
+        h1 {
+            font-size: 44px;
+            color: var(--accent);
+            margin: 0 0 8px;
+            letter-spacing: 0.5px;
+        }
+        p.lead {
+            font-size: 18px;
+            margin: 10px 0 24px;
+        }
+        .hero img {
+            max-width: 900px;
+            width: 95%;
+            height: auto;
+            border-radius: 10px;
+            border: 1px solid #e8e8e8;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+        .contact {
+            margin-top: 32px;
+        }
+        .email-card {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 18px;
+            border-radius: 12px;
+            background: #fff;
+            border: 1px solid #eee;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+        }
+        .email-card a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+        }
+        .email-icon {
+            width: 64px;
+            height: 64px;
+            display: block;
+        }
+        footer {
+            margin-top: 40px;
+            font-size: 13px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>TrueFastFix</h1>
+    <p class="lead">Our website is currently under construction. Please check back soon.</p>
+
+    <div class="hero">
+        <img src="under_construction_v2.png" alt="Under Construction Illustration">
+    </div>
+
+    <div class="contact">
+        <div class="email-card">
+            <a href="mailto:support@truefastfix.com" title="Email Support">
+                <img class="email-icon" src="email_icon.png" alt="Email Support Icon">
+                <div>Support</div>
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        © <span id="year"></span> TrueFastFix. All rights reserved.
+    </footer>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>
