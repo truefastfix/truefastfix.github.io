@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TrueFastFix — Under Construction</title>
+  <style>
+    :root { --accent:#ff6600; --bg:#f9f9f9; --text:#333; --ink:#111; --muted:#777; }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; background: var(--bg); color: var(--text); margin:0; padding:0; text-align:center; }
+    h1 { font-size:44px; color:var(--accent); margin:40px 0 10px; }
+    p.lead { font-size:18px; margin:0 0 30px; }
+    .hero img { max-width: 900px; width:95%; height:auto; }
+    .email-card { display:inline-flex; flex-direction:column; align-items:center; margin-top:30px; }
+    .email-card a { text-decoration:none; color:var(--text); font-size:16px; }
+    .email-icon { width:64px; height:64px; display:block; margin:0 auto 10px; }
+    footer { margin:40px 0 80px; font-size:13px; color:var(--muted); }
+
+    /* --- Chat Launcher --- */
+    .chat-launcher {
+      position: fixed; right: 18px; bottom: 18px;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--accent); color:#fff; border:none;
+      display:flex; align-items:center; justify-content:center;
+      box-shadow: 0 8px 24px rgba(0,0,0,.18); cursor:pointer;
+      font-size:26px; line-height:1;
+    }
+    .chat-launcher:active { transform: translateY(1px); }
+
+    /* --- Chat Panel --- */
+    .chat-panel {
+      position: fixed; right: 18px; bottom: 86px; width: 320px; max-width: calc(100vw - 36px);
+      background:#fff; border-radius:14px; box-shadow:0 16px 40px rgba(0,0,0,.18);
+      overflow:hidden; display:none;
+    }
+    .chat-header {
+      background: #fff; border-bottom:1px solid #eee; padding:10px 12px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .chat-title { font-weight:600; color:var(--ink); font-size:15px; }
+    .chat-close { border:none; background:transparent; font-size:20px; cursor:pointer; color:#999; }
+    .chat-log {
+      height: 260px; overflow:auto; padding:12px; background:#fafafa; text-align:left;
+      font-size:14px;
+    }
+    .msg { padding:8px 10px; border-radius:8px; margin:6px 0; max-width:90%; }
+    .msg.me { background:#e7f3ff; align-self:flex-end; margin-left:auto; }
+    .msg.bot { background:#fff; border:1px solid #eee; }
+    .chat-form { display:flex; gap:8px; padding:10px; border-top:1px solid #eee; }
+    .chat-input {
+      flex:1; padding:9px 10px; border:1px solid #ddd; border-radius:8px; font-size:14px;
+    }
+    .chat-send {
+      padding:9px 12px; border:none; border-radius:8px; background:var(--accent); color:#fff; cursor:pointer;
+    }
+
+    /* Turnstile container */
+    .turnstile-wrap { height:0; overflow:hidden; }
+  </style>
+
+  <!-- Cloudflare Turnstile (Client) -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+  <h1>TrueFastFix</h1>
+  <p class="lead">Our website is currently under construction. Please check back soon.</p>
+
+  <div class="hero">
+    <img src="under_construction_cartoon.png?v=2" alt="Under Construction Illustration">
+  </div>
+
+  <div class="email-card">
+    <a href="mailto:support@truefastfix.com" title="Email Support">
+      <img class="email-icon" src="email_icon.png" alt="Support email icon">
+      <div>Support</div>
+    </a>
+  </div>
+
+  <footer>© <span id="year"></span> TrueFastFix. All rights reserved.</footer>
+
+  <!-- Floating Chat Button -->
+  <button class="chat-launcher" id="openChat" aria-label="Chat">🤖</button>
+
+  <!-- Chat Panel -->
+  <section class="chat-panel" id="chatPanel" aria-live="polite">
+    <div class="chat-header">
+      <div class="chat-title">TrueFastFix Assistant</div>
+      <button class="chat-close" id="closeChat" aria-label="Close">×</button>
+    </div>
+
+    <div class="chat-log" id="chatLog">
+      <div class="msg bot">Hi! How can I help today?</div>
+    </div>
+
+    <form class="chat-form" id="chatForm">
+      <input class="chat-input" id="chatInput" placeholder="Type your question…" autocomplete="off" />
+      <button class="chat-send" type="submit">Send</button>
+    </form>
+
+    <div class="turnstile-wrap">
+      <div class="cf-turnstile" id="ts-widget"
+           data-sitekey="0x4AAAAAAB2jA59QkctxTIe0"
+           data-size="invisible"
+           data-callback="truefastfix_ts_cb">
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const openBtn = document.getElementById('openChat');
+    const closeBtn = document.getElementById('closeChat');
+    const panel = document.getElementById('chatPanel');
+    openBtn.onclick = () => panel.style.display = 'block';
+    closeBtn.onclick = () => panel.style.display = 'none';
+
+    const chatLog = document.getElementById('chatLog');
+    const form = document.getElementById('chatForm');
+    const input = document.getElementById('chatInput');
+
+    let tsWidgetEl, tsReady = false;
+    window.truefastfix_ts_cb = function() { tsReady = true; };
+
+    function addMsg(text, who) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + (who || 'bot');
+      div.textContent = text;
+      chatLog.appendChild(div);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const message = input.value.trim();
+      if (!message) return;
+      addMsg(message, 'me');
+      input.value = '';
+
+      try {
+        tsWidgetEl = tsWidgetEl || document.getElementById('ts-widget');
+
+        const token = await new Promise((resolve) => {
+          if (window.turnstile && tsWidgetEl) {
+            window.turnstile.render(tsWidgetEl, {
+              sitekey: "0x4AAAAAAB2jA59QkctxTIe0",
+              size: "invisible",
+              callback: resolve
+            });
+            window.turnstile.execute(tsWidgetEl);
+          } else {
+            resolve("");
+          }
+        });
+
+        if (!token) { addMsg("Couldn't verify you're human. Please try again.", 'bot'); return; }
+
+        const WORKER_CHAT_URL = 'https://truefastfix.com/api/chat';
+        const res = await fetch(WORKER_CHAT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message, turnstileToken: token })
+        });
+
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json().catch(() => null);
+        const text = data?.reply || (await res.text());
+        addMsg(text || 'No reply received.', 'bot');
+      } catch (err) {
+        addMsg('Error: ' + (err?.message || err), 'bot');
+      }
+    });
+  </script>
+</body>
+</html>
