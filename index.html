@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f5d3a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Lied Lodge Cart Inspection</title>
+<style>
+:root{
+  --green:#2f5d3a;
+  --green2:#446f43;
+  --cream:#f4f1e7;
+  --paper:#fffdf7;
+  --wood:#8b5e34;
+  --ink:#1f2a22;
+  --muted:#687466;
+  --border:#d7d0bd;
+  --warn:#b06028;
+  --bad:#9f2f2f;
+  --good:#2f6b3f;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(47,93,58,.14), transparent 32%),
+    linear-gradient(180deg, #f7f3e8 0%, #ece6d5 100%);
+  color:var(--ink);
+}
+.app{
+  max-width:560px;
+  min-height:100vh;
+  margin:0 auto;
+  padding:16px 14px calc(112px + env(safe-area-inset-bottom));
+}
+.header{
+  background:linear-gradient(135deg,var(--green),#243e2b);
+  color:white;
+  border-radius:22px;
+  padding:18px 18px 16px;
+  box-shadow:0 10px 24px rgba(31,42,34,.18);
+  position:relative;
+  overflow:hidden;
+}
+.header:after{
+  content:"";
+  position:absolute;
+  right:-50px; top:-70px;
+  width:180px; height:180px;
+  border-radius:50%;
+  background:rgba(255,255,255,.08);
+}
+.brand{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.logo{
+  width:48px;height:48px;border-radius:14px;background:#f4f1e7;
+  display:grid;place-items:center;color:var(--green);font-size:28px;font-weight:800;
+}
+.kicker{font-size:13px;opacity:.88;letter-spacing:.04em;text-transform:uppercase}
+h1{font-size:24px;line-height:1.05;margin:3px 0 0}
+.sub{margin:12px 0 0;font-size:14px;opacity:.88}
+.progress{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-top:14px;font-size:13px;opacity:.95
+}
+.bar{height:8px;background:rgba(255,255,255,.25);border-radius:999px;overflow:hidden;flex:1}
+.fill{height:100%;width:0;background:#d8e3c0;border-radius:999px;transition:.25s}
+.card{
+  background:var(--paper);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:16px;
+  margin-top:14px;
+  box-shadow:0 8px 20px rgba(31,42,34,.08);
+}
+.page-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.page-title h2{font-size:21px;margin:0}
+.pill{background:#e4ead7;color:#27452e;border:1px solid #cbd6bf;border-radius:999px;padding:6px 10px;font-size:13px;font-weight:700}
+label.field{display:block;font-weight:700;margin:12px 0 7px}
+select, textarea, input[type="text"]{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:13px 12px;
+  font-size:16px;
+  background:#fff;
+  color:var(--ink);
+}
+textarea{min-height:96px;resize:vertical}
+.grid{display:grid;gap:10px;margin-top:10px}
+.choice{
+  width:100%;
+  border:1.5px solid var(--border);
+  background:#fff;
+  color:var(--ink);
+  border-radius:16px;
+  padding:14px 14px;
+  font-size:16px;
+  font-weight:700;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  text-align:left;
+}
+.choice small{display:block;font-weight:500;color:var(--muted);margin-top:3px}
+.choice .check{
+  width:26px;height:26px;border:2px solid #a7aa9b;border-radius:8px;
+  display:grid;place-items:center;flex:0 0 auto;color:white;background:white;font-size:17px;
+}
+.choice.active{border-color:var(--green);background:#edf3e6}
+.choice.active .check{background:var(--green);border-color:var(--green)}
+.choice.active .check:before{content:"✓"}
+.choice.warn.active{border-color:var(--warn);background:#fff4e8}
+.choice.bad.active{border-color:var(--bad);background:#fff0f0}
+.help{font-size:13px;color:var(--muted);line-height:1.35;margin-top:8px}
+.result{
+  border-radius:18px;padding:14px;margin-top:12px;font-weight:800;border:1px solid var(--border);
+}
+.result.good{background:#eaf4e8;color:#285730;border-color:#bed4b8}
+.result.warn{background:#fff4e6;color:#8b4b16;border-color:#efc89a}
+.result.bad{background:#fff0f0;color:#8a2d2d;border-color:#e1b0b0}
+.footer{
+  position:fixed;left:0;right:0;bottom:0;z-index:20;
+  background:rgba(244,241,231,.92);
+  backdrop-filter:blur(10px);
+  border-top:1px solid var(--border);
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+}
+.footer-inner{max-width:560px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{
+  border:0;border-radius:16px;padding:15px 14px;font-size:16px;font-weight:800;
+  box-shadow:0 6px 12px rgba(31,42,34,.12);
+}
+.btn.secondary{background:#fff;color:var(--green);border:1px solid var(--border)}
+.btn.primary{background:var(--green);color:white}
+.btn.danger{background:#8b3a2f;color:white}
+.btn:disabled{opacity:.45}
+.summary-row{
+  border-bottom:1px solid #ebe5d6;padding:10px 0;font-size:14px;
+}
+.summary-row b{display:block;font-size:15px;margin-bottom:3px}
+.summary-actions{display:grid;gap:10px;margin-top:14px}
+.hidden{display:none!important}
+.notice{
+  background:#eef4e8;border:1px solid #c9d8bf;border-radius:16px;padding:12px;
+  font-size:14px;line-height:1.4;margin-top:12px;color:#2d4730
+}
+@media (min-width:520px){
+  .grid.two{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="brand">
+      <div class="logo">🌳</div>
+      <div>
+        <div class="kicker">Lied Lodge</div>
+        <h1>Luggage Cart Inspection</h1>
+      </div>
+    </div>
+    <p class="sub">Cart-by-cart PM checklist for wheels, cosmetic condition, and structure.</p>
+    <div class="progress">
+      <span id="progressText">Cart 1 of 9</span>
+      <div class="bar"><div class="fill" id="progressFill"></div></div>
+    </div>
+  </div>
+
+  <div id="screen"></div>
+</div>
+
+<div class="footer">
+  <div class="footer-inner">
+    <button class="btn secondary" id="backBtn">Cancel</button>
+    <button class="btn primary" id="nextBtn">Next</button>
+  </div>
+</div>
+
+<script>
+const CARTS = 9;
+let cartIndex = 0;
+let page = 0; // 0 info/wheels, 1 cosmetic, 2 structure/notes
+const blank = () => ({
+  cartLabel:"",
+  wheels:"",
+  rollsSmooth:false,
+  noWobble:false,
+  noNoise:false,
+  wheelsMatch:false,
+  dents:false,
+  finishWear:false,
+  cosmetic:"",
+  structure:"",
+  notes:"",
+  final:""
+});
+let data = JSON.parse(localStorage.getItem("cartInspectionData") || "null") || Array.from({length:CARTS}, blank);
+
+const screen = document.getElementById("screen");
+const backBtn = document.getElementById("backBtn");
+const nextBtn = document.getElementById("nextBtn");
+const progressText = document.getElementById("progressText");
+const progressFill = document.getElementById("progressFill");
+
+function save(){ localStorage.setItem("cartInspectionData", JSON.stringify(data)); }
+function current(){ return data[cartIndex]; }
+function setVal(k,v){ current()[k]=v; calculateFinal(current()); save(); render(); }
+function toggle(k){ current()[k]=!current()[k]; calculateFinal(current()); save(); render(); }
+
+function calculateFinal(c){
+  if(c.structure === "Replace Cart" || c.wheels === "Needs Replacement") c.final = "Needs Attention";
+  else if(c.structure === "Needs Attention" || c.cosmetic === "Needs Touch-Up" || c.dents || c.finishWear || c.wheels === "Mid Wear") c.final = "Monitor / Touch-Up";
+  else if(c.wheels === "New" && c.rollsSmooth && c.noWobble && c.noNoise && c.wheelsMatch && c.structure === "OK") c.final = "OK";
+  else c.final = "";
+}
+
+function choice(label, key, value, sub="", cls=""){
+  const active = current()[key] === value;
+  return `<button class="choice ${cls} ${active?'active':''}" onclick="setVal('${key}','${value}')">
+    <span>${label}${sub?`<small>${sub}</small>`:""}</span><span class="check"></span>
+  </button>`;
+}
+function check(label,key,sub=""){
+  const active=current()[key];
+  return `<button class="choice ${active?'active':''}" onclick="toggle('${key}')">
+    <span>${label}${sub?`<small>${sub}</small>`:""}</span><span class="check"></span>
+  </button>`;
+}
+
+function render(){
+  const c=current();
+  progressText.textContent = cartIndex < CARTS ? `Cart ${cartIndex+1} of ${CARTS}` : "Complete";
+  progressFill.style.width = `${((cartIndex*3 + page + 1)/(CARTS*3))*100}%`;
+
+  backBtn.textContent = (cartIndex===0 && page===0) ? "Cancel" : "Back";
+  nextBtn.textContent = (cartIndex===CARTS-1 && page===2) ? "Completed" : "Next";
+
+  if(cartIndex >= CARTS){ renderSummary(); return; }
+
+  if(page===0){
+    screen.innerHTML = `
+      <div class="card">
+        <div class="page-title"><h2>Cart ${cartIndex+1}: Wheels</h2><span class="pill">Step 1 of 3</span></div>
+        <label class="field">Cart location or ID</label>
+        <input type="text" value="${escapeHtml(c.cartLabel)}" placeholder="Example: 1st Floor - Cart 1" oninput="current().cartLabel=this.value; save();">
+        <label class="field">Wheel condition</label>
+        <div class="grid">
+          ${choice("New","wheels","New","Clean tread, smooth roll")}
+          ${choice("Mid Wear","wheels","Mid Wear","Usable, but watch condition","warn")}
+          ${choice("Needs Replacement","wheels","Needs Replacement","Flat, rough, mismatched, or bad","bad")}
+        </div>
+        <label class="field">Function checks</label>
+        <div class="grid">
+          ${check("Rolls smooth","rollsSmooth")}
+          ${check("No wobble","noWobble")}
+          ${check("No noise","noNoise")}
+          ${check("Wheels match","wheelsMatch","Same wheel type on the cart")}
+        </div>
+        <p class="help">Use this as the new baseline. If wheels are borderline and parts are available, replace them.</p>
+      </div>`;
+  } else if(page===1){
+    screen.innerHTML = `
+      <div class="card">
+        <div class="page-title"><h2>Cart ${cartIndex+1}: Cosmetic</h2><span class="pill">Step 2 of 3</span></div>
+        <label class="field">Visible cosmetic condition</label>
+        <div class="grid">
+          ${check("Dents present","dents")}
+          ${check("Finish wear visible","finishWear","Plating/rail finish worn, rubbed, or discolored")}
+        </div>
+        <label class="field">Cosmetic status</label>
+        <div class="grid">
+          ${choice("OK","cosmetic","OK","Normal used condition")}
+          ${choice("Needs Touch-Up","cosmetic","Needs Touch-Up","Dents/finish need management direction","warn")}
+        </div>
+        <p class="help">Cosmetic wear is separate from safety. Flag it, but do not repair finish unless directed.</p>
+      </div>`;
+  } else {
+    const resClass = c.final==="OK" ? "good" : c.final==="Needs Attention" ? "bad" : c.final ? "warn" : "";
+    screen.innerHTML = `
+      <div class="card">
+        <div class="page-title"><h2>Cart ${cartIndex+1}: Structure</h2><span class="pill">Step 3 of 3</span></div>
+        <label class="field">Structure / final condition</label>
+        <div class="grid">
+          ${choice("OK","structure","OK","Safe, solid, no repair needed")}
+          ${choice("Needs Attention","structure","Needs Attention","Loose, bent, sharp edge, or repair needed","warn")}
+          ${choice("Replace Cart","structure","Replace Cart","Too much damage or unsafe","bad")}
+        </div>
+        <label class="field">Notes</label>
+        <textarea placeholder="Example: Replaced front right wheel. Cosmetic rail wear noted." oninput="current().notes=this.value; save();">${escapeHtml(c.notes)}</textarea>
+        ${c.final ? `<div class="result ${resClass}">Final: ${c.final}</div>` : `<div class="notice">Select the structure condition to finish this cart.</div>`}
+      </div>`;
+  }
+}
+
+function next(){
+  if(cartIndex >= CARTS){ return; }
+  if(page < 2){ page++; render(); window.scrollTo(0,0); return; }
+  if(cartIndex < CARTS-1){ cartIndex++; page=0; render(); window.scrollTo(0,0); return; }
+  cartIndex = CARTS;
+  renderSummary();
+}
+
+function back(){
+  if(cartIndex>=CARTS){ cartIndex=CARTS-1; page=2; render(); return; }
+  if(cartIndex===0 && page===0){
+    if(confirm("Clear this inspection and start over?")){
+      data = Array.from({length:CARTS}, blank);
+      cartIndex=0; page=0; save(); render();
+    }
+    return;
+  }
+  if(page>0){ page--; render(); window.scrollTo(0,0); return; }
+  cartIndex--; page=2; render(); window.scrollTo(0,0);
+}
+
+function renderSummary(){
+  progressText.textContent = "Inspection Complete";
+  progressFill.style.width = "100%";
+  backBtn.textContent = "Back";
+  nextBtn.textContent = "Save Copy";
+  nextBtn.onclick = saveCopy;
+  screen.innerHTML = `
+    <div class="card">
+      <div class="page-title"><h2>Inspection Complete</h2><span class="pill">9 carts</span></div>
+      <div class="notice">Save a copy below. This creates a CSV file you can email, upload, or attach to a PM record.</div>
+      ${data.map((c,i)=>`
+        <div class="summary-row">
+          <b>Cart ${i+1}${c.cartLabel ? " - " + escapeHtml(c.cartLabel) : ""}</b>
+          Wheels: ${c.wheels || "Not selected"} | Cosmetic: ${c.cosmetic || "Not selected"} | Structure: ${c.structure || "Not selected"}<br>
+          Final: ${c.final || "Not completed"}${c.notes ? "<br>Notes: " + escapeHtml(c.notes) : ""}
+        </div>
+      `).join("")}
+      <div class="summary-actions">
+        <button class="btn primary" onclick="saveCopy()">Save CSV Copy</button>
+        <button class="btn secondary" onclick="copySummary()">Copy Text Summary</button>
+        <button class="btn danger" onclick="resetAll()">Reset Inspection</button>
+      </div>
+    </div>`;
+}
+
+function csvEscape(v){ return `"${String(v||"").replaceAll('"','""')}"`; }
+function saveCopy(){
+  const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,"-");
+  const headers = ["Cart","Location/ID","Wheels","Rolls Smooth","No Wobble","No Noise","Wheels Match","Dents","Finish Wear","Cosmetic","Structure","Final","Notes"];
+  const rows = data.map((c,i)=>[
+    i+1,c.cartLabel,c.wheels,c.rollsSmooth,c.noWobble,c.noNoise,c.wheelsMatch,c.dents,c.finishWear,c.cosmetic,c.structure,c.final,c.notes
+  ].map(csvEscape).join(","));
+  const csv = headers.map(csvEscape).join(",") + "\\n" + rows.join("\\n");
+  const blob = new Blob([csv], {type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `luggage-cart-inspection-${stamp}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function copySummary(){
+  const text = data.map((c,i)=>`Cart ${i+1}${c.cartLabel ? " - " + c.cartLabel : ""}: Wheels ${c.wheels || "N/A"}, Cosmetic ${c.cosmetic || "N/A"}, Structure ${c.structure || "N/A"}, Final ${c.final || "N/A"}${c.notes ? ", Notes: " + c.notes : ""}`).join("\\n");
+  navigator.clipboard.writeText(text).then(()=>alert("Summary copied."));
+}
+function resetAll(){
+  if(confirm("Reset all 9 carts?")){
+    data = Array.from({length:CARTS}, blank);
+    cartIndex=0; page=0; nextBtn.onclick=next; save(); render();
+  }
+}
+function escapeHtml(str){
+  return String(str||"").replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+backBtn.onclick = back;
+nextBtn.onclick = next;
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
+render();
+</script>
+</body>
+</html>
