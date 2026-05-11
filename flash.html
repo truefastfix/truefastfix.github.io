@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Flash Loop Visual</title>
+
+<style>
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: black;
+    font-family: Arial, sans-serif;
+  }
+
+  #stage {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    background: black;
+    animation: flashBg 0.12s infinite;
+  }
+
+  .shape {
+    position: absolute;
+    border: 4px solid white;
+    box-shadow: 0 0 25px white, 0 0 60px cyan;
+    animation: pulse 0.18s infinite alternate;
+  }
+
+  .circle {
+    border-radius: 50%;
+  }
+
+  .alien {
+    position: absolute;
+    font-size: 120px;
+    color: white;
+    text-shadow:
+      0 0 10px white,
+      0 0 25px cyan,
+      0 0 50px red;
+    animation: spinFlash 0.25s infinite linear;
+  }
+
+  #warning {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    color: white;
+    font-size: 18px;
+    background: rgba(0,0,0,0.6);
+    padding: 14px;
+    border: 1px solid white;
+    z-index: 99;
+  }
+
+  button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    padding: 12px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    background: white;
+    color: black;
+  }
+
+  @keyframes flashBg {
+    0%   { background: black; filter: invert(0); }
+    20%  { background: white; filter: invert(1); }
+    40%  { background: red; }
+    60%  { background: blue; }
+    80%  { background: purple; }
+    100% { background: black; }
+  }
+
+  @keyframes pulse {
+    from {
+      transform: scale(0.6) rotate(0deg);
+      opacity: 0.2;
+      filter: hue-rotate(0deg);
+    }
+    to {
+      transform: scale(1.8) rotate(180deg);
+      opacity: 1;
+      filter: hue-rotate(360deg);
+    }
+  }
+
+  @keyframes spinFlash {
+    from {
+      transform: rotate(0deg) scale(0.8);
+      opacity: 0.3;
+    }
+    to {
+      transform: rotate(360deg) scale(1.4);
+      opacity: 1;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<button onclick="toggleFlash()">STOP</button>
+
+<div id="stage"></div>
+
+<div id="warning">
+  ⚠ FLASH WARNING: This page rapidly flashes colors and images. Do not use around anyone sensitive to flashing lights.
+</div>
+
+<script>
+  const stage = document.getElementById("stage");
+  let running = true;
+  let interval;
+
+  const symbols = ["👽", "🔗", "🧿", "⚡", "☢", "✦", "✧", "◉"];
+
+  function randomColor() {
+    return `hsl(${Math.random() * 360}, 100%, 60%)`;
+  }
+
+  function createVisual() {
+    if (!running) return;
+
+    stage.innerHTML = "";
+
+    for (let i = 0; i < 12; i++) {
+      const el = document.createElement("div");
+
+      if (Math.random() > 0.5) {
+        el.className = "shape circle";
+      } else {
+        el.className = "shape";
+      }
+
+      const size = Math.random() * 180 + 40;
+
+      el.style.width = size + "px";
+      el.style.height = size + "px";
+      el.style.left = Math.random() * window.innerWidth + "px";
+      el.style.top = Math.random() * window.innerHeight + "px";
+      el.style.borderColor = randomColor();
+      el.style.boxShadow = `0 0 30px ${randomColor()}, 0 0 80px ${randomColor()}`;
+
+      stage.appendChild(el);
+    }
+
+    for (let i = 0; i < 5; i++) {
+      const icon = document.createElement("div");
+      icon.className = "alien";
+      icon.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      icon.style.left = Math.random() * window.innerWidth + "px";
+      icon.style.top = Math.random() * window.innerHeight + "px";
+      icon.style.color = randomColor();
+      icon.style.fontSize = Math.random() * 120 + 60 + "px";
+      stage.appendChild(icon);
+    }
+  }
+
+  function startFlash() {
+    interval = setInterval(createVisual, 80);
+  }
+
+  function toggleFlash() {
+    running = !running;
+
+    if (running) {
+      document.querySelector("button").textContent = "STOP";
+      startFlash();
+    } else {
+      document.querySelector("button").textContent = "START";
+      clearInterval(interval);
+      stage.style.animation = "none";
+      stage.innerHTML = "";
+      stage.style.background = "black";
+    }
+  }
+
+  startFlash();
+</script>
+
+</body>
+</html>
