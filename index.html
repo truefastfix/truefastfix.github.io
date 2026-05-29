@@ -1,192 +1,1215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Flash Loop Visual</title>
-
-<style>
-  html, body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: black;
-    font-family: Arial, sans-serif;
-  }
-
-  #stage {
-    width: 100vw;
-    height: 100vh;
-    position: relative;
-    background: black;
-    animation: flashBg 0.12s infinite;
-  }
-
-  .shape {
-    position: absolute;
-    border: 4px solid white;
-    box-shadow: 0 0 25px white, 0 0 60px cyan;
-    animation: pulse 0.18s infinite alternate;
-  }
-
-  .circle {
-    border-radius: 50%;
-  }
-
-  .alien {
-    position: absolute;
-    font-size: 120px;
-    color: white;
-    text-shadow:
-      0 0 10px white,
-      0 0 25px cyan,
-      0 0 50px red;
-    animation: spinFlash 0.25s infinite linear;
-  }
-
-  #warning {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    color: white;
-    font-size: 18px;
-    background: rgba(0,0,0,0.6);
-    padding: 14px;
-    border: 1px solid white;
-    z-index: 99;
-  }
-
-  button {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 100;
-    padding: 12px 18px;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    background: white;
-    color: black;
-  }
-
-  @keyframes flashBg {
-    0%   { background: black; filter: invert(0); }
-    20%  { background: white; filter: invert(1); }
-    40%  { background: red; }
-    60%  { background: blue; }
-    80%  { background: purple; }
-    100% { background: black; }
-  }
-
-  @keyframes pulse {
-    from {
-      transform: scale(0.6) rotate(0deg);
-      opacity: 0.2;
-      filter: hue-rotate(0deg);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skyfall Creations | Building Smarter Digital Solutions</title>
+  <style>
+    :root {
+      --bg:       #050510;
+      --card:     rgba(255,255,255,0.04);
+      --card-h:   rgba(255,255,255,0.07);
+      --blue:     #00d4ff;
+      --purple:   #9d4edd;
+      --green:    #00ff88;
+      --text:     #e8e8f0;
+      --muted:    #8888aa;
+      --border:   rgba(255,255,255,0.08);
+      --glow-b:   0 0 32px rgba(0,212,255,0.28),  0 2px 8px rgba(0,0,0,0.5);
+      --glow-p:   0 0 32px rgba(157,78,221,0.28), 0 2px 8px rgba(0,0,0,0.5);
+      --glow-g:   0 0 32px rgba(0,255,136,0.28),  0 2px 8px rgba(0,0,0,0.5);
     }
-    to {
-      transform: scale(1.8) rotate(180deg);
-      opacity: 1;
-      filter: hue-rotate(360deg);
-    }
-  }
 
-  @keyframes spinFlash {
-    from {
-      transform: rotate(0deg) scale(0.8);
-      opacity: 0.3;
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      background-image: linear-gradient(-45deg, #050510, #080522, #050514, #0a0520);
+      background-size: 400% 400%;
+      animation: gradShift 22s ease infinite;
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
     }
-    to {
-      transform: rotate(360deg) scale(1.4);
-      opacity: 1;
+
+    @keyframes gradShift {
+      0%   { background-position: 0%   50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0%   50%; }
     }
-  }
-</style>
+
+    /* Scrollbar */
+    ::-webkit-scrollbar       { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.25); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(0,212,255,0.45); }
+
+    /* Focus */
+    :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 4px; }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+      body { animation: none !important; }
+    }
+
+    /* ── Canvas ── */
+    #bgCanvas {
+      position: fixed; top:0; left:0;
+      width:100%; height:100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top:0; left:0; right:0;
+      z-index: 1000;
+      background: rgba(5,5,16,0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+    }
+    .nav-logo {
+      font-size: 1.3rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .nav-links { display:flex; gap:.1rem; list-style:none; }
+    .nav-links a {
+      display:block; padding:.45rem .85rem;
+      color: var(--muted); text-decoration:none;
+      font-size:.875rem; border-radius:8px;
+      transition: color .2s, background .2s;
+      cursor: pointer; white-space:nowrap;
+    }
+    .nav-links a:hover, .nav-links a.active { color:var(--blue); background:rgba(0,212,255,0.08); }
+
+    /* Hamburger */
+    .hamburger {
+      display:none; flex-direction:column;
+      justify-content:center; gap:5px;
+      cursor:pointer; padding:8px;
+      width:38px; height:38px;
+    }
+    .hamburger span {
+      width:22px; height:2px;
+      background: var(--blue); border-radius:2px;
+      transition: transform .3s ease, opacity .3s ease;
+      display:block;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity:0; transform: scaleX(0); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile menu */
+    .mob-menu {
+      display:none; position:fixed;
+      top:64px; left:0; right:0;
+      background: rgba(5,5,16,0.98);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      z-index: 999; padding:.5rem;
+    }
+    .mob-menu.open { display:block; }
+    .mob-menu a {
+      display:block; padding:.75rem 1rem;
+      color:var(--muted); text-decoration:none;
+      border-radius:10px;
+      transition: color .2s, background .2s;
+      cursor:pointer; font-size:.95rem;
+    }
+    .mob-menu a:hover, .mob-menu a.active { color:var(--blue); background:rgba(0,212,255,0.08); }
+
+    /* ── Main / sections ── */
+    main { position:relative; z-index:1; padding-top:64px; }
+
+    .section {
+      display: none;
+      min-height: calc(100vh - 64px);
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section.active {
+      display: block;
+      animation: fadeIn .35s ease;
+    }
+
+    #home {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: calc(100vh - 64px);
+      padding: 2rem 1.5rem;
+    }
+    #home.active {
+      display: flex;
+      animation: fadeIn .35s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity:0; transform:translateY(12px); }
+      to   { opacity:1; transform:none; }
+    }
+
+    /* ── Typography ── */
+    .grad {
+      background: linear-gradient(135deg, var(--blue), var(--purple), var(--green));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .sec-head { text-align:center; margin-bottom:3.5rem; }
+    .sec-head h2 { font-size:clamp(1.9rem,4vw,2.7rem); font-weight:800; margin-bottom:.75rem; }
+    .sec-head p  { color:var(--muted); font-size:1.05rem; max-width:540px; margin:0 auto; line-height:1.65; }
+
+    /* ── Buttons ── */
+    .btn-p {
+      padding:.75rem 1.85rem;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      color:#fff; border:none; border-radius:12px;
+      font-size:.95rem; font-weight:600; cursor:pointer;
+      transition: transform .25s, box-shadow .25s;
+      text-decoration:none; display:inline-block; line-height:1.5;
+    }
+    .btn-p:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(0,212,255,0.3); }
+    .btn-o {
+      padding:.75rem 1.85rem;
+      background:transparent; color:var(--purple);
+      border:1px solid rgba(157,78,221,0.4);
+      border-radius:12px; font-size:.95rem; font-weight:600;
+      cursor:pointer; transition:all .25s;
+      text-decoration:none; display:inline-block; line-height:1.5;
+    }
+    .btn-o:hover { background:rgba(157,78,221,0.1); border-color:var(--purple); transform:translateY(-2px); box-shadow:0 8px 28px rgba(157,78,221,0.2); }
+
+    /* ── Hero ── */
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:8px;
+      background:rgba(0,212,255,0.08); border:1px solid rgba(0,212,255,0.18);
+      border-radius:100px; padding:.35rem 1.1rem;
+      font-size:.82rem; color:var(--blue); margin-bottom:2rem;
+    }
+    .hero-badge::before {
+      content:''; width:6px; height:6px;
+      background:var(--green); border-radius:50%; flex-shrink:0;
+      animation: livePulse 2s infinite;
+    }
+    @keyframes livePulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(0,255,136,0.5); }
+      50%      { box-shadow: 0 0 0 7px rgba(0,255,136,0); }
+    }
+
+    .hero-logo {
+      font-size: clamp(3rem,9vw,5.5rem);
+      font-weight:900; line-height:1.06;
+      margin-bottom:1.25rem; letter-spacing:-1.5px;
+    }
+    .hero-tag {
+      font-size:clamp(1rem,2.2vw,1.2rem);
+      color:var(--muted); max-width:540px;
+      margin-bottom:1.75rem; line-height:1.7;
+    }
+    .hero-tag em { color:var(--green); font-style:normal; font-weight:600; }
+
+    .typing-wrap {
+      height:32px; display:flex;
+      align-items:center; justify-content:center;
+      margin-bottom:2.25rem;
+    }
+    .typing-text {
+      font-size:1.05rem; color:var(--blue);
+      border-right:2px solid var(--blue);
+      padding-right:2px;
+      animation: blink .75s step-end infinite;
+    }
+    @keyframes blink {
+      0%,100% { border-color:var(--blue); }
+      50%      { border-color:transparent; }
+    }
+
+    .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+
+    .hero-stats {
+      display:flex; gap:2.5rem;
+      margin-top:3.5rem; flex-wrap:wrap; justify-content:center;
+    }
+    .stat-item { text-align:center; }
+    .stat-n { font-size:2rem; font-weight:800; color:var(--blue); line-height:1; }
+    .stat-l { font-size:.8rem; color:var(--muted); margin-top:.3rem; }
+
+    .hero-net { margin-top:3.5rem; width:100%; max-width:680px; opacity:.6; }
+
+    /* ── About ── */
+    .about-grid {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:3rem; align-items:center;
+    }
+    .about-text h3 { font-size:1.75rem; font-weight:700; margin-bottom:1rem; }
+    .about-text p  { color:var(--muted); line-height:1.8; margin-bottom:.9rem; }
+    .tags { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.25rem; }
+    .tag  { padding:.35rem .9rem; border-radius:100px; font-size:.78rem; font-weight:600; }
+    .tag.b { background:rgba(0,212,255,0.1);   color:var(--blue);   border:1px solid rgba(0,212,255,0.2); }
+    .tag.p { background:rgba(157,78,221,0.1); color:var(--purple); border:1px solid rgba(157,78,221,0.2); }
+    .tag.g { background:rgba(0,255,136,0.1);  color:var(--green);  border:1px solid rgba(0,255,136,0.2); }
+
+    /* ── Services ── */
+    .srv-grid {
+      display:grid;
+      grid-template-columns: repeat(3,1fr);
+      gap:1.5rem;
+    }
+    .srv {
+      background:var(--card);
+      backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      border:1px solid var(--border); border-radius:16px;
+      padding:2rem;
+      transition: transform .3s, border-color .3s, box-shadow .3s, background .3s;
+    }
+    .srv:hover { transform:translateY(-5px); background:var(--card-h); }
+    .srv.b:hover { border-color:rgba(0,212,255,0.3);   box-shadow:var(--glow-b); }
+    .srv.p:hover { border-color:rgba(157,78,221,0.3); box-shadow:var(--glow-p); }
+    .srv.g:hover { border-color:rgba(0,255,136,0.3);  box-shadow:var(--glow-g); }
+    .srv-icon {
+      width:52px; height:52px; border-radius:13px;
+      display:flex; align-items:center; justify-content:center;
+      margin-bottom:1.1rem;
+    }
+    .srv-icon.b { background:rgba(0,212,255,0.1); }
+    .srv-icon.p { background:rgba(157,78,221,0.1); }
+    .srv-icon.g { background:rgba(0,255,136,0.1); }
+    .srv h3 { font-size:1.1rem; font-weight:700; margin-bottom:.6rem; }
+    .srv p  { color:var(--muted); font-size:.875rem; line-height:1.6; }
+
+    /* ── Projects ── */
+    .proj-grid {
+      display:grid;
+      grid-template-columns: repeat(3,1fr);
+      gap:1.5rem;
+    }
+    .proj {
+      background:var(--card);
+      backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      border:1px solid var(--border); border-radius:16px;
+      overflow:hidden;
+      transition: transform .3s, border-color .3s, box-shadow .3s, background .3s;
+      cursor:pointer; display:flex; flex-direction:column;
+    }
+    .proj:hover {
+      transform:translateY(-5px);
+      border-color:rgba(0,212,255,0.25);
+      box-shadow:var(--glow-b);
+      background:var(--card-h);
+    }
+    .proj-banner { height:130px; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .proj-banner svg { width:100%; height:100%; }
+    .proj-body { padding:1.4rem; flex:1; }
+    .ptag {
+      display:inline-block; padding:.22rem .7rem;
+      border-radius:100px; font-size:.72rem; font-weight:600;
+      margin-bottom:.6rem;
+    }
+    .ptag.b { background:rgba(0,212,255,0.1);  color:var(--blue); }
+    .ptag.p { background:rgba(157,78,221,0.1); color:var(--purple); }
+    .ptag.g { background:rgba(0,255,136,0.1);  color:var(--green); }
+    .proj-body h3 { font-size:1.05rem; font-weight:700; margin-bottom:.45rem; }
+    .proj-body p  { color:var(--muted); font-size:.875rem; line-height:1.55; }
+    .proj-foot {
+      padding:.9rem 1.4rem;
+      border-top:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .proj-foot > span { color:var(--muted); font-size:.8rem; }
+    .proj-cta { color:var(--blue); font-size:.8rem; font-weight:600; }
+
+    /* ── Modal ── */
+    .modal-ov {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,0.75);
+      backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+      z-index:2000;
+      align-items:center; justify-content:center;
+      padding:1rem;
+    }
+    .modal-ov.open { display:flex; }
+    .modal-box {
+      background:#0c0c1e;
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:20px; max-width:580px; width:100%;
+      max-height:88vh; overflow-y:auto;
+      animation: mIn .28s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes mIn {
+      from { opacity:0; transform:scale(0.92) translateY(20px); }
+      to   { opacity:1; transform:none; }
+    }
+    .modal-hd {
+      padding:1.4rem 1.8rem;
+      border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between;
+      position:sticky; top:0;
+      background:#0c0c1e; z-index:1;
+      border-radius:20px 20px 0 0;
+    }
+    .modal-hd h2 { font-size:1.2rem; font-weight:700; }
+    .modal-x {
+      width:30px; height:30px; border-radius:8px;
+      background:rgba(255,255,255,0.05);
+      border:1px solid var(--border);
+      color:var(--muted); font-size:1rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:background .2s, color .2s; flex-shrink:0;
+    }
+    .modal-x:hover { background:rgba(255,255,255,0.12); color:#fff; }
+    .modal-bd { padding:1.75rem 1.8rem; }
+    .modal-bd p { color:var(--muted); line-height:1.75; margin-bottom:.9rem; font-size:.95rem; }
+    .modal-feats h4 { font-size:.95rem; font-weight:600; color:var(--blue); margin:.5rem 0 .75rem; }
+    .modal-feats ul { list-style:none; display:flex; flex-direction:column; gap:.5rem; }
+    .modal-feats li {
+      color:var(--muted); font-size:.875rem;
+      display:flex; align-items:flex-start; gap:8px; line-height:1.5;
+    }
+    .modal-feats li::before { content:'→'; color:var(--green); flex-shrink:0; }
+
+    /* ── Tech Links ── */
+    .tech-grid {
+      display:grid;
+      grid-template-columns: repeat(4,1fr);
+      gap:1rem;
+    }
+    .tech-a {
+      background:var(--card);
+      backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      border:1px solid var(--border); border-radius:14px;
+      padding:1.5rem 1rem; text-decoration:none;
+      transition: transform .3s, border-color .3s, box-shadow .3s, background .3s;
+      display:flex; flex-direction:column; align-items:center;
+      text-align:center; gap:.65rem;
+    }
+    .tech-a:hover {
+      transform:translateY(-4px);
+      border-color:rgba(157,78,221,0.35);
+      box-shadow:var(--glow-p);
+      background:var(--card-h);
+    }
+    .tech-ic { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; }
+    .tech-a h3 { font-size:.9rem; font-weight:700; color:var(--text); }
+    .tech-a p  { font-size:.75rem; color:var(--muted); line-height:1.4; }
+
+    /* ── Contact ── */
+    .contact-wrap { max-width:680px; margin:0 auto; }
+    .contact-card {
+      background:var(--card);
+      backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      border:1px solid var(--border); border-radius:20px;
+      padding:3rem 2.5rem; text-align:center;
+    }
+    .contact-email { font-size:1.4rem; font-weight:700; color:var(--blue); margin:1.25rem 0; word-break:break-all; }
+    .contact-card > p { color:var(--muted); line-height:1.7; margin-bottom:.75rem; }
+    .contact-grid {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:1rem; margin-top:2rem; text-align:left;
+    }
+    .cinfo {
+      background:rgba(255,255,255,0.03);
+      border:1px solid var(--border); border-radius:12px; padding:1.1rem;
+    }
+    .cinfo h4 { font-size:.75rem; font-weight:600; color:var(--muted); margin-bottom:.4rem; text-transform:uppercase; letter-spacing:1px; }
+    .cinfo p  { font-size:.9rem; }
+
+    /* ── Footer ── */
+    footer {
+      position:relative; z-index:1; text-align:center;
+      padding:1.75rem 2rem;
+      border-top:1px solid var(--border);
+      color:var(--muted); font-size:.82rem;
+    }
+    footer a { color:var(--blue); text-decoration:none; }
+    footer a:hover { text-decoration:underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .srv-grid  { grid-template-columns: repeat(2,1fr); }
+      .proj-grid { grid-template-columns: repeat(2,1fr); }
+      .tech-grid { grid-template-columns: repeat(4,1fr); }
+    }
+    @media (max-width: 768px) {
+      .nav-links  { display:none; }
+      .hamburger  { display:flex; }
+      .about-grid { grid-template-columns:1fr; }
+      .about-vis  { order:-1; }
+      .section    { padding:3rem 1.25rem; }
+      .hero-stats { gap:1.75rem; }
+      .tech-grid  { grid-template-columns: repeat(2,1fr); }
+      .modal-bd   { padding:1.4rem; }
+      .modal-hd   { padding:1.2rem 1.4rem; }
+      .contact-card { padding:2rem 1.5rem; }
+    }
+    @media (max-width: 580px) {
+      .srv-grid     { grid-template-columns:1fr; }
+      .proj-grid    { grid-template-columns:1fr; }
+      .contact-grid { grid-template-columns:1fr; }
+    }
+    @media (max-width: 420px) {
+      .tech-grid  { grid-template-columns: repeat(2,1fr); }
+      .hero-stats { gap:1.25rem; }
+      .stat-n     { font-size:1.6rem; }
+    }
+  </style>
 </head>
-
 <body>
 
-<button onclick="toggleFlash()">STOP</button>
+<canvas id="bgCanvas"></canvas>
 
-<div id="stage"></div>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="go('home')">⚡ Skyfall Creations</div>
+  <ul class="nav-links">
+    <li><a onclick="go('home')"      data-sec="home"      class="active">Home</a></li>
+    <li><a onclick="go('about')"     data-sec="about"              >About</a></li>
+    <li><a onclick="go('services')"  data-sec="services"           >Services</a></li>
+    <li><a onclick="go('projects')"  data-sec="projects"           >Projects</a></li>
+    <li><a onclick="go('techlinks')" data-sec="techlinks"          >Tech Links</a></li>
+    <li><a onclick="go('contact')"   data-sec="contact"            >Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hbg" onclick="toggleMob()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
 
-<div id="warning">
-  ⚠ FLASH WARNING: This page rapidly flashes colors and images. Do not use around anyone sensitive to flashing lights.
+<div class="mob-menu" id="mobMenu">
+  <a onclick="go('home');closeMob()"      data-sec="home">Home</a>
+  <a onclick="go('about');closeMob()"     data-sec="about">About</a>
+  <a onclick="go('services');closeMob()"  data-sec="services">Services</a>
+  <a onclick="go('projects');closeMob()"  data-sec="projects">Projects</a>
+  <a onclick="go('techlinks');closeMob()" data-sec="techlinks">Tech Links</a>
+  <a onclick="go('contact');closeMob()"   data-sec="contact">Contact</a>
+</div>
+
+<main>
+
+<!-- ════════════════ HOME ════════════════ -->
+<section id="home" class="section active">
+  <div class="hero-badge">Now Building · Open for Collaboration</div>
+  <h1 class="hero-logo">
+    <span class="grad">Skyfall</span><br>
+    <span style="color:#fff">Creations</span>
+  </h1>
+  <p class="hero-tag">
+    Building <em>smarter tools</em>, stronger networks
+    and cleaner digital solutions.
+  </p>
+  <div class="typing-wrap"><span id="typer" class="typing-text"></span></div>
+  <div class="hero-btns">
+    <button class="btn-p" onclick="go('projects')">View Projects</button>
+    <button class="btn-o" onclick="go('contact')">Get in Touch</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-n">6+</div><div class="stat-l">Service Areas</div></div>
+    <div class="stat-item"><div class="stat-n">5+</div><div class="stat-l">Active Projects</div></div>
+    <div class="stat-item"><div class="stat-n">24/7</div><div class="stat-l">Network Monitoring</div></div>
+    <div class="stat-item"><div class="stat-n">100%</div><div class="stat-l">Self-Hosted</div></div>
+  </div>
+
+  <!-- Animated network SVG diagram -->
+  <div class="hero-net">
+    <svg viewBox="0 0 680 185" xmlns="http://www.w3.org/2000/svg">
+      <line x1="340" y1="90" x2="130" y2="50"  stroke="rgba(0,212,255,.2)"  stroke-width="1"/>
+      <line x1="340" y1="90" x2="550" y2="50"  stroke="rgba(157,78,221,.2)" stroke-width="1"/>
+      <line x1="340" y1="90" x2="80"  y2="140" stroke="rgba(0,255,136,.2)"  stroke-width="1"/>
+      <line x1="340" y1="90" x2="600" y2="140" stroke="rgba(0,212,255,.2)"  stroke-width="1"/>
+      <line x1="340" y1="90" x2="230" y2="160" stroke="rgba(157,78,221,.2)" stroke-width="1"/>
+      <line x1="340" y1="90" x2="450" y2="160" stroke="rgba(0,255,136,.2)"  stroke-width="1"/>
+      <!-- Center node -->
+      <circle cx="340" cy="90" r="14" fill="rgba(0,212,255,.12)" stroke="#00d4ff" stroke-width="1.5"/>
+      <circle cx="340" cy="90" r="5"  fill="#00d4ff"/>
+      <!-- Satellite nodes -->
+      <circle cx="130" cy="50"  r="8" fill="rgba(157,78,221,.15)" stroke="#9d4edd" stroke-width="1.5"/>
+      <circle cx="550" cy="50"  r="8" fill="rgba(0,212,255,.15)"  stroke="#00d4ff" stroke-width="1.5"/>
+      <circle cx="80"  cy="140" r="6" fill="rgba(0,255,136,.15)"  stroke="#00ff88" stroke-width="1.5"/>
+      <circle cx="600" cy="140" r="6" fill="rgba(0,212,255,.15)"  stroke="#00d4ff" stroke-width="1.5"/>
+      <circle cx="230" cy="160" r="6" fill="rgba(157,78,221,.15)" stroke="#9d4edd" stroke-width="1.5"/>
+      <circle cx="450" cy="160" r="6" fill="rgba(0,255,136,.15)"  stroke="#00ff88" stroke-width="1.5"/>
+      <!-- Labels -->
+      <text x="340" y="113" text-anchor="middle" fill="#00d4ff" font-size="9" font-family="monospace">CORE</text>
+      <text x="130" y="68"  text-anchor="middle" fill="#9d4edd" font-size="8" font-family="monospace">NET</text>
+      <text x="550" y="68"  text-anchor="middle" fill="#00d4ff" font-size="8" font-family="monospace">API</text>
+      <text x="80"  y="158" text-anchor="middle" fill="#00ff88" font-size="8" font-family="monospace">PI</text>
+      <text x="600" y="158" text-anchor="middle" fill="#00d4ff" font-size="8" font-family="monospace">DNS</text>
+      <text x="230" y="177" text-anchor="middle" fill="#9d4edd" font-size="8" font-family="monospace">AI</text>
+      <text x="450" y="177" text-anchor="middle" fill="#00ff88" font-size="8" font-family="monospace">APP</text>
+      <!-- Data packets -->
+      <circle r="3" fill="#00d4ff">
+        <animateMotion dur="2.8s" repeatCount="indefinite" path="M340,90 L130,50"/>
+        <animate attributeName="opacity" values="0;1;0" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3" fill="#9d4edd">
+        <animateMotion dur="3.5s" repeatCount="indefinite" path="M340,90 L550,50"/>
+        <animate attributeName="opacity" values="0;1;0" dur="3.5s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3" fill="#00ff88">
+        <animateMotion dur="2.2s" repeatCount="indefinite" path="M340,90 L80,140"/>
+        <animate attributeName="opacity" values="0;1;0" dur="2.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle r="3" fill="#00d4ff">
+        <animateMotion dur="4s" repeatCount="indefinite" path="M340,90 L600,140"/>
+        <animate attributeName="opacity" values="0;1;0" dur="4s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+  </div>
+</section>
+
+<!-- ════════════════ ABOUT ════════════════ -->
+<section id="about" class="section">
+  <div class="sec-head">
+    <h2>About <span class="grad">Skyfall Creations</span></h2>
+    <p>Learning by building. Solving problems the real way.</p>
+  </div>
+  <div class="about-grid">
+    <div class="about-text">
+      <h3>Built from <span class="grad">Real-World Challenges</span></h3>
+      <p>Skyfall Creations is a growing developer studio focused on solving real problems through hands-on building. Every project comes from a genuine need — a network that needed watching, an app that needed building, a process that needed automating.</p>
+      <p>The work spans networking, web and app development, automation, and AI tooling. It's not just learning from tutorials — it's learning by shipping real things that run 24/7.</p>
+      <p>Built on the belief that the best way to understand technology is to build with it, break it, fix it, and repeat until it works in production.</p>
+      <div class="tags">
+        <span class="tag b">Networking</span>
+        <span class="tag p">Web Dev</span>
+        <span class="tag g">Automation</span>
+        <span class="tag b">Raspberry Pi</span>
+        <span class="tag p">App Dev</span>
+        <span class="tag g">AI Tools</span>
+        <span class="tag b">Home Lab</span>
+        <span class="tag p">Troubleshooting</span>
+      </div>
+    </div>
+    <div class="about-vis" style="display:flex;justify-content:center;">
+      <!-- Code editor SVG -->
+      <svg style="width:100%;max-width:400px;" viewBox="0 0 400 320" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="320" rx="12" fill="rgba(13,13,31,0.95)" stroke="rgba(255,255,255,0.09)" stroke-width="1"/>
+        <rect width="400" height="40" rx="12" fill="rgba(255,255,255,0.04)"/>
+        <rect y="28" width="400" height="12" fill="rgba(255,255,255,0.04)"/>
+        <circle cx="20" cy="20" r="6" fill="#ff5f57"/>
+        <circle cx="40" cy="20" r="6" fill="#febc2e"/>
+        <circle cx="60" cy="20" r="6" fill="#28c840"/>
+        <text x="88" y="25" fill="rgba(255,255,255,0.35)" font-size="11" font-family="monospace">skyfall.py</text>
+        <text x="20"  y="68"  fill="#9d4edd" font-size="11" font-family="monospace">import</text>
+        <text x="72"  y="68"  fill="#e8e8f0" font-size="11" font-family="monospace"> skyfall_core</text>
+        <text x="20"  y="88"  fill="#9d4edd" font-size="11" font-family="monospace">from</text>
+        <text x="52"  y="88"  fill="#e8e8f0" font-size="11" font-family="monospace"> network </text>
+        <text x="112" y="88"  fill="#9d4edd" font-size="11" font-family="monospace">import</text>
+        <text x="156" y="88"  fill="#00ff88" font-size="11" font-family="monospace"> watchdog</text>
+        <text x="20"  y="116" fill="#8888aa" font-size="11" font-family="monospace"># Initialize core operator</text>
+        <text x="20"  y="136" fill="#00d4ff" font-size="11" font-family="monospace">def</text>
+        <text x="46"  y="136" fill="#00ff88" font-size="11" font-family="monospace"> build_smarter</text>
+        <text x="152" y="136" fill="#e8e8f0" font-size="11" font-family="monospace">():</text>
+        <text x="40"  y="156" fill="#e8e8f0" font-size="11" font-family="monospace">net = watchdog.</text>
+        <text x="152" y="156" fill="#00d4ff" font-size="11" font-family="monospace">start</text>
+        <text x="183" y="156" fill="#e8e8f0" font-size="11" font-family="monospace">()</text>
+        <text x="40"  y="176" fill="#e8e8f0" font-size="11" font-family="monospace">ai  = skyfall_core.</text>
+        <text x="178" y="176" fill="#00d4ff" font-size="11" font-family="monospace">init</text>
+        <text x="205" y="176" fill="#e8e8f0" font-size="11" font-family="monospace">()</text>
+        <text x="40"  y="196" fill="#9d4edd" font-size="11" font-family="monospace">return</text>
+        <text x="88"  y="196" fill="#e8e8f0" font-size="11" font-family="monospace"> {"status": </text>
+        <text x="166" y="196" fill="#00ff88" font-size="11" font-family="monospace">"online"</text>
+        <text x="224" y="196" fill="#e8e8f0" font-size="11" font-family="monospace">}</text>
+        <rect x="20" y="216" width="8" height="14" fill="#00d4ff">
+          <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+        </rect>
+        <rect y="296" width="400" height="24" fill="rgba(0,212,255,0.07)"/>
+        <rect y="296" width="400" height="1"  fill="rgba(0,212,255,0.18)"/>
+        <text x="16" y="312" fill="#00d4ff" font-size="9" font-family="monospace">● Python 3  ·  UTF-8  ·  skyfall dev  ·  ln 8</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ SERVICES ════════════════ -->
+<section id="services" class="section">
+  <div class="sec-head">
+    <h2>What We <span class="grad">Build</span></h2>
+    <p>Real solutions for real problems — from home networks to custom apps.</p>
+  </div>
+  <div class="srv-grid">
+
+    <div class="srv b">
+      <div class="srv-icon b">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="8" height="8" rx="1"/><rect x="14" y="2" width="8" height="8" rx="1"/>
+          <rect x="2" y="14" width="8" height="8" rx="1"/><rect x="14" y="14" width="8" height="8" rx="1"/>
+        </svg>
+      </div>
+      <h3>Networking</h3>
+      <p>Home lab setup, OpenWRT configuration, VLAN design, network monitoring, and performance optimization. Real infrastructure, professionally managed.</p>
+    </div>
+
+    <div class="srv p">
+      <div class="srv-icon p">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9d4edd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+        </svg>
+      </div>
+      <h3>Websites</h3>
+      <p>Modern, responsive websites built with clean code. From single-page apps to full-stack solutions — fast, functional, and professional.</p>
+    </div>
+
+    <div class="srv g">
+      <div class="srv-icon g">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+        </svg>
+      </div>
+      <h3>Mobile Apps</h3>
+      <p>iOS-focused mobile applications built for real workflows. Checklists, logs, trackers, and tools designed to work the way you think.</p>
+    </div>
+
+    <div class="srv b">
+      <div class="srv-icon b">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <h3>Automation</h3>
+      <p>Python scripts, shell automation, scheduled tasks, and Telegram bots. Let the machine handle the repetitive work so you don't have to.</p>
+    </div>
+
+    <div class="srv p">
+      <div class="srv-icon p">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9d4edd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
+      <h3>Troubleshooting</h3>
+      <p>Network issues, slow connections, device conflicts, security audits. Diagnosed fast with real tools — not guesswork or forum advice.</p>
+    </div>
+
+    <div class="srv g">
+      <div class="srv-icon g">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </div>
+      <h3>AI Tools</h3>
+      <p>Custom AI integrations, Telegram bots, smart assistants, and automation powered by large language models. Practical AI that actually works.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════ PROJECTS ════════════════ -->
+<section id="projects" class="section">
+  <div class="sec-head">
+    <h2>Active <span class="grad">Projects</span></h2>
+    <p>Click any project to see what's inside.</p>
+  </div>
+  <div class="proj-grid">
+
+    <!-- Network Watchdog -->
+    <div class="proj" onclick="openModal('watchdog')">
+      <div class="proj-banner" style="background:linear-gradient(135deg,rgba(0,212,255,0.07),rgba(0,212,255,0.02));">
+        <svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="160" cy="62" r="28" fill="none" stroke="rgba(0,212,255,0.22)" stroke-width="1"/>
+          <circle cx="160" cy="62" r="16" fill="rgba(0,212,255,0.09)" stroke="#00d4ff" stroke-width="1.5"/>
+          <circle cx="160" cy="62" r="5"  fill="#00d4ff"/>
+          <circle cx="72"  cy="35" r="7"  fill="none" stroke="rgba(0,212,255,0.4)"  stroke-width="1.5"/>
+          <circle cx="248" cy="35" r="7"  fill="none" stroke="rgba(0,212,255,0.4)"  stroke-width="1.5"/>
+          <circle cx="65"  cy="92" r="6"  fill="none" stroke="rgba(0,255,136,0.4)"  stroke-width="1.5"/>
+          <circle cx="255" cy="92" r="6"  fill="none" stroke="rgba(0,255,136,0.4)"  stroke-width="1.5"/>
+          <line x1="160" y1="62" x2="72"  y2="35" stroke="rgba(0,212,255,0.18)" stroke-width="1"/>
+          <line x1="160" y1="62" x2="248" y2="35" stroke="rgba(0,212,255,0.18)" stroke-width="1"/>
+          <line x1="160" y1="62" x2="65"  y2="92" stroke="rgba(0,255,136,0.18)" stroke-width="1"/>
+          <line x1="160" y1="62" x2="255" y2="92" stroke="rgba(0,255,136,0.18)" stroke-width="1"/>
+          <circle r="3" fill="#00d4ff"><animateMotion dur="2s" repeatCount="indefinite" path="M160,62 L72,35"/><animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/></circle>
+          <circle r="3" fill="#00ff88"><animateMotion dur="2.5s" repeatCount="indefinite" path="M160,62 L255,92"/><animate attributeName="opacity" values="0;1;0" dur="2.5s" repeatCount="indefinite"/></circle>
+          <text x="160" y="118" text-anchor="middle" fill="rgba(0,212,255,0.45)" font-size="8" font-family="monospace">NETWORK WATCHDOG · LIVE</text>
+        </svg>
+      </div>
+      <div class="proj-body">
+        <span class="ptag b">Networking · Python</span>
+        <h3>Network Watchdog</h3>
+        <p>Real-time monitoring with device detection, smart alerts, and automated analysis delivered via Telegram.</p>
+      </div>
+      <div class="proj-foot">
+        <span>Raspberry Pi · OpenWRT</span>
+        <span class="proj-cta">View Details →</span>
+      </div>
+    </div>
+
+    <!-- Mobile Checklist App -->
+    <div class="proj" onclick="openModal('checklist')">
+      <div class="proj-banner" style="background:linear-gradient(135deg,rgba(157,78,221,0.07),rgba(157,78,221,0.02));">
+        <svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+          <rect x="110" y="8"  width="100" height="114" rx="10" fill="rgba(13,13,31,0.8)" stroke="rgba(157,78,221,0.3)" stroke-width="1.5"/>
+          <rect x="130" y="18" width="60"  height="5"   rx="2.5" fill="rgba(157,78,221,0.3)"/>
+          <rect x="118" y="34" width="84"  height="1"   fill="rgba(255,255,255,0.05)"/>
+          <circle cx="128" cy="48" r="5" fill="none" stroke="rgba(0,255,136,0.6)"  stroke-width="1.5"/>
+          <polyline points="125,48 128,51 133,44" fill="none" stroke="#00ff88" stroke-width="1.5"/>
+          <rect x="140" y="45" width="55" height="5" rx="2.5" fill="rgba(255,255,255,0.15)"/>
+          <circle cx="128" cy="64" r="5" fill="none" stroke="rgba(0,255,136,0.6)"  stroke-width="1.5"/>
+          <polyline points="125,64 128,67 133,60" fill="none" stroke="#00ff88" stroke-width="1.5"/>
+          <rect x="140" y="61" width="42" height="5" rx="2.5" fill="rgba(255,255,255,0.15)"/>
+          <circle cx="128" cy="80" r="5" fill="none" stroke="rgba(157,78,221,0.5)" stroke-width="1.5"/>
+          <rect x="140" y="77" width="58" height="5" rx="2.5" fill="rgba(255,255,255,0.08)"/>
+          <circle cx="128" cy="96" r="5" fill="none" stroke="rgba(157,78,221,0.5)" stroke-width="1.5"/>
+          <rect x="140" y="93" width="38" height="5" rx="2.5" fill="rgba(255,255,255,0.08)"/>
+          <text x="160" y="126" text-anchor="middle" fill="rgba(157,78,221,0.5)" font-size="8" font-family="monospace">iOS APP</text>
+        </svg>
+      </div>
+      <div class="proj-body">
+        <span class="ptag p">Mobile · iOS</span>
+        <h3>Mobile Checklist App</h3>
+        <p>iOS checklist for repair technicians and field workers. Fast, offline-first, built to work under pressure.</p>
+      </div>
+      <div class="proj-foot">
+        <span>Swift · SwiftUI</span>
+        <span class="proj-cta">View Details →</span>
+      </div>
+    </div>
+
+    <!-- Smart Repair Logs -->
+    <div class="proj" onclick="openModal('repair')">
+      <div class="proj-banner" style="background:linear-gradient(135deg,rgba(0,255,136,0.05),rgba(0,255,136,0.01));">
+        <svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+          <rect x="55" y="14" width="210" height="100" rx="8" fill="rgba(13,13,31,0.7)" stroke="rgba(0,255,136,0.2)" stroke-width="1"/>
+          <rect x="55" y="14" width="210" height="28"  rx="8" fill="rgba(0,255,136,0.05)"/>
+          <rect x="55" y="32" width="210" height="10"  fill="rgba(0,255,136,0.05)"/>
+          <rect x="70" y="22" width="80"  height="7"   rx="3.5" fill="rgba(0,255,136,0.28)"/>
+          <rect x="70" y="55" width="185" height="5"   rx="2.5" fill="rgba(255,255,255,0.09)"/>
+          <rect x="70" y="66" width="145" height="5"   rx="2.5" fill="rgba(255,255,255,0.07)"/>
+          <rect x="70" y="77" width="165" height="5"   rx="2.5" fill="rgba(255,255,255,0.09)"/>
+          <rect x="70" y="88" width="105" height="5"   rx="2.5" fill="rgba(255,255,255,0.07)"/>
+          <rect x="70" y="99" width="125" height="5"   rx="2.5" fill="rgba(255,255,255,0.05)"/>
+          <text x="160" y="126" text-anchor="middle" fill="rgba(0,255,136,0.4)" font-size="8" font-family="monospace">SMART REPAIR LOG</text>
+        </svg>
+      </div>
+      <div class="proj-body">
+        <span class="ptag g">Automation · Web</span>
+        <h3>Smart Repair Logs</h3>
+        <p>Intelligent logging for repairs, parts, and customer history. Searchable, exportable, always local.</p>
+      </div>
+      <div class="proj-foot">
+        <span>Python · SQLite</span>
+        <span class="proj-cta">View Details →</span>
+      </div>
+    </div>
+
+    <!-- AI Helper Tools -->
+    <div class="proj" onclick="openModal('ai')">
+      <div class="proj-banner" style="background:linear-gradient(135deg,rgba(0,212,255,0.05),rgba(157,78,221,0.05));">
+        <svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="160" cy="58" r="32" fill="rgba(157,78,221,0.07)" stroke="rgba(157,78,221,0.28)" stroke-width="1" stroke-dasharray="4 2"/>
+          <circle cx="160" cy="58" r="18" fill="rgba(0,212,255,0.07)"  stroke="rgba(0,212,255,0.28)"  stroke-width="1"/>
+          <text x="160" y="64" text-anchor="middle" fill="#00d4ff" font-size="17" font-family="monospace" font-weight="700">AI</text>
+          <circle cx="193" cy="30" r="5" fill="rgba(157,78,221,0.4)" stroke="#9d4edd" stroke-width="1"/>
+          <circle cx="193" cy="86" r="5" fill="rgba(0,212,255,0.4)"  stroke="#00d4ff" stroke-width="1"/>
+          <circle cx="127" cy="30" r="5" fill="rgba(0,255,136,0.4)"  stroke="#00ff88" stroke-width="1"/>
+          <circle cx="127" cy="86" r="5" fill="rgba(157,78,221,0.4)" stroke="#9d4edd" stroke-width="1"/>
+          <rect x="205" y="46" width="78" height="18" rx="9" fill="rgba(0,212,255,0.1)"  stroke="rgba(0,212,255,0.2)"  stroke-width="1"/>
+          <text x="244" y="59" text-anchor="middle" fill="rgba(0,212,255,0.7)"  font-size="7.5" font-family="monospace">response...</text>
+          <rect x="37"  y="46" width="68" height="18" rx="9" fill="rgba(157,78,221,0.1)" stroke="rgba(157,78,221,0.2)" stroke-width="1"/>
+          <text x="71"  y="59" text-anchor="middle" fill="rgba(157,78,221,0.7)" font-size="7.5" font-family="monospace">ask me...</text>
+          <text x="160" y="120" text-anchor="middle" fill="rgba(157,78,221,0.4)" font-size="8" font-family="monospace">AI HELPER · LLM POWERED</text>
+        </svg>
+      </div>
+      <div class="proj-body">
+        <span class="ptag b">AI · Python</span>
+        <h3>AI Helper Tools</h3>
+        <p>Telegram bots, network operators, and intelligent automation powered by large language models.</p>
+      </div>
+      <div class="proj-foot">
+        <span>Python · Telegram API</span>
+        <span class="proj-cta">View Details →</span>
+      </div>
+    </div>
+
+    <!-- Web Demo Lab -->
+    <div class="proj" onclick="openModal('weblab')">
+      <div class="proj-banner" style="background:linear-gradient(135deg,rgba(157,78,221,0.05),rgba(0,255,136,0.05));">
+        <svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+          <rect x="40" y="12" width="240" height="106" rx="8" fill="rgba(13,13,31,0.8)" stroke="rgba(157,78,221,0.28)" stroke-width="1"/>
+          <rect x="40" y="12" width="240" height="26"  rx="8" fill="rgba(157,78,221,0.05)"/>
+          <rect x="40" y="28" width="240" height="10"  fill="rgba(157,78,221,0.05)"/>
+          <circle cx="57" cy="25" r="4" fill="#ff5f57" opacity=".7"/>
+          <circle cx="70" cy="25" r="4" fill="#febc2e" opacity=".7"/>
+          <circle cx="83" cy="25" r="4" fill="#28c840" opacity=".7"/>
+          <rect x="106" y="18" width="128" height="14" rx="7" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+          <text x="170" y="29" text-anchor="middle" fill="rgba(255,255,255,0.28)" font-size="7.5" font-family="monospace">truefastfix.com</text>
+          <rect x="55" y="48" width="85"  height="11" rx="5.5" fill="rgba(0,212,255,0.18)"/>
+          <rect x="55" y="65" width="195" height="5"  rx="2.5" fill="rgba(255,255,255,0.08)"/>
+          <rect x="55" y="76" width="155" height="5"  rx="2.5" fill="rgba(255,255,255,0.06)"/>
+          <rect x="55" y="87" width="175" height="5"  rx="2.5" fill="rgba(255,255,255,0.08)"/>
+          <rect x="55" y="98" width="95"  height="5"  rx="2.5" fill="rgba(157,78,221,0.2)"/>
+          <text x="160" y="126" text-anchor="middle" fill="rgba(0,255,136,0.4)" font-size="8" font-family="monospace">WEB DEMO LAB</text>
+        </svg>
+      </div>
+      <div class="proj-body">
+        <span class="ptag p">Web · Design</span>
+        <h3>Web Demo Lab</h3>
+        <p>Modern web experiments — glassmorphism, CSS animations, interactive components built from scratch.</p>
+      </div>
+      <div class="proj-foot">
+        <span>HTML · CSS · JS</span>
+        <span class="proj-cta">View Details →</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════ TECH LINKS ════════════════ -->
+<section id="techlinks" class="section">
+  <div class="sec-head">
+    <h2>Tech <span class="grad">Resources</span></h2>
+    <p>The tools and references powering the build.</p>
+  </div>
+  <div class="tech-grid">
+
+    <a href="https://github.com" target="_blank" rel="noopener" class="tech-a">
+      <div class="tech-ic" style="background:rgba(255,255,255,0.06);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#e8e8f0"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+      </div>
+      <h3>GitHub</h3>
+      <p>Code repos and version control</p>
+    </a>
+
+    <a href="https://stackoverflow.com" target="_blank" rel="noopener" class="tech-a">
+      <div class="tech-ic" style="background:rgba(244,128,36,0.1);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#f48024"><path d="M15 21h-10v-2h10v2zm6-11.665l-1.621-9.335-1.993.346 1.62 9.335 1.994-.346zm-5.964 6.937l-9.746-.975-.186 2.016 9.755.879.177-1.92zm.538-3.483l-9.276-2.053-.417 1.983 9.278 2.039.415-1.969zm1.204-2.588l-8.297-4.144-.894 1.799 8.297 4.144.894-1.799zm1.832-2.879l-6.489-6.16-1.373 1.457 6.489 6.161 1.373-1.458zm-7.083 17.218l.189-1.931-9.748-.951-.19 1.932 9.749.95z"/></svg>
+      </div>
+      <h3>Stack Overflow</h3>
+      <p>Dev Q&amp;A and problem solving</p>
+    </a>
+
+    <a href="https://developer.mozilla.org" target="_blank" rel="noopener" class="tech-a">
+      <div class="tech-ic" style="background:rgba(0,212,255,0.08);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <h3>MDN</h3>
+      <p>Web docs and standards reference</p>
+    </a>
+
+    <a href="https://www.w3schools.com" target="_blank" rel="noopener" class="tech-a">
+      <div class="tech-ic" style="background:rgba(0,255,136,0.08);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <h3>W3Schools</h3>
+      <p>Web tutorials and examples</p>
+    </a>
+
+    <a href="https://developer.apple.com" target="_blank" rel="noopener" class="tech-a">
+      <div class="tech-ic" style="background:rgba(255,255,255,0.06);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#e8e8f0"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>
+      </div>
+      <h3>Apple Developer</h3>
+      <p>iOS and macOS development docs</p>
+    </a>
+
+    <a href="https://openai.com" target="_blank" rel="noopener" class="tech-a">
+      <div class="tech-ic" style="background:rgba(157,78,221,0.1);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#9d4edd"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/></svg>
+      </div>
+      <h3>OpenAI</h3>
+      <p>AI models and API tools</p>
+    </a>
+
+    <a href="https://cloudflare.com" target="_blank" rel="noopener" class="tech-a">
+      <div class="tech-ic" style="background:rgba(244,164,0,0.1);">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="#f4a400"><path d="M16.608 14.802l.047-.155c.493-1.778-.317-2.683-1.12-3.013-.8-.33-1.868-.198-2.498.478L12.03 12.5l-.81-1.42c-.635-.976-1.62-1.43-2.536-1.163-.912.266-1.527 1.11-1.527 2.086 0 .22.034.436.1.64l.06.182H6.85c-.943 0-1.71.77-1.71 1.713s.767 1.712 1.71 1.712H17.87c.664 0 1.203-.54 1.203-1.204 0-.646-.52-1.173-1.168-1.204zM20.47 12.46c.04-.234.062-.47.062-.71 0-2.428-1.967-4.395-4.394-4.395a4.39 4.39 0 0 0-3.58 1.845 2.755 2.755 0 0 0-1.652-.545c-1.52 0-2.753 1.232-2.753 2.754 0 .168.016.33.045.49C6.27 12.04 5 13.4 5 15.068c0 1.773 1.44 3.212 3.214 3.212H17.87c1.91 0 3.462-1.548 3.462-3.46a3.458 3.458 0 0 0-.862-2.36z"/></svg>
+      </div>
+      <h3>Cloudflare</h3>
+      <p>DNS, CDN, and security</p>
+    </a>
+
+    <a href="https://www.raspberrypi.com" target="_blank" rel="noopener" class="tech-a">
+      <div class="tech-ic" style="background:rgba(200,0,0,0.1);">
+        <svg width="26" height="26" viewBox="0 0 32 32" fill="#dd0000">
+          <circle cx="16" cy="16" r="14" fill="none" stroke="#dd0000" stroke-width="2"/>
+          <circle cx="16" cy="16" r="5" fill="#dd0000"/>
+          <line x1="16" y1="2"  x2="16" y2="11" stroke="#dd0000" stroke-width="2"/>
+          <line x1="16" y1="21" x2="16" y2="30" stroke="#dd0000" stroke-width="2"/>
+          <line x1="2"  y1="16" x2="11" y2="16" stroke="#dd0000" stroke-width="2"/>
+          <line x1="21" y1="16" x2="30" y2="16" stroke="#dd0000" stroke-width="2"/>
+        </svg>
+      </div>
+      <h3>Raspberry Pi</h3>
+      <p>Pi projects and documentation</p>
+    </a>
+
+  </div>
+</section>
+
+<!-- ════════════════ CONTACT ════════════════ -->
+<section id="contact" class="section">
+  <div class="sec-head">
+    <h2>Get in <span class="grad">Touch</span></h2>
+    <p>Have a project in mind? Reach out and let's build something.</p>
+  </div>
+  <div class="contact-wrap">
+    <div class="contact-card">
+      <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+      <div class="contact-email">support@truefastfix.com</div>
+      <p>Whether it's a networking question, a project idea, or a support request — the inbox is open. Direct, no forms, no runaround.</p>
+      <a href="mailto:support@truefastfix.com" class="btn-p" style="margin-top:.75rem;">Send a Message</a>
+      <div class="contact-grid">
+        <div class="cinfo">
+          <h4>Website</h4>
+          <p>truefastfix.com</p>
+        </div>
+        <div class="cinfo">
+          <h4>Response Time</h4>
+          <p>Usually within 24h</p>
+        </div>
+        <div class="cinfo">
+          <h4>Focus Areas</h4>
+          <p>Networking · Apps · Web</p>
+        </div>
+        <div class="cinfo">
+          <h4>Status</h4>
+          <p style="color:var(--green);">● Open for Projects</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>© 2026 <strong>Skyfall Creations</strong> · <a href="https://www.truefastfix.com">truefastfix.com</a> · <a href="mailto:support@truefastfix.com">support@truefastfix.com</a></p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-ov" id="modal" onclick="closeModalBg(event)">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <h2 id="modal-title"></h2>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-bd" id="modal-body"></div>
+  </div>
 </div>
 
 <script>
-  const stage = document.getElementById("stage");
-  let running = true;
-  let interval;
+// ── Navigation ────────────────────────────────────────────────
+function go(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('[data-sec]').forEach(a => {
+    a.classList.toggle('active', a.dataset.sec === id);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-  const symbols = ["👽", "🔗", "🧿", "⚡", "☢", "✦", "✧", "◉"];
+// ── Mobile menu ───────────────────────────────────────────────
+const hbg     = document.getElementById('hbg');
+const mobMenu = document.getElementById('mobMenu');
 
-  function randomColor() {
-    return `hsl(${Math.random() * 360}, 100%, 60%)`;
+function toggleMob() {
+  const isOpen = mobMenu.classList.toggle('open');
+  hbg.classList.toggle('open', isOpen);
+}
+function closeMob() {
+  mobMenu.classList.remove('open');
+  hbg.classList.remove('open');
+}
+document.addEventListener('click', e => {
+  if (!mobMenu.contains(e.target) && !hbg.contains(e.target)) closeMob();
+});
+
+// ── Typing animation ──────────────────────────────────────────
+const phrases = [
+  'Networking from scratch.',
+  'Building mobile apps.',
+  'Automating everything.',
+  'AI tools that work.',
+  'Raspberry Pi projects.',
+  'Cleaner digital solutions.'
+];
+let pi = 0, ci = 0, del = false;
+const typer = document.getElementById('typer');
+function tick() {
+  const p = phrases[pi];
+  typer.textContent = del ? p.slice(0, --ci) : p.slice(0, ++ci);
+  let wait = del ? 55 : 85;
+  if (!del && ci === p.length)     { wait = 1800; del = true; }
+  else if (del && ci === 0)        { del = false; pi = (pi + 1) % phrases.length; wait = 280; }
+  setTimeout(tick, wait);
+}
+tick();
+
+// ── Project modals ────────────────────────────────────────────
+const PROJECTS = {
+  watchdog: {
+    title: '🔍 Network Watchdog', color: '#00d4ff',
+    html: `<p>A real-time network monitoring system running on a Raspberry Pi. Network Watchdog continuously scans the local network, detects new devices, and sends intelligent alerts through Telegram — without the noise of repeated pings for the same device.</p>
+<p>Built to solve the problem of zero visibility into what joins a home network. Every new device gets a clear, categorized alert with MAC address, IP, hostname, and device class.</p>
+<div class="modal-feats"><h4>Key Features</h4><ul>
+<li>Continuous ARP scanning via OpenWRT</li>
+<li>Device classification: permanent, mobile, candidate</li>
+<li>6-hour minimum alert cooldown to reduce noise</li>
+<li>Telegram bot integration for real-time alerts</li>
+<li>Daily 5 AM summary report</li>
+<li>Trust, label, and categorize devices by command</li>
+</ul></div>`
+  },
+  checklist: {
+    title: '📋 Mobile Checklist App', color: '#9d4edd',
+    html: `<p>An iOS checklist application designed for repair technicians and field workers. Built to be fast, simple, and reliable — even without an internet connection.</p>
+<p>The goal was to replace paper checklists and slow spreadsheet workflows with something that works exactly the way a technician thinks in the field.</p>
+<div class="modal-feats"><h4>Key Features</h4><ul>
+<li>Fully offline — no internet required</li>
+<li>Fast item entry with smart autocomplete</li>
+<li>Multiple checklist templates</li>
+<li>One-tap item completion with notes</li>
+<li>Export as PDF or share via iOS share sheet</li>
+<li>Clean, distraction-free UI built in SwiftUI</li>
+</ul></div>`
+  },
+  repair: {
+    title: '🛠️ Smart Repair Logs', color: '#00ff88',
+    html: `<p>An intelligent repair log system replacing scattered notes and spreadsheets with a searchable, structured local database. Tracks repairs, parts, time spent, and customer info in one place.</p>
+<p>Built to solve the real problem of losing repair history and being unable to quickly reference what was done on a specific device or for a specific customer.</p>
+<div class="modal-feats"><h4>Key Features</h4><ul>
+<li>Fast search across all repairs and devices</li>
+<li>Parts inventory tracking and cost calculation</li>
+<li>Customer history and repeat job detection</li>
+<li>Export to CSV or PDF reports</li>
+<li>Local SQLite database — no cloud required</li>
+<li>Python backend with clean web interface</li>
+</ul></div>`
+  },
+  ai: {
+    title: '🤖 AI Helper Tools', color: '#9d4edd',
+    html: `<p>A collection of practical AI integrations built around real workflows. The flagship is PicoClaw — a Telegram-based AI network operator that understands plain English and controls an OpenWRT home network.</p>
+<p>Philosophy: AI tools should feel like a competent assistant, not a terminal. Ask normally, misspell things, get the right action.</p>
+<div class="modal-feats"><h4>Key Features</h4><ul>
+<li>PicoClaw — AI-powered Telegram network bot</li>
+<li>Natural language command understanding</li>
+<li>Typo and fuzzy command matching</li>
+<li>LLM integration for network explanations</li>
+<li>Custom automation scripts powered by AI</li>
+<li>Raspberry Pi deployment — low power, always on</li>
+</ul></div>`
+  },
+  weblab: {
+    title: '🧪 Web Demo Lab', color: '#00ff88',
+    html: `<p>An ongoing collection of modern web UI experiments. Every component is built from scratch — no frameworks, no libraries, just clean HTML, CSS, and JavaScript exploring what's possible.</p>
+<p>Part portfolio, part sandbox. Where new ideas get tested before they make it into production projects.</p>
+<div class="modal-feats"><h4>What's Inside</h4><ul>
+<li>Glassmorphism UI components and layouts</li>
+<li>CSS animation systems and keyframe experiments</li>
+<li>SVG-based interactive diagrams</li>
+<li>Single-file full websites (like this one)</li>
+<li>Mobile-first responsive design patterns</li>
+<li>JavaScript interaction experiments</li>
+</ul></div>`
   }
+};
 
-  function createVisual() {
-    if (!running) return;
+function openModal(key) {
+  const d = PROJECTS[key];
+  if (!d) return;
+  document.getElementById('modal-title').textContent = d.title;
+  document.getElementById('modal-title').style.color = d.color;
+  document.getElementById('modal-body').innerHTML = d.html;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalBg(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-    stage.innerHTML = "";
+// ── Canvas particle network (DPR-aware) ───────────────────────
+const cvs = document.getElementById('bgCanvas');
+const ctx  = cvs.getContext('2d');
+let dpr = 1, W = 0, H = 0;
 
-    for (let i = 0; i < 12; i++) {
-      const el = document.createElement("div");
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  W   = window.innerWidth;
+  H   = window.innerHeight;
+  cvs.width        = Math.floor(W * dpr);
+  cvs.height       = Math.floor(H * dpr);
+  cvs.style.width  = W + 'px';
+  cvs.style.height = H + 'px';
+}
+resize();
 
-      if (Math.random() > 0.5) {
-        el.className = "shape circle";
-      } else {
-        el.className = "shape";
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(resize, 100);
+});
+
+const COLS = ['rgba(0,212,255,', 'rgba(157,78,221,', 'rgba(0,255,136,'];
+const pts  = Array.from({ length: 55 }, () => ({
+  x:  Math.random() * window.innerWidth,
+  y:  Math.random() * window.innerHeight,
+  vx: (Math.random() - 0.5) * 0.3,
+  vy: (Math.random() - 0.5) * 0.3,
+  r:  Math.random() * 1.6 + 0.5,
+  c:  COLS[Math.floor(Math.random() * 3)],
+  o:  Math.random() * 0.4 + 0.1
+}));
+
+function frame() {
+  // Reset transform each frame to avoid accumulation
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, W, H);
+
+  pts.forEach(p => {
+    p.x = (p.x + p.vx + W) % W;
+    p.y = (p.y + p.vy + H) % H;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.c + p.o + ')';
+    ctx.fill();
+  });
+
+  for (let i = 0; i < pts.length; i++) {
+    for (let j = i + 1; j < pts.length; j++) {
+      const dx = pts[i].x - pts[j].x;
+      const dy = pts[i].y - pts[j].y;
+      const d  = Math.sqrt(dx * dx + dy * dy);
+      if (d < 110) {
+        ctx.beginPath();
+        ctx.moveTo(pts[i].x, pts[i].y);
+        ctx.lineTo(pts[j].x, pts[j].y);
+        ctx.strokeStyle = pts[i].c + ((1 - d / 110) * 0.1) + ')';
+        ctx.lineWidth   = 0.5;
+        ctx.stroke();
       }
-
-      const size = Math.random() * 180 + 40;
-
-      el.style.width = size + "px";
-      el.style.height = size + "px";
-      el.style.left = Math.random() * window.innerWidth + "px";
-      el.style.top = Math.random() * window.innerHeight + "px";
-      el.style.borderColor = randomColor();
-      el.style.boxShadow = `0 0 30px ${randomColor()}, 0 0 80px ${randomColor()}`;
-
-      stage.appendChild(el);
-    }
-
-    for (let i = 0; i < 5; i++) {
-      const icon = document.createElement("div");
-      icon.className = "alien";
-      icon.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-      icon.style.left = Math.random() * window.innerWidth + "px";
-      icon.style.top = Math.random() * window.innerHeight + "px";
-      icon.style.color = randomColor();
-      icon.style.fontSize = Math.random() * 120 + 60 + "px";
-      stage.appendChild(icon);
     }
   }
-
-  function startFlash() {
-    interval = setInterval(createVisual, 80);
-  }
-
-  function toggleFlash() {
-    running = !running;
-
-    if (running) {
-      document.querySelector("button").textContent = "STOP";
-      startFlash();
-    } else {
-      document.querySelector("button").textContent = "START";
-      clearInterval(interval);
-      stage.style.animation = "none";
-      stage.innerHTML = "";
-      stage.style.background = "black";
-    }
-  }
-
-  startFlash();
+  requestAnimationFrame(frame);
+}
+frame();
 </script>
-
 </body>
 </html>
