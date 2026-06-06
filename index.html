@@ -2,1391 +2,1435 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>Skyfall OS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skyfall OS | Skyfall Creations</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 64 64'%3E%3Crect width='30' height='30' x='4' y='4' fill='%23f35325'/%3E%3Crect width='26' height='30' x='36' y='4' fill='%2381bc06'/%3E%3Crect width='30' height='26' x='4' y='36' fill='%2305a6f0'/%3E%3Crect width='26' height='26' x='36' y='36' fill='%23ffba08'/%3E%3C/svg%3E">
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;overflow:hidden;
-  font-family:'Tahoma','Segoe UI',system-ui,sans-serif;
-  background:#000;color:#e8e8f0;user-select:none;}
-:root{
-  --sky:#00d4ff;--purple:#9d4edd;--green:#00ff88;
-  --text:#e8e8f0;--muted:#8888aa;
-  --bar-h:38px;--title-h:28px;
-  --tb-top:#2a6fd0;--tb-bot:#071f6a;
-  --task-bg:linear-gradient(to bottom,#0e1f4a 0%,#091430 100%);
-  --win-body:#0b0f1e;
-}
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:rgba(0,212,255,.22);border-radius:2px;}
-
-/* ═══ BOOT ═══ */
-#boot{
-  position:fixed;inset:0;z-index:9999;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  background:#000;
-}
-.boot-logo{
-  font-size:clamp(1.6rem,4.5vw,2.6rem);
-  font-weight:700;color:#fff;letter-spacing:2px;
-  margin-bottom:.2rem;
-}
-.boot-edition{font-size:.78rem;color:#aaa;letter-spacing:3px;font-style:italic;margin-bottom:3rem;}
-.boot-bar-outer{
-  width:min(220px,70vw);height:14px;
-  background:#000;border:1px solid #333;
-  border-radius:1px;overflow:hidden;position:relative;
-}
-.boot-dot{
-  position:absolute;top:1px;
-  width:52px;height:calc(100% - 2px);
-  background:linear-gradient(to right,transparent,#00d4ff 40%,#1a88ff 60%,transparent);
-  animation:xp-slide 1.9s linear infinite;
-}
-.boot-dot:nth-child(2){animation-delay:.63s;}
-.boot-dot:nth-child(3){animation-delay:1.26s;}
-@keyframes xp-slide{from{left:-54px;}to{left:230px;}}
-.boot-fs-hint{
-  margin-top:2.2rem;font-size:.72rem;color:#555;
-  display:flex;align-items:center;gap:.5rem;cursor:pointer;
-  transition:color .2s;
-}
-.boot-fs-hint:hover{color:#00d4ff;}
-.boot-fs-hint span{font-size:.85rem;}
-.boot-copy{
-  position:absolute;bottom:1.4rem;left:0;right:0;
-  text-align:center;font-size:.65rem;color:#383838;
+:root {
+  --xp-blue-1: #2f8cff;
+  --xp-blue-2: #0b55c7;
+  --xp-blue-3: #06348a;
+  --xp-green-1: #55d14f;
+  --xp-green-2: #1f8e24;
+  --xp-silver: #ece9d8;
+  --xp-border: #0a246a;
+  --xp-text: #101010;
+  --desktop-bottom: 42px;
+  --title-height: 30px;
 }
 
-/* ═══ LOGIN ═══ */
-#login{
-  position:fixed;inset:0;z-index:9998;
-  display:none;flex-direction:column;
-  background:radial-gradient(ellipse at 50% 35%,#0e2860 0%,#061428 60%,#020a18 100%);
+* {
+  box-sizing: border-box;
 }
-#login.show{display:flex;}
-.xp-login-top{
-  flex-shrink:0;
-  background:linear-gradient(to bottom,rgba(0,212,255,.07) 0%,transparent 100%);
-  border-bottom:1px solid rgba(0,212,255,.12);
-  padding:.85rem 2rem;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.xp-login-brand{display:flex;align-items:center;gap:.65rem;}
-.xp-login-flag{font-size:1.8rem;line-height:1;}
-.xp-login-title{font-size:1.2rem;font-weight:700;color:#fff;line-height:1.1;}
-.xp-login-edition{font-size:.7rem;color:rgba(0,212,255,.7);font-style:italic;letter-spacing:1px;}
-.xp-login-ver{font-size:.7rem;color:#555;font-family:monospace;text-align:right;line-height:1.7;}
-.xp-login-center{
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:1.75rem;padding:1.5rem;
-}
-.xp-welcome-msg{font-size:clamp(.88rem,2vw,1.05rem);color:rgba(255,255,255,.7);text-align:center;}
-.xp-user-tiles{display:flex;gap:1.25rem;flex-wrap:wrap;justify-content:center;}
-.xp-tile{
-  display:flex;align-items:center;gap:.85rem;
-  padding:.85rem 1.3rem;min-width:220px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(0,212,255,.15);
-  border-radius:4px;cursor:pointer;
-  transition:background .18s,border-color .18s,box-shadow .18s;
-}
-.xp-tile:hover{
-  background:rgba(0,212,255,.1);
-  border-color:rgba(0,212,255,.45);
-  box-shadow:0 0 22px rgba(0,212,255,.2);
-}
-.xp-tile-icon{
-  width:56px;height:56px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.8rem;flex-shrink:0;
-}
-.xp-tile-info{line-height:1.4;}
-.xp-tile-name{font-size:.95rem;font-weight:700;color:#fff;}
-.xp-tile-role{font-size:.72rem;color:rgba(0,212,255,.65);}
-.xp-login-hint{font-size:.72rem;color:#555;text-align:center;}
-.xp-login-bot{
-  flex-shrink:0;
-  background:linear-gradient(to top,rgba(0,212,255,.06) 0%,transparent 100%);
-  border-top:1px solid rgba(0,212,255,.1);
-  padding:.75rem 2rem;
-  display:flex;align-items:center;justify-content:flex-end;gap:1rem;
-}
-.xp-login-btn{
-  display:flex;align-items:center;gap:.45rem;
-  padding:.4rem 1rem;border-radius:3px;cursor:pointer;font-size:.78rem;
-  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
-  color:#ccc;transition:background .15s;
-}
-.xp-login-btn:hover{background:rgba(255,255,255,.13);color:#fff;}
 
-/* ═══ DESKTOP — XP Bliss Dark ═══ */
-#desktop{
-  position:fixed;inset:0;bottom:var(--bar-h);
-  display:none;overflow:hidden;
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: Tahoma, "Segoe UI", Arial, sans-serif;
+  background: #000;
+  color: #fff;
+  user-select: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: #074fbd;
+}
+
+.screen {
+  position: fixed;
+  inset: 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.boot-screen {
+  z-index: 4000;
+  display: grid;
+  place-items: center;
   background:
-    linear-gradient(rgba(0,212,255,.008) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,212,255,.008) 1px,transparent 1px),
-    radial-gradient(ellipse 90% 25% at 50% 100%,rgba(30,150,60,.18) 0%,transparent 55%),
-    radial-gradient(ellipse 55% 45% at 88% 108%,#0b3614 0%,transparent 55%),
-    radial-gradient(ellipse 60% 42% at 12% 110%,#0a3212 0%,transparent 58%),
-    radial-gradient(ellipse 110% 62% at 50% 115%,#0f4419 0%,#0d3c17 20%,#0b3214 40%,transparent 62%),
-    radial-gradient(ellipse 55% 10% at 50% 73%,rgba(10,170,255,.05) 0%,transparent 70%),
-    linear-gradient(to bottom,#020918 0%,#04102e 8%,#081840 18%,#0b2258 30%,#0d2c6e 44%,#0d2a6c 52%,#0b2260 60%,#091848 68%,#06102e 76%,#040818 80%,#060e08 84%,#0a2010 90%,#0f4014 100%);
-  background-size:44px 44px,44px 44px,100% 100%,100% 100%,100% 100%,100% 100%,100% 100%,100% 100%;
-}
-#desktop.show{display:block;}
-#bgc{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
-
-/* Desktop icon grid — two columns left side */
-.desk-icons{
-  position:absolute;top:.7rem;left:.7rem;
-  display:grid;
-  grid-template-columns:repeat(2,74px);
-  gap:.3rem .05rem;
-  z-index:10;
-}
-.desk-icon-rb{
-  position:absolute;bottom:.9rem;right:.9rem;
-  z-index:10;
-}
-.d-icon{
-  display:flex;flex-direction:column;align-items:center;gap:.22rem;
-  width:74px;padding:.4rem .2rem .32rem;border-radius:3px;
-  cursor:pointer;text-align:center;
-  transition:background .12s;
-}
-.d-icon:hover{background:rgba(0,132,255,.26);}
-.d-icon.selected{background:rgba(0,132,255,.4);}
-.d-icon-img{
-  width:44px;height:44px;border-radius:3px;
-  display:flex;align-items:center;justify-content:center;font-size:1.45rem;
-}
-.d-icon span{
-  font-size:.64rem;color:#fff;line-height:1.3;
-  text-shadow:1px 1px 3px #000,0 0 6px #000;
-  word-break:break-word;
+    radial-gradient(circle at 50% 20%, rgba(21, 52, 104, 0.45), transparent 28%),
+    #000;
 }
 
-/* ═══ TASKBAR ═══ */
-#taskbar{
-  position:fixed;bottom:0;left:0;right:0;height:var(--bar-h);z-index:5000;
-  display:none;align-items:center;gap:.25rem;padding:0 .4rem;
-  background:var(--task-bg);
-  border-top:1px solid rgba(0,212,255,.18);
-  box-shadow:0 -2px 12px rgba(0,0,0,.7);
-}
-#taskbar.show{display:flex;}
-.start-btn{
-  display:flex;align-items:center;gap:.3rem;
-  height:28px;padding:0 12px 0 9px;
-  background:linear-gradient(to bottom,#3fc655 0%,#1f9632 40%,#157026 100%);
-  border:1px solid #0a5018;
-  border-radius:0 12px 12px 0;
-  margin-left:-4px;flex-shrink:0;cursor:pointer;
-  font-size:.8rem;font-weight:700;color:#fff;
-  text-shadow:0 1px 2px rgba(0,0,0,.7);
-  box-shadow:1px 0 6px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.25);
-  transition:filter .15s;
-}
-.start-btn:hover{filter:brightness(1.15);}
-.start-btn-flag{font-size:.9rem;line-height:1;}
-.tb-sep{width:1px;height:26px;background:rgba(255,255,255,.08);flex-shrink:0;}
-.tb-apps{display:flex;gap:.2rem;flex:1;overflow:hidden;align-items:center;}
-.tb-app{
-  display:flex;align-items:center;gap:.28rem;
-  height:24px;padding:0 .55rem;border-radius:2px;cursor:pointer;
-  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
-  font-size:.72rem;color:var(--muted);white-space:nowrap;max-width:130px;
-  transition:all .15s;
-}
-.tb-app:hover{background:rgba(255,255,255,.14);color:var(--text);}
-.tb-app.active{
-  background:linear-gradient(to bottom,rgba(0,100,200,.35),rgba(0,60,150,.25));
-  border-color:rgba(0,212,255,.3);color:#fff;
-  box-shadow:inset 0 1px 0 rgba(0,212,255,.15);
-}
-.tb-app-ic{font-size:.8rem;}
-.tb-app-lb{overflow:hidden;text-overflow:ellipsis;}
-.tb-tray{
-  display:flex;align-items:center;gap:.55rem;flex-shrink:0;
-  padding:0 .4rem 0 .5rem;
-  border-left:1px solid rgba(255,255,255,.07);
-  background:linear-gradient(to bottom,rgba(0,50,120,.25),rgba(0,30,80,.2));
-  height:100%;
-}
-.tray-mini{display:flex;flex-direction:column;align-items:center;font-size:.56rem;font-family:monospace;color:var(--muted);cursor:default;}
-.tray-mini-val{color:var(--green);font-size:.6rem;}
-.tray-clock{font-size:.73rem;font-family:Tahoma,sans-serif;color:#fff;text-align:center;line-height:1.4;cursor:default;min-width:50px;}
-.tray-clock-date{font-size:.6rem;color:#99b;}
-
-/* ═══ START MENU ═══ */
-#start-menu{
-  position:fixed;bottom:var(--bar-h);left:0;
-  width:min(390px,96vw);
-  display:none;flex-direction:column;z-index:4999;
-  border:1px solid rgba(0,212,255,.2);border-bottom:none;
-  border-radius:6px 6px 0 0;overflow:hidden;
-  box-shadow:4px -4px 30px rgba(0,0,0,.8);
-}
-#start-menu.show{display:flex;}
-.sm-header{
-  background:linear-gradient(to right,#0d2d7a,#0a1f60);
-  padding:.7rem 1rem;display:flex;align-items:center;gap:.75rem;
-  border-bottom:2px solid rgba(0,212,255,.2);flex-shrink:0;
-}
-.sm-avatar{
-  width:42px;height:42px;border-radius:50%;
-  background:linear-gradient(135deg,rgba(0,212,255,.2),rgba(157,78,221,.2));
-  border:2px solid rgba(0,212,255,.3);
-  display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;
-}
-.sm-user{line-height:1.3;}
-.sm-username{font-size:.9rem;font-weight:700;color:#fff;}
-.sm-userrole{font-size:.68rem;color:rgba(0,212,255,.6);}
-.sm-body{display:flex;flex:1;overflow:hidden;}
-.sm-left{width:55%;background:rgba(8,14,36,.98);border-right:1px solid rgba(255,255,255,.07);padding:.35rem 0;overflow-y:auto;}
-.sm-right{flex:1;background:rgba(12,20,50,.98);padding:.35rem 0;overflow-y:auto;}
-.sm-item{
-  display:flex;align-items:center;gap:.6rem;
-  padding:.42rem .85rem;cursor:pointer;
-  transition:background .13s;
-}
-.sm-item:hover{background:rgba(0,132,255,.22);}
-.sm-item-ic{font-size:.95rem;width:22px;text-align:center;flex-shrink:0;}
-.sm-item-label{font-size:.8rem;color:var(--text);}
-.sm-item-label small{display:block;font-size:.65rem;color:var(--muted);}
-.sm-div{height:1px;background:rgba(255,255,255,.06);margin:.25rem .85rem;}
-.sm-section{font-size:.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:.4rem .85rem .15rem;}
-.sm-all-progs{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:.42rem .85rem;cursor:pointer;
-  background:rgba(255,255,255,.03);border-top:1px solid rgba(255,255,255,.05);
-  transition:background .13s;font-size:.8rem;color:var(--muted);
-}
-.sm-all-progs:hover{background:rgba(0,132,255,.18);color:var(--text);}
-.sm-footer{
-  background:linear-gradient(to right,#0a1f55,#071540);
-  padding:.55rem .85rem;display:flex;align-items:center;justify-content:flex-end;
-  gap:.6rem;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0;
-}
-.sm-foot-btn{
-  display:flex;align-items:center;gap:.35rem;
-  padding:.3rem .8rem;border-radius:3px;cursor:pointer;
-  font-size:.75rem;color:#ccc;background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.1);transition:background .15s;
-}
-.sm-foot-btn:hover{background:rgba(255,255,255,.15);color:#fff;}
-
-/* ═══ WINDOWS — XP Luna Blue ═══ */
-.win{
-  position:fixed;display:none;flex-direction:column;
-  min-width:260px;min-height:160px;
-  background:var(--win-body);
-  border:1px solid rgba(0,80,180,.5);border-top:none;
-  border-radius:0 0 4px 4px;
-  box-shadow:3px 3px 16px rgba(0,0,0,.8),0 0 0 1px rgba(0,60,160,.3);
-  z-index:1000;overflow:hidden;
-}
-.win.show{display:flex;}
-.win.minimized{display:none!important;}
-.win-tbar{
-  display:flex;align-items:center;gap:.45rem;
-  height:var(--title-h);padding:0 4px 0 7px;
-  background:linear-gradient(to bottom,#3a80d8 0%,#2460b8 15%,#1a4da0 50%,#0d3388 85%,#082272 100%);
-  border-top:1px solid #5a9fd4;
-  border-radius:4px 4px 0 0;
-  cursor:grab;flex-shrink:0;
-}
-.win-tbar:active{cursor:grabbing;}
-.win-icon{font-size:.8rem;flex-shrink:0;}
-.win-title{
-  flex:1;font-size:.75rem;font-weight:700;color:#fff;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  text-shadow:0 1px 2px rgba(0,0,0,.7);
-}
-.win-btns{display:flex;gap:2px;flex-shrink:0;}
-.wb{
-  width:21px;height:19px;border-radius:2px;border:none;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.65rem;font-weight:700;color:#fff;
-  text-shadow:0 1px 1px rgba(0,0,0,.8);transition:filter .12s;
-}
-.wb:hover{filter:brightness(1.25);}
-.wb-min{background:linear-gradient(to bottom,#3a7fd0,#1a55aa);border:1px solid #0a3a88;}
-.wb-max{background:linear-gradient(to bottom,#3a7fd0,#1a55aa);border:1px solid #0a3a88;}
-.wb-close{background:linear-gradient(to bottom,#e85858,#c02020);border:1px solid #901010;}
-.win-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:1.1rem;}
-.win:not(.focused) .win-tbar{
-  background:linear-gradient(to bottom,#2a4a8a 0%,#1a3570 100%);
-  border-top-color:#3a6aaa;
+.boot-shell {
+  width: min(560px, 88vw);
+  text-align: center;
 }
 
-/* Security warning strip */
-.win-warn{
-  display:flex;align-items:center;gap:.5rem;
-  padding:.4rem .7rem;background:#1a1500;
-  border-bottom:1px solid #5a4000;flex-shrink:0;font-size:.72rem;
+.boot-logo {
+  display: inline-grid;
+  grid-template-columns: 54px auto;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 34px;
 }
-.win-warn span{color:#f0c040;}
-.win-warn p{color:#d4ae40;flex:1;}
-.win-warn button{
-  background:#3a2800;color:#f0c040;border:1px solid #7a5800;
-  padding:.18rem .55rem;font-size:.7rem;cursor:pointer;border-radius:2px;white-space:nowrap;
+
+.boot-mark {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4px;
+  transform: skewY(-7deg);
 }
-.win-warn button:hover{background:#4a3400;}
 
-/* Content helpers */
-.wh1{
-  font-size:1.15rem;font-weight:700;margin-bottom:.55rem;
-  background:linear-gradient(135deg,#00d4ff,#9d4edd);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+.boot-mark i {
+  display: block;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.4);
 }
-.wp{color:var(--muted);font-size:.84rem;line-height:1.7;margin-bottom:.55rem;}
-.wtags{display:flex;flex-wrap:wrap;gap:.3rem;margin:.55rem 0;}
-.wtag{padding:.2rem .6rem;border-radius:100px;font-size:.69rem;font-weight:600;}
-.wtag.b{background:rgba(0,212,255,.1);color:#00d4ff;border:1px solid rgba(0,212,255,.2);}
-.wtag.p{background:rgba(157,78,221,.1);color:#9d4edd;border:1px solid rgba(157,78,221,.2);}
-.wtag.g{background:rgba(0,255,136,.1);color:#00ff88;border:1px solid rgba(0,255,136,.2);}
-.wlink{color:var(--sky);text-decoration:none;font-size:.82rem;}
-.wlink:hover{text-decoration:underline;}
-.wcard{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:.8rem;margin-bottom:.5rem;}
-.wcard h3{font-size:.85rem;font-weight:700;margin-bottom:.22rem;}
-.wcard p{color:var(--muted);font-size:.78rem;line-height:1.55;}
-.wcard-foot{font-size:.67rem;color:var(--muted);margin-top:.3rem;}
-.wcard-head{display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem;}
-.wgrid2{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;}
-.srv-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:.8rem;}
-.srv-card .si{font-size:1.1rem;margin-bottom:.3rem;}
-.srv-card h3{font-size:.82rem;font-weight:700;margin:0 0 .22rem;}
-.srv-card p{color:var(--muted);font-size:.76rem;line-height:1.5;}
-.tech-link{display:flex;align-items:center;gap:.5rem;padding:.6rem .75rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;text-decoration:none;color:var(--text);font-size:.8rem;transition:border-color .15s,background .15s;}
-.tech-link:hover{border-color:rgba(157,78,221,.35);background:rgba(157,78,221,.06);color:#fff;}
-.contact-email{display:block;font-size:1rem;font-weight:700;color:var(--sky);text-decoration:none;padding:.8rem;border-radius:6px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.18);text-align:center;margin:.6rem 0;transition:background .15s;}
-.contact-email:hover{background:rgba(0,212,255,.13);}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem;margin-top:.6rem;}
-.info-cell{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:.6rem .7rem;}
-.info-cell h4{font-size:.63rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:.18rem;}
-.info-cell p{font-size:.8rem;}
 
-/* Terminal */
-#win-terminal .win-body{padding:0;display:flex;flex-direction:column;overflow:hidden;background:#060606;}
-.term-out{flex:1;overflow-y:auto;padding:.6rem .7rem;font-size:.77rem;font-family:'Courier New',monospace;line-height:1.6;}
-.tl{color:#e8e8f0;}.tl.cmd{color:#00d4ff;}.tl.ok{color:#00ff88;}.tl.err{color:#ff5f57;}.tl.dim{color:#8888aa;}
-.term-row{display:flex;align-items:center;padding:.4rem .7rem;border-top:1px solid rgba(255,255,255,.06);background:#060606;flex-shrink:0;}
-.term-ps{color:#9d4edd;font-size:.77rem;font-family:'Courier New',monospace;white-space:nowrap;}
-.term-in{flex:1;background:transparent;border:none;outline:none;color:#00d4ff;font-size:.77rem;font-family:'Courier New',monospace;padding-left:.3rem;}
+.boot-mark i:nth-child(1) { background: #f35325; }
+.boot-mark i:nth-child(2) { background: #81bc06; }
+.boot-mark i:nth-child(3) { background: #05a6f0; }
+.boot-mark i:nth-child(4) { background: #ffba08; }
 
-/* System Panel */
-.sys-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-bottom:.7rem;}
-.sys-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:.75rem;}
-.sys-lbl{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:.28rem;}
-.sys-val{font-size:1.2rem;font-weight:700;font-family:monospace;}
-.sys-val.b{color:var(--sky);}.sys-val.g{color:var(--green);}.sys-val.p{color:var(--purple);}
-.sys-bar-bg{height:5px;background:rgba(255,255,255,.06);border-radius:3px;margin-top:.45rem;overflow:hidden;}
-.sys-bar{height:100%;border-radius:3px;transition:width .9s ease;}
-.sys-bar.b{background:linear-gradient(90deg,#00d4ff,#00ff88);}
-.sys-bar.p{background:linear-gradient(90deg,#9d4edd,#00d4ff);}
-.sys-sec{font-size:.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:.7rem 0 .35rem;}
-.sys-row{display:flex;justify-content:space-between;align-items:center;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.79rem;}
-.sys-row:last-child{border-bottom:none;}
-.sys-row .lbl{color:var(--muted);}.sys-row .val{font-family:monospace;color:var(--green);}
-
-/* Recycle Bin window */
-.rb-toolbar{
-  display:flex;align-items:center;gap:.3rem;
-  padding:.35rem .7rem;background:rgba(255,255,255,.02);
-  border-bottom:1px solid rgba(255,255,255,.05);flex-shrink:0;
-  font-size:.72rem;color:var(--muted);
+.boot-title {
+  text-align: left;
+  line-height: 0.9;
 }
-.rb-toolbar span{cursor:pointer;padding:.15rem .4rem;border-radius:2px;}
-.rb-toolbar span:hover{background:rgba(255,255,255,.08);color:#fff;}
-.rb-empty{
-  flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:.7rem;padding:1.5rem;
+
+.boot-title strong {
+  display: block;
+  font-size: clamp(2rem, 8vw, 4.2rem);
+  font-weight: 400;
+  letter-spacing: -2px;
 }
-.rb-empty-icon{font-size:3.5rem;opacity:.35;}
-.rb-empty-text{font-size:.82rem;color:var(--muted);}
 
-/* Network Center */
-.net-stat{
-  display:flex;align-items:center;gap:.5rem;
-  padding:.5rem .75rem;background:rgba(0,255,136,.04);
-  border:1px solid rgba(0,255,136,.12);border-radius:6px;margin-bottom:.7rem;font-size:.8rem;
+.boot-title span {
+  display: block;
+  margin-top: 8px;
+  color: #c2d7ff;
+  font-size: 1rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
 }
-.net-stat-dot{width:8px;height:8px;border-radius:50%;background:#00ff88;box-shadow:0 0 6px #00ff88;flex-shrink:0;}
 
-/* AI Tools */
-.ai-card{background:rgba(255,255,255,.03);border:1px solid rgba(157,78,221,.15);border-radius:6px;padding:.75rem;margin-bottom:.45rem;}
-.ai-card h3{font-size:.85rem;font-weight:700;color:#9d4edd;margin-bottom:.2rem;}
-.ai-card p{color:var(--muted);font-size:.78rem;line-height:1.5;}
+.boot-loader {
+  width: 228px;
+  height: 18px;
+  margin: 0 auto;
+  padding: 2px;
+  overflow: hidden;
+  border: 1px solid #949494;
+  border-radius: 3px;
+  background: #050505;
+}
 
-/* ═══ MOBILE ═══ */
-@media(max-width:580px){
-  .win{position:fixed!important;left:0!important;right:0!important;top:0!important;bottom:var(--bar-h)!important;width:100%!important;height:auto!important;border-radius:0;min-width:unset;}
-  .win-tbar{cursor:default;border-radius:0;}
-  .desk-icons{grid-template-columns:repeat(3,70px);top:.3rem;left:.3rem;}
-  .desk-icon-rb{bottom:.3rem;right:.3rem;}
-  .d-icon{width:70px;}
-  .wgrid2,.info-grid,.sys-grid{grid-template-columns:1fr;}
-  .tb-app-lb{display:none;}
-  .tb-app{padding:0 .4rem;}
-  .tray-mini{display:none;}
-  #start-menu{width:100vw;}
-  .sm-body{flex-direction:column;}
-  .sm-left,.sm-right{width:100%;}
+.boot-progress {
+  width: 96px;
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, #2269ed 18%, #9dc2ff 50%, #2269ed 82%, transparent);
+  animation: bootBar 1.55s linear infinite;
+}
+
+.boot-loader.waiting .boot-progress {
+  animation-play-state: paused;
+  opacity: 0.35;
+}
+
+@keyframes bootBar {
+  from { transform: translateX(-110px); }
+  to { transform: translateX(238px); }
+}
+
+.boot-hint {
+  margin: 26px 0 0;
+  color: #c9c9c9;
+  font-size: 0.86rem;
+}
+
+.boot-copy {
+  position: fixed;
+  right: 24px;
+  bottom: 22px;
+  color: #5f5f5f;
+  font-size: 0.78rem;
+}
+
+.desktop {
+  z-index: 1;
+  display: none;
+  height: calc(100% - var(--desktop-bottom));
+  background:
+    radial-gradient(ellipse 95% 45% at 50% 99%, rgba(66, 169, 57, 0.9) 0 18%, rgba(24, 117, 41, 0.88) 31%, transparent 53%),
+    radial-gradient(ellipse 48% 27% at 92% 92%, rgba(132, 205, 69, 0.72), transparent 67%),
+    radial-gradient(ellipse 55% 26% at 6% 100%, rgba(38, 139, 47, 0.78), transparent 65%),
+    linear-gradient(#0b63c6 0%, #1e9cf5 45%, #6ab9ff 68%, #66b140 69%, #238539 100%);
+  overflow: hidden;
+}
+
+.desktop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 17% 16%, rgba(255, 255, 255, 0.58), transparent 8%),
+    linear-gradient(120deg, transparent 0 32%, rgba(255, 255, 255, 0.18) 34%, transparent 39% 100%);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.desktop-icons {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(2, 86px);
+  grid-auto-rows: 92px;
+  gap: 8px 4px;
+}
+
+.desktop-icon {
+  width: 84px;
+  min-height: 88px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 4px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  color: #fff;
+  background: transparent;
+  text-shadow: 1px 1px 2px #000, 0 0 5px #000;
+}
+
+.desktop-icon:hover,
+.desktop-icon:focus-visible {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(15, 71, 180, 0.36);
+  outline: none;
+}
+
+.desktop-icon.recycle {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 5;
+}
+
+.icon-art {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  border-radius: 5px;
+  background: linear-gradient(145deg, #fefefe, #b9cff4 58%, #6590d6);
+  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.45);
+  color: #07357d;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.icon-art.folder {
+  border-color: #f4d36a;
+  background: linear-gradient(#ffe78d 0 27%, #e0a830 28% 100%);
+}
+
+.icon-art.folder::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 4px;
+  width: 22px;
+  height: 9px;
+  border-radius: 3px 3px 0 0;
+  background: #f5c653;
+  border: 1px solid #bc8921;
+}
+
+.icon-art.network {
+  border-radius: 50%;
+  background: radial-gradient(circle at 42% 34%, #d9ffff 0 20%, #39a8ff 21% 56%, #074da8 57%);
+}
+
+.icon-art.recyclebin {
+  border-radius: 3px;
+  background: linear-gradient(#e9f9ff, #88b9db);
+}
+
+.icon-art.recyclebin::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 8px;
+  width: 24px;
+  height: 7px;
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  background: #dff2ff;
+}
+
+.desktop-icon span {
+  max-width: 78px;
+  color: #fff;
+  font-size: 0.72rem;
+  line-height: 1.15;
+  word-break: break-word;
+}
+
+.window {
+  position: absolute;
+  z-index: 20;
+  min-width: 280px;
+  min-height: 190px;
+  border: 3px solid var(--xp-border);
+  border-top-width: 0;
+  border-radius: 8px 8px 0 0;
+  background: var(--xp-silver);
+  color: var(--xp-text);
+  box-shadow: 5px 8px 18px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+}
+
+.window.active {
+  z-index: 90;
+}
+
+.window.maximized {
+  border-radius: 0;
+}
+
+.titlebar {
+  height: var(--title-height);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 0 4px 0 8px;
+  color: #fff;
+  background: linear-gradient(#2a8af5, #0b55c7 48%, #073b9f);
+  cursor: move;
+}
+
+.window.inactive .titlebar {
+  background: linear-gradient(#91a7c8, #6b7f9e);
+}
+
+.title-text {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 7px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-shadow: 1px 1px 1px #0b2961;
+}
+
+.title-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.title-controls {
+  display: flex;
+  gap: 3px;
+}
+
+.title-controls button {
+  width: 23px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 3px;
+  background: linear-gradient(#75a7ff, #1b5fd4);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.title-controls .close {
+  background: linear-gradient(#ff9b73, #d43c19);
+}
+
+.window-body {
+  height: calc(100% - var(--title-height));
+  padding: 12px;
+  overflow: auto;
+  background: #f7f5eb;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.window-body h2,
+.window-body h3 {
+  margin: 0 0 8px;
+  color: #073b9f;
+}
+
+.window-body p {
+  margin: 0 0 10px;
+}
+
+.window-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.panel,
+.service-card {
+  padding: 10px;
+  border: 1px solid #c0bca6;
+  border-radius: 2px;
+  background: #fffef7;
+}
+
+.service-card strong,
+.panel strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #0a4aaf;
+}
+
+.list {
+  margin: 7px 0 0 18px;
+  padding: 0;
+}
+
+.meter {
+  height: 18px;
+  margin-top: 5px;
+  border: 1px solid #7f9db9;
+  background: #fff;
+  padding: 2px;
+}
+
+.meter span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #35a842, #95df5b);
+}
+
+.terminal-body {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: 0;
+  background: #030303;
+  color: #a9ff9d;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.84rem;
+}
+
+.terminal-output {
+  overflow: auto;
+  padding: 12px;
+  white-space: pre-wrap;
+}
+
+.terminal-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border-top: 1px solid #1b441b;
+}
+
+.terminal-input {
+  flex: 1;
+  min-width: 0;
+  color: #a9ff9d;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+}
+
+.empty-bin {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  color: #595959;
+  border: 1px dashed #aaa;
+  background: #fff;
+}
+
+.taskbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  height: var(--desktop-bottom);
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding-right: 8px;
+  background: linear-gradient(#2f8cff 0%, #0d5bd1 42%, #063b9f 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.start-button {
+  height: 36px;
+  min-width: 106px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 18px 0 12px;
+  color: #fff;
+  border: 0;
+  border-radius: 0 18px 18px 0;
+  background: linear-gradient(#68db62, #23952b 54%, #13701b);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 2px 0 5px rgba(0, 0, 0, 0.38);
+  font-size: 1rem;
+  font-style: italic;
+  font-weight: 700;
+  text-shadow: 1px 1px 1px #0c4a14;
+}
+
+.start-mark {
+  width: 19px;
+  height: 19px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  transform: skewY(-7deg);
+}
+
+.start-mark i:nth-child(1) { background: #f35325; }
+.start-mark i:nth-child(2) { background: #81bc06; }
+.start-mark i:nth-child(3) { background: #05a6f0; }
+.start-mark i:nth-child(4) { background: #ffba08; }
+
+.task-buttons {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.task-button {
+  max-width: 180px;
+  min-width: 92px;
+  height: 30px;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 0 9px;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 3px;
+  background: linear-gradient(#3c8bf7, #1458c4);
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.task-button.visible {
+  display: flex;
+}
+
+.task-button.minimized {
+  background: linear-gradient(#2f63b5, #0d398c);
+}
+
+.task-button.active {
+  background: linear-gradient(#70a8ff, #256ad9 54%, #154aa8);
+}
+
+.task-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.78rem;
+}
+
+.tray {
+  height: 100%;
+  min-width: 158px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 0 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.32);
+  background: linear-gradient(#19a9ef, #0b78c7);
+  font-size: 0.76rem;
+}
+
+.sound-toggle {
+  width: 25px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.46);
+  border-radius: 3px;
+  background: linear-gradient(#52c8ff, #0872bd);
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.28);
+  font-size: 0.86rem;
+  line-height: 1;
+}
+
+.sound-toggle[aria-pressed="true"] {
+  background: linear-gradient(#6f8ca3, #31566f);
+}
+
+.tray-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #80ff7d;
+  box-shadow: 0 0 4px #80ff7d;
+}
+
+.clock {
+  min-width: 58px;
+  text-align: right;
+}
+
+.start-menu {
+  position: fixed;
+  left: 0;
+  bottom: var(--desktop-bottom);
+  z-index: 2100;
+  width: min(430px, 96vw);
+  display: none;
+  overflow: hidden;
+  border: 2px solid #0b55c7;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: #fff;
+  color: #111;
+  box-shadow: 6px -6px 18px rgba(0, 0, 0, 0.42);
+}
+
+.start-menu.open {
+  display: block;
+}
+
+.start-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  color: #fff;
+  background: linear-gradient(#2b87f2, #0c55bf);
+}
+
+.start-avatar {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 6px;
+  background: linear-gradient(145deg, #dfffff, #2c7ade);
+  color: #092f7a;
+  font-weight: 700;
+}
+
+.start-head strong {
+  display: block;
+  font-size: 1.05rem;
+}
+
+.start-head span {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.78rem;
+}
+
+.start-columns {
+  display: grid;
+  grid-template-columns: 1.18fr 0.82fr;
+  min-height: 345px;
+}
+
+.start-left,
+.start-right {
+  padding: 8px 0;
+}
+
+.start-right {
+  background: #d3e5fa;
+  border-left: 1px solid #9cb7d7;
+}
+
+.start-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: #111;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.start-item:hover,
+.start-item:focus-visible {
+  color: #fff;
+  background: #316ac5;
+  outline: none;
+}
+
+.start-item small {
+  display: block;
+  color: #555;
+  font-size: 0.68rem;
+}
+
+.start-item:hover small {
+  color: #e7f1ff;
+}
+
+.start-icon {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  background: linear-gradient(#fff, #9ec4ff);
+  border: 1px solid #668ec8;
+  color: #073b9f;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.start-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 12px;
+  color: #fff;
+  background: linear-gradient(#0c55bf, #063b9f);
+}
+
+.small-power {
+  padding: 6px 10px;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 3px;
+  background: linear-gradient(#e7793d, #b34326);
+}
+
+.small-power.restart {
+  background: linear-gradient(#74c35d, #247b28);
+}
+
+@media (max-width: 760px) {
+  :root {
+    --desktop-bottom: 48px;
+  }
+
+  .desktop-icons {
+    grid-template-columns: repeat(2, 78px);
+    grid-auto-rows: 86px;
+  }
+
+  .desktop-icon {
+    width: 76px;
+  }
+
+  .icon-art {
+    width: 38px;
+    height: 38px;
+  }
+
+  .window {
+    min-width: 260px;
+  }
+
+  .task-button {
+    min-width: 70px;
+  }
+
+  .tray {
+    min-width: 116px;
+    padding: 0 8px;
+  }
+
+  .tray .network-label,
+  .tray-dot {
+    display: none;
+  }
+
+  .start-menu {
+    width: 100vw;
+  }
 }
 </style>
 </head>
 <body>
-
-<!-- ═══ BOOT ═══ -->
-<div id="boot">
-  <div class="boot-logo">⚡ Skyfall OS</div>
-  <div class="boot-edition">Professional Edition</div>
-  <div class="boot-bar-outer">
-    <div class="boot-dot"></div>
-    <div class="boot-dot"></div>
-    <div class="boot-dot"></div>
-  </div>
-  <div class="boot-fs-hint" onclick="goFullscreen()">
-    <span>⛶</span> For best experience, click to enter fullscreen
-  </div>
-  <div class="boot-copy">© 2026 Skyfall Creations · www.truefastfix.com</div>
-</div>
-
-<!-- ═══ LOGIN ═══ -->
-<div id="login">
-  <div class="xp-login-top">
-    <div class="xp-login-brand">
-      <div class="xp-login-flag">⚡</div>
-      <div>
-        <div class="xp-login-title">Skyfall OS</div>
-        <div class="xp-login-edition">Professional Edition</div>
+<section id="bootScreen" class="screen boot-screen" aria-label="Skyfall OS boot screen">
+  <div class="boot-shell">
+    <div class="boot-logo" aria-hidden="true">
+      <div class="boot-mark"><i></i><i></i><i></i><i></i></div>
+      <div class="boot-title">
+        <strong>Skyfall OS</strong>
+        <span>Professional</span>
       </div>
     </div>
-    <div class="xp-login-ver">Build 2606<br>© 2026 Skyfall Creations</div>
+    <div id="bootLoader" class="boot-loader waiting" aria-label="Loading">
+      <div class="boot-progress"></div>
+    </div>
+    <p class="boot-hint">For best experience, enter fullscreen</p>
   </div>
+  <div class="boot-copy">Skyfall Creations</div>
+</section>
 
-  <div class="xp-login-center">
-    <div class="xp-welcome-msg">To begin, click your user name</div>
-    <div class="xp-user-tiles">
-      <div class="xp-tile" onclick="doLogin()">
-        <div class="xp-tile-icon" style="background:linear-gradient(135deg,rgba(0,212,255,.2),rgba(157,78,221,.2));border:1.5px solid rgba(0,212,255,.35);">⚡</div>
-        <div class="xp-tile-info">
-          <div class="xp-tile-name">Skyfall User</div>
-          <div class="xp-tile-role">Developer · Tech Builder</div>
-        </div>
+<main id="desktop" class="screen desktop" aria-label="Skyfall OS desktop">
+  <nav class="desktop-icons" aria-label="Desktop icons">
+    <button class="desktop-icon" type="button" data-window="about"><span class="icon-art">PDF</span><span>About_Me.pdf.exe</span></button>
+    <button class="desktop-icon" type="button" data-window="projects"><span class="icon-art folder">PRJ</span><span>Projects</span></button>
+    <button class="desktop-icon" type="button" data-window="network"><span class="icon-art network">NET</span><span>Network Center</span></button>
+    <button class="desktop-icon" type="button" data-window="applab"><span class="icon-art folder">APP</span><span>App Lab</span></button>
+    <button class="desktop-icon" type="button" data-window="aitools"><span class="icon-art">AI</span><span>AI Tools</span></button>
+    <button class="desktop-icon" type="button" data-window="links"><span class="icon-art network">WWW</span><span>Tech Links</span></button>
+    <button class="desktop-icon" type="button" data-window="contact"><span class="icon-art">MAIL</span><span>Contact Me</span></button>
+    <button class="desktop-icon" type="button" data-window="terminal"><span class="icon-art">C:\</span><span>Terminal</span></button>
+    <button class="desktop-icon" type="button" data-window="system"><span class="icon-art">SYS</span><span>System Panel</span></button>
+  </nav>
+  <button class="desktop-icon recycle" type="button" data-window="recycle"><span class="icon-art recyclebin">BIN</span><span>Recycle Bin</span></button>
+
+  <section id="win-welcome" class="window hidden" data-window-id="welcome" data-title="Welcome to Skyfall OS" style="width: 420px; height: 270px; left: 170px; top: 52px;">
+    <header class="titlebar"><div class="title-text"><span>SKY</span><span class="title-name">Welcome to Skyfall OS</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body">
+      <h2>Skyfall Creations</h2>
+      <p>This desktop is a single-file interactive portfolio for practical technology work: web interfaces, app workflows, automation, networking, diagnostics, AI tooling, home lab systems, troubleshooting, and tech repair.</p>
+      <div class="panel">
+        <strong>Start here</strong>
+        Use the desktop icons or Start menu to open each section. Contact stays available through <a href="mailto:support@truefastfix.com">support@truefastfix.com</a>.
       </div>
     </div>
-    <div class="xp-login-hint">Click the icon above to log on to Skyfall OS</div>
-  </div>
+  </section>
 
-  <div class="xp-login-bot">
-    <div class="xp-login-btn" onclick="restartOS()">🔄 Restart</div>
-    <div class="xp-login-btn">🔌 Turn Off</div>
-  </div>
-</div>
-
-<!-- ═══ DESKTOP ═══ -->
-<div id="desktop">
-  <canvas id="bgc"></canvas>
-
-  <!-- Main icon grid (2 columns) -->
-  <div class="desk-icons">
-    <div class="d-icon" onclick="openWin('about')">
-      <div class="d-icon-img" style="background:linear-gradient(135deg,rgba(0,212,255,.15),rgba(0,100,220,.1));border:1px solid rgba(0,212,255,.2);">📄</div>
-      <span>About_Me .pdf.exe</span>
-    </div>
-    <div class="d-icon" onclick="openWin('projects')">
-      <div class="d-icon-img" style="background:linear-gradient(135deg,rgba(157,78,221,.18),rgba(157,78,221,.06));border:1px solid rgba(157,78,221,.2);">🚀</div>
-      <span>Projects</span>
-    </div>
-    <div class="d-icon" onclick="openWin('network')">
-      <div class="d-icon-img" style="background:linear-gradient(135deg,rgba(0,255,136,.15),rgba(0,180,80,.06));border:1px solid rgba(0,255,136,.2);">📡</div>
-      <span>Network Center</span>
-    </div>
-    <div class="d-icon" onclick="openWin('applab')">
-      <div class="d-icon-img" style="background:linear-gradient(135deg,rgba(0,212,255,.12),rgba(0,120,200,.08));border:1px solid rgba(0,212,255,.18);">💻</div>
-      <span>App Lab</span>
-    </div>
-    <div class="d-icon" onclick="openWin('aitools')">
-      <div class="d-icon-img" style="background:linear-gradient(135deg,rgba(157,78,221,.18),rgba(0,212,255,.1));border:1px solid rgba(157,78,221,.22);">🤖</div>
-      <span>AI Tools</span>
-    </div>
-    <div class="d-icon" onclick="openWin('techlinks')">
-      <div class="d-icon-img" style="background:linear-gradient(135deg,rgba(0,212,255,.12),rgba(157,78,221,.1));border:1px solid rgba(157,78,221,.18);">🔗</div>
-      <span>Tech Links</span>
-    </div>
-    <div class="d-icon" onclick="openWin('contact')">
-      <div class="d-icon-img" style="background:linear-gradient(135deg,rgba(0,255,136,.14),rgba(0,212,255,.08));border:1px solid rgba(0,255,136,.18);">✉️</div>
-      <span>Contact Me</span>
-    </div>
-    <div class="d-icon" onclick="openWin('terminal')">
-      <div class="d-icon-img" style="background:linear-gradient(135deg,#060606,rgba(0,212,255,.12));border:1px solid rgba(0,212,255,.2);">🖥️</div>
-      <span>Terminal</span>
-    </div>
-    <div class="d-icon" onclick="openWin('syspanel')">
-      <div class="d-icon-img" style="background:linear-gradient(135deg,rgba(157,78,221,.16),rgba(0,255,136,.08));border:1px solid rgba(0,255,136,.18);">📊</div>
-      <span>System Panel</span>
-    </div>
-  </div>
-
-  <!-- Recycle Bin — bottom right -->
-  <div class="desk-icon-rb">
-    <div class="d-icon" onclick="openWin('recycle')">
-      <div class="d-icon-img" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);">🗑️</div>
-      <span>Recycle Bin</span>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════ WINDOWS ═══════════ -->
-
-<!-- ABOUT_ME.PDF.EXE -->
-<div class="win" id="win-about" style="width:470px;height:430px;top:85px;left:120px;">
-  <div class="win-tbar" id="tb-about">
-    <div class="win-icon">📄</div>
-    <div class="win-title">About_Me.pdf.exe — Skyfall Creations</div>
-    <div class="win-btns">
-      <div class="wb wb-min" onclick="minWin('about')">−</div>
-      <div class="wb wb-max" onclick="maxWin('about')">□</div>
-      <div class="wb wb-close" onclick="closeWin('about')">✕</div>
-    </div>
-  </div>
-  <div class="win-warn" id="about-warn">
-    <span>⚠</span>
-    <p><b>Open File — Security Warning</b> · Publisher: Skyfall Creations · Name: About_Me.pdf.exe</p>
-    <button onclick="document.getElementById('about-warn').style.display='none'">Run</button>
-  </div>
-  <div class="win-body">
-    <div class="wh1">Skyfall Creations</div>
-    <p class="wp">A hands-on developer and network builder focused on solving real problems. Every project starts from a genuine need — a network that needed watching, an app that needed shipping, a process that needed automating.</p>
-    <p class="wp">The work spans networking, web and app development, home lab infrastructure, automation scripting, and AI tooling — all built to run 24/7 in real environments.</p>
-    <div class="wtags">
-      <span class="wtag b">Networking</span><span class="wtag p">Web Dev</span>
-      <span class="wtag g">Automation</span><span class="wtag b">Raspberry Pi</span>
-      <span class="wtag p">iOS Apps</span><span class="wtag g">AI Tools</span>
-      <span class="wtag b">Home Lab</span><span class="wtag p">OpenWRT</span>
-    </div>
-    <div style="margin-top:.75rem;padding:.6rem .8rem;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.14);border-radius:5px;font-size:.81rem;color:var(--muted);">
-      🌐 <a href="https://www.truefastfix.com" target="_blank" rel="noopener" class="wlink">www.truefastfix.com</a>
-    </div>
-  </div>
-</div>
-
-<!-- PROJECTS -->
-<div class="win" id="win-projects" style="width:510px;height:500px;top:65px;left:170px;">
-  <div class="win-tbar" id="tb-projects">
-    <div class="win-icon">🚀</div>
-    <div class="win-title">Projects — Active</div>
-    <div class="win-btns">
-      <div class="wb wb-min" onclick="minWin('projects')">−</div>
-      <div class="wb wb-max" onclick="maxWin('projects')">□</div>
-      <div class="wb wb-close" onclick="closeWin('projects')">✕</div>
-    </div>
-  </div>
-  <div class="win-body">
-    <div class="wh1">Active Projects</div>
-    <div class="wcard">
-      <div class="wcard-head"><span>🔍</span><h3>Network Watchdog</h3><span class="wtag b" style="font-size:.63rem;margin-left:auto;">Live</span></div>
-      <p class="wp" style="margin:0;">Real-time network monitoring on Raspberry Pi. Device detection, smart alerts, and automated analysis delivered to Telegram. Runs 24/7 on OpenWRT.</p>
-      <div class="wcard-foot">Raspberry Pi · Python · OpenWRT · Telegram API</div>
-    </div>
-    <div class="wcard">
-      <div class="wcard-head"><span>📋</span><h3>Mobile Checklist App</h3><span class="wtag p" style="font-size:.63rem;margin-left:auto;">iOS</span></div>
-      <p class="wp" style="margin:0;">iOS checklist app for repair technicians and field workers. Offline-first, fast entry, multi-template support, PDF export.</p>
-      <div class="wcard-foot">Swift · SwiftUI · iOS</div>
-    </div>
-    <div class="wcard">
-      <div class="wcard-head"><span>🛠️</span><h3>Smart Repair Logs</h3><span class="wtag g" style="font-size:.63rem;margin-left:auto;">Web</span></div>
-      <p class="wp" style="margin:0;">Repair log system with searchable history, parts tracking, customer records, and CSV/PDF export. Fully local.</p>
-      <div class="wcard-foot">Python · SQLite · Web</div>
-    </div>
-    <div class="wcard">
-      <div class="wcard-head"><span>🤖</span><h3>AI Telegram Operator</h3><span class="wtag p" style="font-size:.63rem;margin-left:auto;">AI</span></div>
-      <p class="wp" style="margin:0;">Natural language Telegram bot for home network control. Typo-tolerant, always on, understands plain English commands.</p>
-      <div class="wcard-foot">Python · Telegram API · LLM</div>
-    </div>
-    <div class="wcard">
-      <div class="wcard-head"><span>🧪</span><h3>Skyfall OS Web Demo</h3><span class="wtag g" style="font-size:.63rem;margin-left:auto;">Design</span></div>
-      <p class="wp" style="margin:0;">This site — a single-file interactive XP-style OS desktop portfolio. No frameworks. Pure HTML/CSS/JS.</p>
-      <div class="wcard-foot">HTML · CSS · JavaScript</div>
-    </div>
-  </div>
-</div>
-
-<!-- NETWORK CENTER -->
-<div class="win" id="win-network" style="width:500px;height:470px;top:70px;left:155px;">
-  <div class="win-tbar" id="tb-network">
-    <div class="win-icon">📡</div>
-    <div class="win-title">Network Center — Skyfall OS</div>
-    <div class="win-btns">
-      <div class="wb wb-min" onclick="minWin('network')">−</div>
-      <div class="wb wb-max" onclick="maxWin('network')">□</div>
-      <div class="wb wb-close" onclick="closeWin('network')">✕</div>
-    </div>
-  </div>
-  <div class="win-body">
-    <div class="wh1">Network Center</div>
-    <div class="net-stat">
-      <div class="net-stat-dot"></div>
-      <span style="color:#00ff88;font-size:.82rem;">Network Operational</span>
-      <span style="margin-left:auto;color:var(--muted);font-size:.75rem;">Home Lab · OpenWRT</span>
-    </div>
-    <div class="wgrid2">
-      <div class="srv-card">
-        <div class="si">🔧</div>
-        <h3 style="color:var(--sky);">OpenWRT Router</h3>
-        <p>Custom router firmware. VLAN segmentation, firewall rules, bandwidth shaping, and DNS filtering.</p>
-      </div>
-      <div class="srv-card">
-        <div class="si">🍓</div>
-        <h3 style="color:var(--green);">Raspberry Pi Stack</h3>
-        <p>Pi-based network monitor, Telegram operator, autonomous watchdog service, and ARP scanner.</p>
-      </div>
-      <div class="srv-card">
-        <div class="si">🏗️</div>
-        <h3 style="color:var(--purple);">Home Lab</h3>
-        <p>Proxmox virtualization, multiple VLANs, dedicated IoT segment, and local DNS with fallback.</p>
-      </div>
-      <div class="srv-card">
-        <div class="si">🛡️</div>
-        <h3 style="color:var(--sky);">Security</h3>
-        <p>Device whitelisting, MAC tracking, unknown device alerts, port scanning, and network audit logs.</p>
-      </div>
-      <div class="srv-card">
-        <div class="si">📶</div>
-        <h3 style="color:var(--green);">Access Points</h3>
-        <p>Multi-AP deployment with roaming, guest isolation, and per-SSID VLAN tagging.</p>
-      </div>
-      <div class="srv-card">
-        <div class="si">📊</div>
-        <h3 style="color:var(--purple);">Diagnostics</h3>
-        <p>Real-time device tracking, latency monitoring, nmap scanning, and Telegram-delivered alerts.</p>
+  <section id="win-about" class="window hidden" data-window-id="about" data-title="About_Me.pdf.exe" style="width: 560px; height: 410px; left: 210px; top: 72px;">
+    <header class="titlebar"><div class="title-text"><span>PDF</span><span class="title-name">About_Me.pdf.exe</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body">
+      <h2>Skyfall Creations</h2>
+      <p>Skyfall OS is a compact desktop portfolio for practical technology work: networks, apps, websites, diagnostics, troubleshooting, automation, AI workflows, home lab systems, and tech repair.</p>
+      <div class="window-grid">
+        <div class="service-card"><strong>Builder Notes</strong>Local-first systems, clean interfaces, repeatable tools, and technical support workflows that make problems easier to inspect and fix.</div>
+        <div class="service-card"><strong>Operating Style</strong>Root-cause troubleshooting, minimal dependencies, clear documentation, and maintainable solutions over fragile showpieces.</div>
+        <div class="service-card"><strong>Core Stack</strong>Web UI, app prototyping, network utilities, diagnostics scripts, automation dashboards, AI-assisted tooling, and repair intake workflows.</div>
+        <div class="service-card"><strong>Primary Focus</strong>Useful technology that can be explained, tested, repaired, and improved without losing track of the original problem.</div>
       </div>
     </div>
-    <div class="wtags" style="margin-top:.5rem;">
-      <span class="wtag b">OpenWRT</span><span class="wtag g">Raspberry Pi</span>
-      <span class="wtag p">VLAN</span><span class="wtag b">nmap</span>
-      <span class="wtag g">Proxmox</span><span class="wtag p">Python</span>
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- APP LAB -->
-<div class="win" id="win-applab" style="width:500px;height:490px;top:75px;left:160px;">
-  <div class="win-tbar" id="tb-applab">
-    <div class="win-icon">💻</div>
-    <div class="win-title">App Lab — Development Studio</div>
-    <div class="win-btns">
-      <div class="wb wb-min" onclick="minWin('applab')">−</div>
-      <div class="wb wb-max" onclick="maxWin('applab')">□</div>
-      <div class="wb wb-close" onclick="closeWin('applab')">✕</div>
-    </div>
-  </div>
-  <div class="win-body">
-    <div class="wh1">App Lab</div>
-    <p class="wp">Building real software — from iOS apps to full-stack web tools and automation scripts.</p>
-    <div class="wgrid2">
-      <div class="srv-card">
-        <div class="si">🌐</div>
-        <h3 style="color:var(--sky);">Web Development</h3>
-        <p>Modern responsive sites. Single-file tools, dashboard UIs, and admin panels. No frameworks required.</p>
-      </div>
-      <div class="srv-card">
-        <div class="si">📱</div>
-        <h3 style="color:var(--purple);">iOS Apps</h3>
-        <p>Swift and SwiftUI apps built for real workflows. Offline-first, fast, and built to ship on the App Store.</p>
-      </div>
-      <div class="srv-card">
-        <div class="si">⚡</div>
-        <h3 style="color:var(--green);">Automation</h3>
-        <p>Python scripts, shell automation, scheduled tasks, webhook handlers, and Telegram bot workflows.</p>
-      </div>
-      <div class="srv-card">
-        <div class="si">🗃️</div>
-        <h3 style="color:var(--sky);">Data & Storage</h3>
-        <p>SQLite databases, CSV/JSON pipelines, log parsers, and local-first data tools built for reliability.</p>
-      </div>
-      <div class="srv-card">
-        <div class="si">🔍</div>
-        <h3 style="color:var(--purple);">Troubleshooting</h3>
-        <p>Diagnostic tools, network analyzers, log viewers, and system health monitors.</p>
-      </div>
-      <div class="srv-card">
-        <div class="si">🏠</div>
-        <h3 style="color:var(--green);">Home Lab Tools</h3>
-        <p>Custom dashboards, Pi-based services, local-only utilities, and always-on background workers.</p>
+  <section id="win-projects" class="window hidden" data-window-id="projects" data-title="Projects" style="width: 620px; height: 430px; left: 220px; top: 78px;">
+    <header class="titlebar"><div class="title-text"><span>PRJ</span><span class="title-name">Projects</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body">
+      <h2>Project Directory</h2>
+      <div class="window-grid">
+        <div class="panel"><strong>Network Diagnostics Console</strong>LAN checks, device discovery planning, troubleshooting notes, and repeatable command flows for support calls.</div>
+        <div class="panel"><strong>Repair Intake Workspace</strong>Simple web forms and internal checklists for device triage, customer communication, and service follow-up.</div>
+        <div class="panel"><strong>Home Lab Monitor</strong>Local dashboards for uptime, device status, service health, and maintenance reminders.</div>
+        <div class="panel"><strong>Automation Toolkit</strong>Small scripts and browser tools that reduce repetitive checks, summarize data, and document technical outcomes.</div>
+        <div class="panel"><strong>App Experiments</strong>Native and web app prototypes focused on clear workflows, offline-friendly behavior, and diagnostic usefulness.</div>
+        <div class="panel"><strong>AI Workbench</strong>Prompted utilities for support drafts, logs, summarization, classification, and repeatable troubleshooting notes.</div>
       </div>
     </div>
-    <div class="wtags" style="margin-top:.5rem;">
-      <span class="wtag b">Python</span><span class="wtag p">Swift</span>
-      <span class="wtag g">HTML/CSS/JS</span><span class="wtag b">SQLite</span>
-      <span class="wtag p">SwiftUI</span>
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- AI TOOLS -->
-<div class="win" id="win-aitools" style="width:490px;height:460px;top:80px;left:150px;">
-  <div class="win-tbar" id="tb-aitools">
-    <div class="win-icon">🤖</div>
-    <div class="win-title">AI Tools — Skyfall Intelligence</div>
-    <div class="win-btns">
-      <div class="wb wb-min" onclick="minWin('aitools')">−</div>
-      <div class="wb wb-max" onclick="maxWin('aitools')">□</div>
-      <div class="wb wb-close" onclick="closeWin('aitools')">✕</div>
+  <section id="win-network" class="window hidden" data-window-id="network" data-title="Network Center" style="width: 560px; height: 380px; left: 260px; top: 98px;">
+    <header class="titlebar"><div class="title-text"><span>NET</span><span class="title-name">Network Center</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body">
+      <h2>Network Center</h2>
+      <p>Status: connected to Skyfall local workspace. This panel highlights networking and diagnostics capabilities without performing any live scan.</p>
+      <div class="window-grid">
+        <div class="panel"><strong>LAN Review</strong>Router basics, IP planning, wireless coverage, device inventory, and connectivity checks.</div>
+        <div class="panel"><strong>Troubleshooting</strong>DNS, DHCP, latency, packet loss, cable path, adapter, and service reachability workflows.</div>
+        <div class="panel"><strong>Home Lab</strong>Service maps, small server maintenance, local dashboards, backup checks, and controlled experiments.</div>
+        <div class="panel"><strong>Diagnostics</strong>Readable reports that separate symptoms, likely causes, commands run, and recommended next actions.</div>
+      </div>
     </div>
-  </div>
-  <div class="win-body">
-    <div class="wh1">AI Tools</div>
-    <p class="wp">Practical AI integrations built for real workflows — not demos. Everything runs 24/7 and handles plain English input.</p>
-    <div class="ai-card">
-      <h3>🤖 Telegram AI Operator</h3>
-      <p>Natural language network operator delivered via Telegram. Understands fuzzy commands, typos, and plain-English questions. Powered by LLM with tool use.</p>
-    </div>
-    <div class="ai-card">
-      <h3>🧠 LLM Command Router</h3>
-      <p>Confidence-based intent engine that routes ambiguous input to the right action. No rigid command menus — just ask normally.</p>
-    </div>
-    <div class="ai-card">
-      <h3>📝 Automated Log Summarizer</h3>
-      <p>Daily summaries of network activity, unknown devices, and security events. Delivered to Telegram every morning at 5 AM.</p>
-    </div>
-    <div class="ai-card">
-      <h3>🔍 Diagnostic Assistant</h3>
-      <p>AI-guided troubleshooting for network issues, slow internet, and device conflicts. Explains findings in plain language.</p>
-    </div>
-    <div class="wtags" style="margin-top:.5rem;">
-      <span class="wtag p">LLM</span><span class="wtag b">Telegram API</span>
-      <span class="wtag g">Python</span><span class="wtag p">Tool Use</span>
-      <span class="wtag b">NLP</span>
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- TECH LINKS -->
-<div class="win" id="win-techlinks" style="width:440px;height:400px;top:90px;left:140px;">
-  <div class="win-tbar" id="tb-techlinks">
-    <div class="win-icon">🔗</div>
-    <div class="win-title">Tech Links — Resources</div>
-    <div class="win-btns">
-      <div class="wb wb-min" onclick="minWin('techlinks')">−</div>
-      <div class="wb wb-max" onclick="maxWin('techlinks')">□</div>
-      <div class="wb wb-close" onclick="closeWin('techlinks')">✕</div>
+  <section id="win-applab" class="window hidden" data-window-id="applab" data-title="App Lab" style="width: 560px; height: 395px; left: 300px; top: 118px;">
+    <header class="titlebar"><div class="title-text"><span>APP</span><span class="title-name">App Lab</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body">
+      <h2>App Lab</h2>
+      <div class="window-grid">
+        <div class="service-card"><strong>App Development</strong>Workflow-first app interfaces, local persistence, validation states, and maintainable component structure.</div>
+        <div class="service-card"><strong>Web Development</strong>Single-page interfaces, responsive layouts, interactive tools, lightweight dashboards, and support portals.</div>
+        <div class="service-card"><strong>Automation</strong>Task runners, small data transforms, browser checks, file audits, and repeatable technical reporting.</div>
+        <div class="service-card"><strong>Repair Tools</strong>Checklists, intake flows, diagnostics views, and customer-ready summaries for tech repair operations.</div>
+      </div>
     </div>
-  </div>
-  <div class="win-body">
-    <div class="wh1">Tech Resources</div>
-    <p class="wp">The tools and references powering the build.</p>
-    <div class="wgrid2">
-      <a href="https://github.com"           target="_blank" rel="noopener" class="tech-link"><span>🐙</span> GitHub</a>
-      <a href="https://stackoverflow.com"    target="_blank" rel="noopener" class="tech-link"><span>📚</span> Stack Overflow</a>
-      <a href="https://developer.mozilla.org" target="_blank" rel="noopener" class="tech-link"><span>🌐</span> MDN Web Docs</a>
-      <a href="https://www.raspberrypi.com"  target="_blank" rel="noopener" class="tech-link"><span>🍓</span> Raspberry Pi</a>
-      <a href="https://openwrt.org"          target="_blank" rel="noopener" class="tech-link"><span>🔧</span> OpenWRT</a>
-      <a href="https://developer.apple.com"  target="_blank" rel="noopener" class="tech-link"><span>🍎</span> Apple Developer</a>
-      <a href="https://openai.com"           target="_blank" rel="noopener" class="tech-link"><span>🤖</span> OpenAI</a>
-      <a href="https://cloudflare.com"       target="_blank" rel="noopener" class="tech-link"><span>☁️</span> Cloudflare</a>
-      <a href="https://www.proxmox.com"      target="_blank" rel="noopener" class="tech-link"><span>🏗️</span> Proxmox</a>
-      <a href="https://nmap.org"             target="_blank" rel="noopener" class="tech-link"><span>🔍</span> Nmap</a>
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- CONTACT -->
-<div class="win" id="win-contact" style="width:400px;height:360px;top:100px;left:190px;">
-  <div class="win-tbar" id="tb-contact">
-    <div class="win-icon">✉️</div>
-    <div class="win-title">Contact Me — Skyfall Creations</div>
-    <div class="win-btns">
-      <div class="wb wb-min" onclick="minWin('contact')">−</div>
-      <div class="wb wb-max" onclick="maxWin('contact')">□</div>
-      <div class="wb wb-close" onclick="closeWin('contact')">✕</div>
+  <section id="win-aitools" class="window hidden" data-window-id="aitools" data-title="AI Tools" style="width: 540px; height: 370px; left: 340px; top: 138px;">
+    <header class="titlebar"><div class="title-text"><span>AI</span><span class="title-name">AI Tools</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body">
+      <h2>AI Tools</h2>
+      <p>AI work is treated as practical tooling: structured inputs, bounded outputs, reviewable changes, and clear handoffs.</p>
+      <ul class="list">
+        <li>Support response drafts and troubleshooting summaries.</li>
+        <li>Log review, classification, and incident notes.</li>
+        <li>Workflow automation for repetitive technical checks.</li>
+        <li>Prompted helpers for app, web, network, and repair documentation.</li>
+        <li>Local-first usage patterns when privacy and control matter.</li>
+      </ul>
     </div>
-  </div>
-  <div class="win-body">
-    <div class="wh1">Get in Touch</div>
-    <p class="wp">Have a project in mind? Reach out and let's build something.</p>
-    <a href="mailto:support@truefastfix.com" class="contact-email">✉️ support@truefastfix.com</a>
-    <p class="wp" style="font-size:.8rem;">Direct — no forms, no runaround. Networking questions, project ideas, app builds, or general support.</p>
-    <div class="info-grid">
-      <div class="info-cell"><h4>Website</h4><p>truefastfix.com</p></div>
-      <div class="info-cell"><h4>Response</h4><p>Within 24h</p></div>
-      <div class="info-cell"><h4>Focus</h4><p>Networking · Apps · Web</p></div>
-      <div class="info-cell"><h4>Status</h4><p style="color:var(--green);">● Open for Projects</p></div>
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- TERMINAL -->
-<div class="win" id="win-terminal" style="width:560px;height:380px;top:90px;left:145px;">
-  <div class="win-tbar" id="tb-terminal">
-    <div class="win-icon">🖥️</div>
-    <div class="win-title">Terminal — Skyfall OS</div>
-    <div class="win-btns">
-      <div class="wb wb-min" onclick="minWin('terminal')">−</div>
-      <div class="wb wb-max" onclick="maxWin('terminal')">□</div>
-      <div class="wb wb-close" onclick="closeWin('terminal')">✕</div>
+  <section id="win-links" class="window hidden" data-window-id="links" data-title="Tech Links" style="width: 500px; height: 350px; left: 380px; top: 158px;">
+    <header class="titlebar"><div class="title-text"><span>WWW</span><span class="title-name">Tech Links</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body">
+      <h2>Tech Links</h2>
+      <div class="window-grid">
+        <div class="panel"><strong>Networking</strong>Reference notes for IP addressing, wireless setup, DNS, DHCP, and basic service checks.</div>
+        <div class="panel"><strong>Development</strong>Clean project structure, browser verification, app state management, and lightweight deployment habits.</div>
+        <div class="panel"><strong>Diagnostics</strong>Repeatable checklists for device repair, system health, logs, backups, and performance issues.</div>
+        <div class="panel"><strong>Automation</strong>Small tools that turn recurring support tasks into reliable steps with readable output.</div>
+      </div>
     </div>
-  </div>
-  <div class="win-body" style="padding:0;display:flex;flex-direction:column;overflow:hidden;background:#060606;">
-    <div class="term-out" id="term-out"></div>
-    <div class="term-row">
-      <span class="term-ps">skyfall@os:~$&nbsp;</span>
-      <input class="term-in" id="term-in" type="text" autocomplete="off" spellcheck="false" placeholder="type a command…" onkeydown="termKey(event)">
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- SYSTEM PANEL -->
-<div class="win" id="win-syspanel" style="width:430px;height:450px;top:80px;left:165px;">
-  <div class="win-tbar" id="tb-syspanel">
-    <div class="win-icon">📊</div>
-    <div class="win-title">System Panel — Skyfall OS</div>
-    <div class="win-btns">
-      <div class="wb wb-min" onclick="minWin('syspanel')">−</div>
-      <div class="wb wb-max" onclick="maxWin('syspanel')">□</div>
-      <div class="wb wb-close" onclick="closeWin('syspanel')">✕</div>
+  <section id="win-contact" class="window hidden" data-window-id="contact" data-title="Contact Me" style="width: 480px; height: 310px; left: 420px; top: 178px;">
+    <header class="titlebar"><div class="title-text"><span>MAIL</span><span class="title-name">Contact Me</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body">
+      <h2>Contact</h2>
+      <p>For networking, app development, web development, automation, AI tools, diagnostics, troubleshooting, home lab projects, and tech repair requests, email:</p>
+      <p><a id="emailLink" href="mailto:support@truefastfix.com">support@truefastfix.com</a></p>
+      <div class="panel">
+        <strong>Good intake details</strong>
+        Include the device or system, what changed, what already worked, exact errors, urgency, and any screenshots or logs you can share.
+      </div>
     </div>
-  </div>
-  <div class="win-body">
-    <div class="wh1">System Panel</div>
-    <div class="sys-grid">
-      <div class="sys-card"><div class="sys-lbl">CPU Usage</div><div class="sys-val b" id="s-cpu">--</div><div class="sys-bar-bg"><div class="sys-bar b" id="s-cpu-bar" style="width:0%"></div></div></div>
-      <div class="sys-card"><div class="sys-lbl">Memory</div><div class="sys-val p" id="s-mem">--</div><div class="sys-bar-bg"><div class="sys-bar p" id="s-mem-bar" style="width:0%"></div></div></div>
-      <div class="sys-card"><div class="sys-lbl">Network I/O</div><div class="sys-val g" id="s-net">--</div></div>
-      <div class="sys-card"><div class="sys-lbl">Session Uptime</div><div class="sys-val b" id="s-up">--</div></div>
-    </div>
-    <div class="sys-sec">System Info</div>
-    <div class="sys-row"><span class="lbl">OS</span><span class="val">Skyfall OS v2.6 Professional</span></div>
-    <div class="sys-row"><span class="lbl">Kernel</span><span class="val">skyfall-6.1.21-lts</span></div>
-    <div class="sys-row"><span class="lbl">Hostname</span><span class="val">skyfall-station</span></div>
-    <div class="sys-row"><span class="lbl">User</span><span class="val">skyfall-user</span></div>
-    <div class="sys-row"><span class="lbl">Local Network</span><span class="val">192.168.50.0/24</span></div>
-    <div class="sys-row"><span class="lbl">Devices Online</span><span class="val" id="s-devs">--</span></div>
-    <div class="sys-row"><span class="lbl">Services</span><span class="val">watchdog · dns · ntp</span></div>
-    <div class="sys-row"><span class="lbl">Build</span><span class="val">2606 · June 2026</span></div>
-  </div>
-</div>
+  </section>
 
-<!-- RECYCLE BIN -->
-<div class="win" id="win-recycle" style="width:380px;height:295px;top:180px;left:210px;">
-  <div class="win-tbar" id="tb-recycle">
-    <div class="win-icon">🗑️</div>
-    <div class="win-title">Recycle Bin</div>
-    <div class="win-btns">
-      <div class="wb wb-min" onclick="minWin('recycle')">−</div>
-      <div class="wb wb-max" onclick="maxWin('recycle')">□</div>
-      <div class="wb wb-close" onclick="closeWin('recycle')">✕</div>
+  <section id="win-terminal" class="window hidden" data-window-id="terminal" data-title="Terminal" style="width: 620px; height: 390px; left: 210px; top: 122px;">
+    <header class="titlebar"><div class="title-text"><span>C:\</span><span class="title-name">Terminal</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body terminal-body">
+      <div id="terminalOutput" class="terminal-output" aria-live="polite"></div>
+      <form id="terminalForm" class="terminal-input-row">
+        <span>C:\Skyfall&gt;</span>
+        <input id="terminalInput" class="terminal-input" autocomplete="off" spellcheck="false" aria-label="Terminal command">
+      </form>
     </div>
-  </div>
-  <div class="rb-toolbar">
-    <span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span>
-  </div>
-  <div class="rb-empty">
-    <div class="rb-empty-icon">🗑️</div>
-    <div class="rb-empty-text">Recycle Bin is empty</div>
-    <div style="font-size:.75rem;color:#555;text-align:center;max-width:260px;">
-      Items you delete are moved here.<br>There are no items to display.
-    </div>
-  </div>
-</div>
+  </section>
 
-<!-- ═══ TASKBAR ═══ -->
-<div id="taskbar">
-  <div class="start-btn" id="start-btn" onclick="toggleStart()">
-    <span class="start-btn-flag">⚡</span> start
+  <section id="win-system" class="window hidden" data-window-id="system" data-title="System Panel" style="width: 520px; height: 385px; left: 460px; top: 94px;">
+    <header class="titlebar"><div class="title-text"><span>SYS</span><span class="title-name">System Panel</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body">
+      <h2>System Panel</h2>
+      <div class="panel"><strong>Skyfall OS</strong>Interactive desktop portfolio, single-file edition.</div>
+      <div class="panel"><strong>CPU</strong><div class="meter"><span id="cpuMeter" style="width: 38%"></span></div></div>
+      <div class="panel"><strong>Memory</strong><div class="meter"><span id="memMeter" style="width: 54%"></span></div></div>
+      <div class="panel"><strong>Modules</strong>Networking, app lab, web tools, automation, AI tools, diagnostics, troubleshooting, home lab, tech repair.</div>
+    </div>
+  </section>
+
+  <section id="win-recycle" class="window hidden" data-window-id="recycle" data-title="Recycle Bin" style="width: 420px; height: 270px; left: 520px; top: 210px;">
+    <header class="titlebar"><div class="title-text"><span>BIN</span><span class="title-name">Recycle Bin</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body">
+      <h2>Recycle Bin</h2>
+      <div class="empty-bin">This folder is empty.</div>
+    </div>
+  </section>
+</main>
+
+<aside id="startMenu" class="start-menu" aria-label="Start menu">
+  <div class="start-head">
+    <div class="start-avatar">S</div>
+    <div><strong>Skyfall Creations</strong><span>Desktop Portfolio</span></div>
   </div>
-  <div class="tb-sep"></div>
-  <div class="tb-apps" id="tb-apps"></div>
-  <div class="tb-tray">
-    <div class="tray-mini"><div>CPU</div><div class="tray-mini-val" id="t-cpu">--</div></div>
-    <div class="tray-mini"><div>MEM</div><div class="tray-mini-val" id="t-mem">--</div></div>
-    <div class="tray-clock">
-      <div id="t-time">--:--</div>
-      <div class="tray-clock-date" id="t-date">---</div>
+  <div class="start-columns">
+    <div class="start-left">
+      <button class="start-item" type="button" data-window="about"><span class="start-icon">PDF</span><span>About_Me.pdf.exe<small>Focus areas</small></span></button>
+      <button class="start-item" type="button" data-window="projects"><span class="start-icon">PRJ</span><span>Projects<small>Portfolio directory</small></span></button>
+      <button class="start-item" type="button" data-window="network"><span class="start-icon">NET</span><span>Network Center<small>Diagnostics and home lab</small></span></button>
+      <button class="start-item" type="button" data-window="applab"><span class="start-icon">APP</span><span>App Lab<small>Apps, web, and automation</small></span></button>
+      <button class="start-item" type="button" data-window="terminal"><span class="start-icon">C:\</span><span>Terminal<small>Command interface</small></span></button>
+    </div>
+    <div class="start-right">
+      <button class="start-item" type="button" data-window="aitools"><span class="start-icon">AI</span><span>AI Tools</span></button>
+      <button class="start-item" type="button" data-window="links"><span class="start-icon">WWW</span><span>Tech Links</span></button>
+      <button class="start-item" type="button" data-window="contact"><span class="start-icon">MAIL</span><span>Contact Me</span></button>
+      <button class="start-item" type="button" data-window="system"><span class="start-icon">SYS</span><span>System Panel</span></button>
+      <button class="start-item" type="button" data-window="recycle"><span class="start-icon">BIN</span><span>Recycle Bin</span></button>
     </div>
   </div>
-</div>
-
-<!-- ═══ START MENU ═══ -->
-<div id="start-menu">
-  <div class="sm-header">
-    <div class="sm-avatar">⚡</div>
-    <div class="sm-user">
-      <div class="sm-username">Skyfall User</div>
-      <div class="sm-userrole">Developer · Tech Builder</div>
-    </div>
+  <div class="start-foot">
+    <button class="small-power restart" type="button" data-action="restart">Restart</button>
+    <button class="small-power" type="button" data-action="turnoff">Shut Down</button>
   </div>
+</aside>
 
-  <div class="sm-body">
-    <div class="sm-left">
-      <div class="sm-section">Pinned</div>
-      <div class="sm-item" onclick="openWin('terminal');closeStart()"><div class="sm-item-ic">🖥️</div><div class="sm-item-label">Terminal<small>Skyfall OS shell</small></div></div>
-      <div class="sm-item" onclick="openWin('syspanel');closeStart()"><div class="sm-item-ic">📊</div><div class="sm-item-label">System Panel<small>Resources &amp; stats</small></div></div>
-      <div class="sm-item" onclick="openWin('network');closeStart()"><div class="sm-item-ic">📡</div><div class="sm-item-label">Network Center<small>Home lab &amp; routing</small></div></div>
-      <div class="sm-div"></div>
-      <div class="sm-section">Recent</div>
-      <div class="sm-item" onclick="openWin('projects');closeStart()"><div class="sm-item-ic">🚀</div><div class="sm-item-label">Projects</div></div>
-      <div class="sm-item" onclick="openWin('aitools');closeStart()"><div class="sm-item-ic">🤖</div><div class="sm-item-label">AI Tools</div></div>
-      <div class="sm-item" onclick="openWin('about');closeStart()"><div class="sm-item-ic">📄</div><div class="sm-item-label">About_Me.pdf.exe</div></div>
-      <div class="sm-all-progs" onclick="openAllStart()">All Programs <span>▶</span></div>
-    </div>
-
-    <div class="sm-right">
-      <div class="sm-section">Applications</div>
-      <div class="sm-item" onclick="openWin('about');closeStart()"><div class="sm-item-ic">📄</div><div class="sm-item-label">About Me</div></div>
-      <div class="sm-item" onclick="openWin('projects');closeStart()"><div class="sm-item-ic">🚀</div><div class="sm-item-label">Projects</div></div>
-      <div class="sm-item" onclick="openWin('network');closeStart()"><div class="sm-item-ic">📡</div><div class="sm-item-label">Network Center</div></div>
-      <div class="sm-item" onclick="openWin('applab');closeStart()"><div class="sm-item-ic">💻</div><div class="sm-item-label">App Lab</div></div>
-      <div class="sm-item" onclick="openWin('aitools');closeStart()"><div class="sm-item-ic">🤖</div><div class="sm-item-label">AI Tools</div></div>
-      <div class="sm-item" onclick="openWin('techlinks');closeStart()"><div class="sm-item-ic">🔗</div><div class="sm-item-label">Tech Links</div></div>
-      <div class="sm-item" onclick="openWin('contact');closeStart()"><div class="sm-item-ic">✉️</div><div class="sm-item-label">Contact Me</div></div>
-      <div class="sm-div"></div>
-      <div class="sm-item" onclick="openWin('terminal');closeStart()"><div class="sm-item-ic">🖥️</div><div class="sm-item-label">Terminal</div></div>
-      <div class="sm-item" onclick="openWin('syspanel');closeStart()"><div class="sm-item-ic">📊</div><div class="sm-item-label">System Panel</div></div>
-      <div class="sm-item" onclick="openWin('recycle');closeStart()"><div class="sm-item-ic">🗑️</div><div class="sm-item-label">Recycle Bin</div></div>
-      <div class="sm-div"></div>
-      <div class="sm-item" onclick="location.href='mailto:support@truefastfix.com';closeStart()"><div class="sm-item-ic">📧</div><div class="sm-item-label">Send Email</div></div>
-    </div>
-  </div>
-
-  <div class="sm-footer">
-    <div class="sm-foot-btn" onclick="logOff()">🔄 Log Off</div>
-    <div class="sm-foot-btn" onclick="restartOS()">🔁 Restart</div>
-    <div class="sm-foot-btn" onclick="closeStart()">🔌 Turn Off</div>
-  </div>
-</div>
+<footer id="taskbar" class="taskbar" aria-label="Skyfall OS taskbar">
+  <button id="startButton" class="start-button" type="button"><span class="start-mark"><i></i><i></i><i></i><i></i></span>start</button>
+  <div id="taskButtons" class="task-buttons" aria-label="Open windows"></div>
+  <div class="tray"><button id="soundToggle" class="sound-toggle" type="button" aria-label="Mute startup sound" aria-pressed="false" title="Mute startup sound">AUD</button><span class="tray-dot"></span><span class="network-label">LAN</span><span id="clock" class="clock">--:--</span></div>
+</footer>
 
 <script>
-// ═══ FULLSCREEN ═══
-function goFullscreen(){
-  const el=document.documentElement;
-  if(el.requestFullscreen) el.requestFullscreen();
-  else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
-}
+(function () {
+  "use strict";
 
-// ═══ BOOT ═══
-setTimeout(()=>{
-  const b=document.getElementById('boot');
-  b.style.transition='opacity .7s ease';
-  b.style.opacity='0';
-  setTimeout(()=>{ b.style.display='none'; showLogin(); },700);
-},3000);
+  const bootScreen = document.getElementById("bootScreen");
+  const bootLoader = document.getElementById("bootLoader");
+  const desktop = document.getElementById("desktop");
+  const taskbar = document.getElementById("taskbar");
+  const startMenu = document.getElementById("startMenu");
+  const startButton = document.getElementById("startButton");
+  const soundToggle = document.getElementById("soundToggle");
+  const taskButtons = document.getElementById("taskButtons");
+  const terminalOutput = document.getElementById("terminalOutput");
+  const terminalInput = document.getElementById("terminalInput");
+  const terminalForm = document.getElementById("terminalForm");
+  const clock = document.getElementById("clock");
+  const cpuMeter = document.getElementById("cpuMeter");
+  const memMeter = document.getElementById("memMeter");
 
-// ═══ LOGIN ═══
-function showLogin(){
-  const lg=document.getElementById('login');
-  lg.style.display='flex';
-  lg.offsetHeight; // reflow
-  lg.classList.add('show');
-}
+  const BOOT_DURATION = 2500;
+  const audioUnlockEvents = ["pointerdown", "click", "keydown", "touchstart"];
+  const windows = new Map();
+  let topZ = 100;
+  let activeWindowId = null;
+  let bootTime = Date.now();
+  let bootTimer = null;
+  let audioContext = null;
+  let soundMuted = false;
+  let pendingStartupChime = false;
+  let unlockListenersActive = false;
 
-function doLogin(){
-  const lg=document.getElementById('login');
-  lg.style.transition='opacity .5s';
-  lg.style.opacity='0';
-  setTimeout(()=>{
-    lg.style.display='none';
-    document.getElementById('desktop').classList.add('show');
-    document.getElementById('taskbar').classList.add('show');
-    startDesktop();
-  },500);
-}
+  const terminalCommands = {
+    help: "Available commands: help, about, projects, services, network, applab, aitools, contact, ipconfig, ping, clear, whoami, uptime",
+    about: "Skyfall Creations builds practical web, app, network, automation, AI, diagnostics, troubleshooting, home lab, and repair tools.",
+    projects: "Projects: network diagnostics console, repair intake workspace, home lab monitor, automation toolkit, app experiments, AI workbench.",
+    services: "Services: networking support, app development, web development, automation, AI tooling, diagnostics, troubleshooting, home lab projects, tech repair.",
+    network: "Network Center: LAN review, DNS/DHCP checks, latency triage, wireless planning, device inventory, and readable diagnostics.",
+    applab: "App Lab: workflow-first apps, responsive web tools, local data flows, validation states, and maintainable interfaces.",
+    aitools: "AI Tools: support drafts, log summaries, classification helpers, automation prompts, and reviewable technical notes.",
+    contact: "Contact: support@truefastfix.com",
+    ipconfig: "Skyfall Ethernet Adapter:\n   Connection-specific DNS Suffix  . : local.skyfall\n   IPv4 Address. . . . . . . . . . . : 192.168.5.24\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n   Default Gateway . . . . . . . . . : 192.168.5.1",
+    ping: "Pinging skyfall.local [192.168.5.1] with 32 bytes of data:\nReply from 192.168.5.1: bytes=32 time=2ms TTL=64\nReply from 192.168.5.1: bytes=32 time=1ms TTL=64\nReply from 192.168.5.1: bytes=32 time=2ms TTL=64\nPackets: Sent = 3, Received = 3, Lost = 0 (0% loss)",
+    whoami: "SKYFALL-OS\\Desktop"
+  };
 
-function logOff(){
-  closeStart();
-  Object.keys(openWins).forEach(id=>closeWin(id));
-  const d=document.getElementById('desktop');
-  const t=document.getElementById('taskbar');
-  d.style.transition='opacity .4s'; d.style.opacity='0';
-  t.style.transition='opacity .4s'; t.style.opacity='0';
-  setTimeout(()=>{
-    d.classList.remove('show'); d.style.opacity=''; d.style.transition='';
-    t.classList.remove('show'); t.style.opacity=''; t.style.transition='';
-    document.getElementById('tb-apps').innerHTML='';
-    termReady=false;
-    showLogin();
-  },400);
-}
-
-function restartOS(){
-  closeStart();
-  Object.keys(openWins).forEach(id=>closeWin(id));
-  const d=document.getElementById('desktop');
-  const t=document.getElementById('taskbar');
-  const lg=document.getElementById('login');
-  // Fade everything out
-  [d,t,lg].forEach(el=>{ el.style.transition='opacity .3s'; el.style.opacity='0'; });
-  setTimeout(()=>{
-    d.classList.remove('show'); d.style.opacity=''; d.style.transition='';
-    t.classList.remove('show'); t.style.opacity=''; t.style.transition='';
-    lg.classList.remove('show'); lg.style.opacity=''; lg.style.transition=''; lg.style.display='none';
-    document.getElementById('tb-apps').innerHTML='';
-    termReady=false;
-    // Show boot again
-    const b=document.getElementById('boot');
-    b.style.display='flex'; b.style.opacity='0';
-    b.style.transition='opacity .4s';
-    requestAnimationFrame(()=>{ b.style.opacity='1'; });
-    setTimeout(()=>{
-      b.style.transition='opacity .7s';
-      b.style.opacity='0';
-      setTimeout(()=>{ b.style.display='none'; showLogin(); },700);
-    },2800);
-  },300);
-}
-
-// ═══ CANVAS PARTICLES ═══
-const cvs=document.getElementById('bgc');
-const ctx=cvs.getContext('2d');
-let W=0,H=0,dpr=1;
-
-function startDesktop(){ initCanvas(); startClock(); startStats(); initTerminal(); }
-
-function initCanvas(){ onResize(); window.addEventListener('resize',onResize); animCanvas(); }
-function onResize(){
-  dpr=window.devicePixelRatio||1;
-  W=cvs.parentElement.clientWidth; H=cvs.parentElement.clientHeight;
-  cvs.width=Math.floor(W*dpr); cvs.height=Math.floor(H*dpr);
-  cvs.style.width=W+'px'; cvs.style.height=H+'px';
-}
-
-const PCOLS=['rgba(0,212,255,','rgba(157,78,221,','rgba(0,80,200,'];
-const pts=Array.from({length:38},()=>({
-  x:Math.random()*window.innerWidth, y:Math.random()*window.innerHeight,
-  vx:(Math.random()-.5)*.2, vy:(Math.random()-.5)*.2,
-  r:Math.random()*1.2+.35,
-  c:PCOLS[Math.floor(Math.random()*PCOLS.length)],
-  o:Math.random()*.25+.05
-}));
-
-function animCanvas(){
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-  ctx.clearRect(0,0,W,H);
-  pts.forEach(p=>{
-    p.x=(p.x+p.vx+W)%W; p.y=(p.y+p.vy+H)%H;
-    ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle=p.c+p.o+')'; ctx.fill();
+  document.querySelectorAll(".window").forEach((win) => {
+    const id = win.dataset.windowId;
+    windows.set(id, {
+      id,
+      element: win,
+      title: win.dataset.title || id,
+      open: false,
+      minimized: false,
+      maximized: false,
+      restore: null,
+      taskButton: createTaskButton(id, win.dataset.title || id)
+    });
   });
-  for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){
-    const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
-    const d=Math.sqrt(dx*dx+dy*dy);
-    if(d<108){
-      ctx.beginPath(); ctx.moveTo(pts[i].x,pts[i].y); ctx.lineTo(pts[j].x,pts[j].y);
-      ctx.strokeStyle=pts[i].c+((1-d/108)*.055)+')'; ctx.lineWidth=.5; ctx.stroke();
+
+  document.querySelectorAll("[data-action='restart']").forEach((button) => {
+    button.addEventListener("click", () => {
+      resetDesktop();
+      startBootSequence(BOOT_DURATION);
+    });
+  });
+
+  document.querySelectorAll("[data-action='turnoff']").forEach((button) => {
+    button.addEventListener("click", () => {
+      resetDesktop();
+      startBootSequence(BOOT_DURATION);
+    });
+  });
+
+  soundToggle.addEventListener("click", () => {
+    soundMuted = !soundMuted;
+    soundToggle.setAttribute("aria-pressed", String(soundMuted));
+    soundToggle.setAttribute("aria-label", soundMuted ? "Unmute startup sound" : "Mute startup sound");
+    soundToggle.title = soundMuted ? "Unmute startup sound" : "Mute startup sound";
+    soundToggle.textContent = soundMuted ? "MUT" : "AUD";
+  });
+
+  document.querySelectorAll("[data-window]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const id = event.currentTarget.dataset.window;
+      openWindow(id);
+      startMenu.classList.remove("open");
+    });
+  });
+
+  startButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    startMenu.classList.toggle("open");
+  });
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!startMenu.contains(event.target) && !startButton.contains(event.target)) {
+      startMenu.classList.remove("open");
+    }
+  });
+
+  windows.forEach((state) => {
+    const win = state.element;
+    win.addEventListener("pointerdown", () => focusWindow(state.id));
+    win.querySelector("[data-control='min']").addEventListener("click", () => minimizeWindow(state.id));
+    win.querySelector("[data-control='max']").addEventListener("click", () => toggleMaximize(state.id));
+    win.querySelector("[data-control='close']").addEventListener("click", () => closeWindow(state.id));
+    makeDraggable(state);
+  });
+
+  terminalForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const command = terminalInput.value.trim();
+    terminalInput.value = "";
+    runTerminal(command);
+  });
+
+  function startBootSequence(duration) {
+    window.clearTimeout(bootTimer);
+    bootScreen.classList.remove("hidden");
+    desktop.style.display = "none";
+    taskbar.style.display = "none";
+    startMenu.classList.remove("open");
+    bootLoader.classList.remove("waiting");
+    bootTimer = window.setTimeout(showDesktop, duration);
+  }
+
+  function showDesktop() {
+    bootScreen.classList.add("hidden");
+    bootLoader.classList.add("waiting");
+    desktop.style.display = "block";
+    taskbar.style.display = "flex";
+    bootTime = Date.now();
+    openWindow("welcome");
+    playStartupChime();
+  }
+
+  function resetDesktop() {
+    window.clearTimeout(bootTimer);
+    windows.forEach((state) => closeWindow(state.id));
+    desktop.style.display = "none";
+    taskbar.style.display = "none";
+    startMenu.classList.remove("open");
+    bootScreen.classList.remove("hidden");
+  }
+
+  function createTaskButton(id, title) {
+    const button = document.createElement("button");
+    button.className = "task-button";
+    button.type = "button";
+    button.innerHTML = '<span class="start-icon">' + taskIcon(title) + '</span><span class="task-label">' + escapeHtml(title) + "</span>";
+    button.addEventListener("click", () => toggleTaskWindow(id));
+    taskButtons.appendChild(button);
+    return button;
+  }
+
+  function taskIcon(title) {
+    const upper = title.toUpperCase();
+    if (upper.includes("TERMINAL")) return "C:\\";
+    if (upper.includes("NETWORK")) return "NET";
+    if (upper.includes("CONTACT")) return "MAIL";
+    if (upper.includes("RECYCLE")) return "BIN";
+    return upper.replace(/[^A-Z]/g, "").slice(0, 3) || "APP";
+  }
+
+  function openWindow(id) {
+    const state = windows.get(id);
+    if (!state) return;
+    state.open = true;
+    state.minimized = false;
+    state.element.classList.remove("hidden", "inactive");
+    state.taskButton.classList.add("visible");
+    state.taskButton.classList.remove("minimized");
+    focusWindow(id);
+    keepInsideViewport(state.element);
+    if (id === "terminal") {
+      if (!terminalOutput.textContent.trim()) {
+        appendTerminal("Skyfall OS Terminal\nType 'help' for available commands.");
+      }
+      window.setTimeout(() => terminalInput.focus(), 0);
     }
   }
-  requestAnimationFrame(animCanvas);
-}
 
-// ═══ CLOCK ═══
-function startClock(){
-  function tick(){
-    const n=new Date();
-    document.getElementById('t-time').textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
-    document.getElementById('t-date').textContent=n.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  function focusWindow(id) {
+    const state = windows.get(id);
+    if (!state || !state.open || state.minimized) return;
+    activeWindowId = id;
+    topZ += 1;
+    windows.forEach((other) => {
+      other.element.classList.toggle("active", other.id === id);
+      other.element.classList.toggle("inactive", other.id !== id && other.open);
+      other.taskButton.classList.toggle("active", other.id === id);
+    });
+    state.element.style.zIndex = String(topZ);
   }
-  tick(); setInterval(tick,1000);
-}
 
-// ═══ FAKE STATS ═══
-const sessStart=Date.now();
-function startStats(){
-  function tick(){
-    const cpu=Math.floor(Math.random()*34+8);
-    const mem=Math.floor(Math.random()*20+44);
-    const net=(Math.random()*4+.3).toFixed(1);
-    const ms=Date.now()-sessStart;
-    const upH=Math.floor(ms/3600000), upM=Math.floor((ms%3600000)/60000);
-    const devs=Math.floor(Math.random()*4+10);
-    document.getElementById('t-cpu').textContent=cpu+'%';
-    document.getElementById('t-mem').textContent=mem+'%';
-    const sc=document.getElementById('s-cpu');
-    if(sc){
-      sc.textContent=cpu+'%';
-      document.getElementById('s-cpu-bar').style.width=cpu+'%';
-      document.getElementById('s-mem').textContent=mem+'%';
-      document.getElementById('s-mem-bar').style.width=mem+'%';
-      document.getElementById('s-net').textContent=net+' MB/s';
-      document.getElementById('s-up').textContent=upH+'h '+upM+'m';
-      document.getElementById('s-devs').textContent=devs+' active';
+  function minimizeWindow(id) {
+    const state = windows.get(id);
+    if (!state || !state.open) return;
+    state.minimized = true;
+    state.element.classList.add("hidden");
+    state.taskButton.classList.add("minimized");
+    state.taskButton.classList.remove("active");
+    if (activeWindowId === id) activeWindowId = null;
+  }
+
+  function closeWindow(id) {
+    const state = windows.get(id);
+    if (!state) return;
+    state.open = false;
+    state.minimized = false;
+    state.maximized = false;
+    state.restore = null;
+    state.element.classList.add("hidden");
+    state.element.classList.remove("maximized", "active", "inactive");
+    state.taskButton.classList.remove("visible", "active", "minimized");
+    if (activeWindowId === id) activeWindowId = null;
+  }
+
+  function toggleTaskWindow(id) {
+    const state = windows.get(id);
+    if (!state) return;
+    if (!state.open) {
+      openWindow(id);
+      return;
+    }
+    if (state.minimized) {
+      state.minimized = false;
+      state.element.classList.remove("hidden");
+      state.taskButton.classList.remove("minimized");
+      focusWindow(id);
+      return;
+    }
+    if (activeWindowId === id) {
+      minimizeWindow(id);
+    } else {
+      focusWindow(id);
     }
   }
-  tick(); setInterval(tick,2600);
-}
 
-// ═══ WINDOW MANAGEMENT ═══
-let topZ=1000;
-const openWins={};
-const tbAppsEl=document.getElementById('tb-apps');
-
-const WIN_META={
-  about:    {ic:'📄',lb:'About_Me.exe'},
-  projects: {ic:'🚀',lb:'Projects'},
-  network:  {ic:'📡',lb:'Network'},
-  applab:   {ic:'💻',lb:'App Lab'},
-  aitools:  {ic:'🤖',lb:'AI Tools'},
-  techlinks:{ic:'🔗',lb:'Tech Links'},
-  contact:  {ic:'✉️',lb:'Contact'},
-  terminal: {ic:'🖥️',lb:'Terminal'},
-  syspanel: {ic:'📊',lb:'System'},
-  recycle:  {ic:'🗑️',lb:'Recycle Bin'},
-};
-
-function openWin(id){
-  const el=document.getElementById('win-'+id);
-  if(!el) return;
-  el.classList.add('show'); el.classList.remove('minimized');
-  focusWin(id);
-  if(!openWins[id]){ openWins[id]={min:false}; addTbBtn(id); }
-  else { openWins[id].min=false; setTbActive(id,true); }
-  if(window.innerWidth<=580){ el.style.cssText+='left:0px!important;top:0px!important;'; }
-}
-
-function closeWin(id){
-  const el=document.getElementById('win-'+id); if(!el) return;
-  el.classList.remove('show','focused');
-  if(openWins[id]){ delete openWins[id]; const b=document.getElementById('tbb-'+id); if(b) b.remove(); }
-}
-
-function minWin(id){
-  const el=document.getElementById('win-'+id); if(!el) return;
-  el.classList.add('minimized'); el.classList.remove('focused');
-  if(openWins[id]) openWins[id].min=true;
-  setTbActive(id,false);
-}
-
-const maxSave={};
-function maxWin(id){
-  const el=document.getElementById('win-'+id); if(!el) return;
-  if(maxSave[id]){
-    Object.assign(el.style,maxSave[id]); delete maxSave[id];
-  } else {
-    maxSave[id]={left:el.style.left,top:el.style.top,width:el.style.width,height:el.style.height};
-    el.style.left='0px'; el.style.top='0px';
-    el.style.width='100%'; el.style.height=(window.innerHeight-38)+'px';
+  function toggleMaximize(id) {
+    const state = windows.get(id);
+    if (!state) return;
+    const win = state.element;
+    if (state.maximized) {
+      if (state.restore) {
+        win.style.left = state.restore.left;
+        win.style.top = state.restore.top;
+        win.style.width = state.restore.width;
+        win.style.height = state.restore.height;
+      }
+      win.classList.remove("maximized");
+      state.maximized = false;
+      state.restore = null;
+    } else {
+      state.restore = {
+        left: win.style.left,
+        top: win.style.top,
+        width: win.style.width,
+        height: win.style.height
+      };
+      win.style.left = "0px";
+      win.style.top = "0px";
+      win.style.width = desktop.clientWidth + "px";
+      win.style.height = desktop.clientHeight + "px";
+      win.classList.add("maximized");
+      state.maximized = true;
+    }
+    focusWindow(id);
   }
-  focusWin(id);
-}
 
-function focusWin(id){
-  topZ++;
-  const el=document.getElementById('win-'+id); if(!el) return;
-  el.style.zIndex=topZ;
-  document.querySelectorAll('.win').forEach(w=>w.classList.remove('focused'));
-  el.classList.add('focused');
-  document.querySelectorAll('.tb-app').forEach(a=>a.classList.remove('active'));
-  setTbActive(id,true);
-}
+  function makeDraggable(state) {
+    const win = state.element;
+    const bar = win.querySelector(".titlebar");
+    let drag = null;
 
-function addTbBtn(id){
-  const m=WIN_META[id]; if(!m) return;
-  const b=document.createElement('div');
-  b.className='tb-app active'; b.id='tbb-'+id;
-  b.innerHTML='<span class="tb-app-ic">'+m.ic+'</span><span class="tb-app-lb">'+m.lb+'</span>';
-  b.onclick=()=>tbClick(id);
-  tbAppsEl.appendChild(b);
-}
-function setTbActive(id,v){ const b=document.getElementById('tbb-'+id); if(b) b.classList.toggle('active',v); }
-function tbClick(id){
-  const el=document.getElementById('win-'+id); if(!el) return;
-  if(el.classList.contains('minimized')){ el.classList.remove('minimized'); focusWin(id); if(openWins[id]) openWins[id].min=false; }
-  else if(el.classList.contains('focused')){ minWin(id); }
-  else { focusWin(id); }
-}
+    bar.addEventListener("pointerdown", (event) => {
+      if (event.target.closest("button") || state.maximized) return;
+      focusWindow(state.id);
+      drag = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        left: win.offsetLeft,
+        top: win.offsetTop
+      };
+      bar.setPointerCapture(event.pointerId);
+    });
 
-document.getElementById('desktop').addEventListener('mousedown',e=>{
-  if(e.target===document.getElementById('desktop')||e.target===document.getElementById('bgc')){
-    document.querySelectorAll('.win').forEach(w=>w.classList.remove('focused'));
-    document.querySelectorAll('.tb-app').forEach(a=>a.classList.remove('active'));
-    document.querySelectorAll('.d-icon').forEach(i=>i.classList.remove('selected'));
+    bar.addEventListener("pointermove", (event) => {
+      if (!drag || drag.pointerId !== event.pointerId) return;
+      const maxLeft = Math.max(0, desktop.clientWidth - 80);
+      const maxTop = Math.max(0, desktop.clientHeight - 34);
+      const left = clamp(drag.left + event.clientX - drag.startX, 0, maxLeft);
+      const top = clamp(drag.top + event.clientY - drag.startY, 0, maxTop);
+      win.style.left = left + "px";
+      win.style.top = top + "px";
+    });
+
+    bar.addEventListener("pointerup", () => {
+      drag = null;
+    });
+
+    bar.addEventListener("pointercancel", () => {
+      drag = null;
+    });
   }
-});
-document.querySelectorAll('.win').forEach(w=>{
-  w.addEventListener('mousedown',()=>focusWin(w.id.replace('win-','')));
-});
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){ const f=document.querySelector('.win.focused'); if(f) closeWin(f.id.replace('win-','')); }
-});
 
-// ═══ DRAG ═══
-Object.keys(WIN_META).forEach(id=>{
-  const el=document.getElementById('win-'+id);
-  const tb=document.getElementById('tb-'+id);
-  if(!el||!tb) return;
-  let drag=false,ox,oy,sx,sy;
-  function startDrag(cx,cy){
-    if(window.innerWidth<=580) return;
-    drag=true; ox=el.offsetLeft; oy=el.offsetTop; sx=cx; sy=cy;
+  function keepInsideViewport(win) {
+    const maxLeft = Math.max(0, desktop.clientWidth - Math.min(win.offsetWidth, 120));
+    const maxTop = Math.max(0, desktop.clientHeight - Math.min(win.offsetHeight, 80));
+    win.style.left = clamp(win.offsetLeft, 0, maxLeft) + "px";
+    win.style.top = clamp(win.offsetTop, 0, maxTop) + "px";
   }
-  function moveDrag(cx,cy){
-    if(!drag) return;
-    let nl=ox+(cx-sx), nt=oy+(cy-sy);
-    nl=Math.max(0,Math.min(nl,window.innerWidth-60));
-    nt=Math.max(0,Math.min(nt,window.innerHeight-38-28));
-    el.style.left=nl+'px'; el.style.top=nt+'px';
+
+  function runTerminal(command) {
+    if (!command) return;
+    appendTerminal("C:\\Skyfall> " + command);
+    const lower = command.toLowerCase();
+    if (lower === "clear") {
+      terminalOutput.textContent = "";
+      return;
+    }
+    if (lower === "uptime") {
+      const seconds = Math.floor((Date.now() - bootTime) / 1000);
+      appendTerminal("System uptime: " + seconds + " seconds");
+      return;
+    }
+    appendTerminal(terminalCommands[lower] || "Command not recognized. Type 'help'.");
   }
-  function endDrag(){ drag=false; }
-  tb.addEventListener('mousedown',e=>{ if(e.target.classList.contains('wb')) return; startDrag(e.clientX,e.clientY); e.preventDefault(); });
-  document.addEventListener('mousemove',e=>moveDrag(e.clientX,e.clientY));
-  document.addEventListener('mouseup',endDrag);
-  tb.addEventListener('touchstart',e=>{ if(e.target.classList.contains('wb')) return; const t=e.touches[0]; startDrag(t.clientX,t.clientY); },{passive:true});
-  document.addEventListener('touchmove',e=>{ if(!drag) return; const t=e.touches[0]; moveDrag(t.clientX,t.clientY); },{passive:true});
-  document.addEventListener('touchend',endDrag);
-});
 
-// ═══ START MENU ═══
-function toggleStart(){ document.getElementById('start-menu').classList.toggle('show'); }
-function closeStart(){ document.getElementById('start-menu').classList.remove('show'); }
-document.addEventListener('click',e=>{
-  const sm=document.getElementById('start-menu');
-  const sb=document.getElementById('start-btn');
-  if(!sm.contains(e.target)&&!sb.contains(e.target)) sm.classList.remove('show');
-});
-function openAllStart(){
-  const ids=['about','projects','network','applab','aitools','techlinks','contact','terminal','syspanel'];
-  closeStart();
-  ids.forEach((id,i)=>{ setTimeout(()=>openWin(id),i*70); });
-}
-
-// ═══ TERMINAL ═══
-const CMDS={
-  help:()=>[
-    ['ok','Skyfall OS Terminal — available commands:'],
-    ['dim','  about · projects · network · applab · aitools'],
-    ['dim','  whoami · uptime · date · ls · neofetch · ver'],
-    ['dim','  ping · tracert · ipconfig · scan · clear'],
-  ],
-  ver:()=>[['ok','Skyfall OS Professional Edition — Build 2606'],['dim','© 2026 Skyfall Creations · www.truefastfix.com']],
-  about:()=>[['ok','Skyfall Creations'],['dim','Networking · App Dev · Web Dev · Automation · AI Tools'],['dim','Web: www.truefastfix.com  |  Email: support@truefastfix.com']],
-  projects:()=>[
-    ['ok','Active Projects:'],
-    ['dim','  [1] Network Watchdog        — Pi · Python · OpenWRT · Telegram'],
-    ['dim','  [2] Mobile Checklist App    — Swift · SwiftUI · iOS'],
-    ['dim','  [3] Smart Repair Logs       — Python · SQLite · Web'],
-    ['dim','  [4] AI Telegram Operator    — Python · LLM · Telegram API'],
-    ['dim','  [5] Skyfall OS Web Demo     — HTML · CSS · JS'],
-  ],
-  network:()=>[
-    ['ok','Network Center:'],
-    ['dim','  Router: OpenWRT · VLAN segmentation · firewall'],
-    ['dim','  Pi Stack: watchdog · ARP scan · Telegram alerts'],
-    ['dim','  Home Lab: Proxmox · multi-VLAN · local DNS'],
-  ],
-  applab:()=>[['ok','App Lab:'],['dim','  Web Dev · iOS (Swift/SwiftUI) · Python automation'],['dim','  SQLite tools · Shell scripting · Home lab services']],
-  aitools:()=>[['ok','AI Tools:'],['dim','  Telegram AI Operator · LLM command router'],['dim','  Log summarizer · Diagnostic assistant']],
-  whoami:()=>[['ok','skyfall-user@skyfall-os  [Developer · Tech Builder]']],
-  uptime:()=>{
-    const ms=Date.now()-sessStart;
-    const m=Math.floor(ms/60000);
-    return [['ok','up '+m+' min, 1 user, load avg: 0.'+Math.floor(Math.random()*8+1)+'4']];
-  },
-  date:()=>[['ok',new Date().toString()]],
-  ls:()=>[
-    ['ok','Directory of C:\\Skyfall\\'],
-    ['dim','  <DIR>  Projects      <DIR>  NetworkCenter    <DIR>  AppLab'],
-    ['dim','  <DIR>  AITools       <DIR>  TechLinks        <DIR>  Contact'],
-    ['dim','        About_Me.pdf.exe    index.html    skyfall.conf'],
-  ],
-  ipconfig:()=>[
-    ['ok','Skyfall OS IP Configuration'],
-    ['dim','  Adapter: eth0'],
-    ['dim','  IPv4 Address:    192.168.50.1'],
-    ['dim','  Subnet Mask:     255.255.255.0'],
-    ['dim','  Default Gateway: 192.168.50.1'],
-    ['dim','  DNS Server:      1.1.1.1 / 8.8.8.8'],
-  ],
-  ping:()=>{
-    const t=()=>(Math.random()*1.8+.3).toFixed(2);
-    return [
-      ['ok','Pinging skyfall.creations with 32 bytes of data:'],
-      ['dim','Reply from 192.168.50.1: bytes=32 time='+t()+'ms TTL=64'],
-      ['dim','Reply from 192.168.50.1: bytes=32 time='+t()+'ms TTL=64'],
-      ['dim','Reply from 192.168.50.1: bytes=32 time='+t()+'ms TTL=64'],
-      ['ok','Ping statistics: Sent=3, Received=3, Lost=0 (0% loss)'],
-    ];
-  },
-  tracert:()=>{
-    const t=()=>(Math.random()*3+.5).toFixed(2);
-    return [
-      ['ok','Tracing route to truefastfix.com [93.184.216.34]'],
-      ['dim','  1    '+t()+' ms   192.168.50.1   (skyfall-gw)'],
-      ['dim','  2    '+t()+' ms   10.0.0.1       (isp-edge)'],
-      ['dim','  3    '+t()+' ms   72.14.238.1    (google-ix)'],
-      ['ok','Trace complete.'],
-    ];
-  },
-  scan:()=>{
-    const devs=Math.floor(Math.random()*5+10);
-    return [
-      ['ok','ARP scan complete — '+devs+' devices found'],
-      ['dim','  192.168.50.1    [router]       aa:bb:cc:dd:ee:01'],
-      ['dim','  192.168.50.100  [workstation]  aa:bb:cc:dd:ee:02'],
-      ['dim','  192.168.50.106  [skyfall-pi]   aa:bb:cc:dd:ee:03'],
-      ['dim','  192.168.50.200  [access-point] aa:bb:cc:dd:ee:04'],
-      ['dim','  ... and '+(devs-4)+' more'],
-    ];
-  },
-  neofetch:()=>{
-    const cpu=Math.floor(Math.random()*32+8);
-    const mem=Math.floor(Math.random()*18+44);
-    return [
-      ['cmd','      .-~~~~-.     skyfall-user@skyfall-os'],
-      ['cmd','     /  ⚡    \\    ─────────────────────────'],
-      ['cmd','    | Skyfall  |   OS:     Skyfall OS v2.6 Professional'],
-      ['cmd','     \\  OS    /    Kernel: skyfall-6.1.21-lts'],
-      ['cmd','      `------\'    Shell:  skyfall-sh 5.2'],
-      ['ok', '                 CPU:    ~'+cpu+'% load'],
-      ['ok', '                 Memory: ~'+mem+'% used'],
-      ['dim','                 Web:    www.truefastfix.com'],
-    ];
-  },
-  clear:()=>{ document.getElementById('term-out').innerHTML=''; return null; },
-};
-
-let tHist=[],tHistIdx=-1,termReady=false;
-
-function initTerminal(){
-  if(termReady) return; termReady=true;
-  const out=document.getElementById('term-out');
-  tLine(out,'ok','Skyfall OS Terminal  [Build 2606]');
-  tLine(out,'dim','Type "help" for a list of commands.');
-  tLine(out,'','');
-}
-
-function tLine(out,type,text){
-  const d=document.createElement('div');
-  d.className='tl'+(type?' '+type:'');
-  d.textContent=text;
-  out.appendChild(d);
-  out.scrollTop=out.scrollHeight;
-}
-
-function termKey(e){
-  const inp=document.getElementById('term-in');
-  const out=document.getElementById('term-out');
-  if(e.key==='Enter'){
-    const cmd=inp.value.trim(); inp.value='';
-    if(!cmd) return;
-    tHist.unshift(cmd); tHistIdx=-1;
-    tLine(out,'cmd','skyfall@os:~$ '+cmd);
-    const key=cmd.toLowerCase().split(' ')[0];
-    if(CMDS[key]){ const lines=CMDS[key](); if(lines) lines.forEach(([t,v])=>tLine(out,t,v)); }
-    else { tLine(out,'err','skyfall: '+key+': command not found'); tLine(out,'dim','Type "help" for available commands.'); }
-    tLine(out,'','');
-  } else if(e.key==='ArrowUp'){
-    if(tHistIdx<tHist.length-1) inp.value=tHist[++tHistIdx]; e.preventDefault();
-  } else if(e.key==='ArrowDown'){
-    if(tHistIdx>0) inp.value=tHist[--tHistIdx]; else { tHistIdx=-1; inp.value=''; } e.preventDefault();
+  function appendTerminal(text) {
+    terminalOutput.textContent += (terminalOutput.textContent ? "\n" : "") + text;
+    terminalOutput.scrollTop = terminalOutput.scrollHeight;
   }
-}
 
-document.getElementById('win-terminal').addEventListener('click',()=>document.getElementById('term-in').focus());
+  function updateClock() {
+    const now = new Date();
+    clock.textContent = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  }
+
+  function updateMeters() {
+    const t = Date.now() / 1000;
+    cpuMeter.style.width = Math.round(34 + Math.sin(t) * 9 + Math.random() * 8) + "%";
+    memMeter.style.width = Math.round(52 + Math.cos(t / 1.7) * 7 + Math.random() * 5) + "%";
+  }
+
+  function primeAudio() {
+    const AudioEngine = window.AudioContext || window.webkitAudioContext;
+    if (!AudioEngine) return Promise.resolve(false);
+    if (!audioContext) {
+      audioContext = new AudioEngine();
+    }
+    if (audioContext.state === "suspended") {
+      return audioContext.resume().then(() => audioContext.state === "running").catch(() => false);
+    }
+    return Promise.resolve(audioContext.state === "running");
+  }
+
+  function playStartupChime() {
+    if (soundMuted) return;
+    primeAudio().then((isReady) => {
+      if (!isReady || !audioContext || audioContext.state !== "running") {
+        queueStartupChime();
+        return;
+      }
+      pendingStartupChime = false;
+      scheduleStartupChime();
+    });
+  }
+
+  function queueStartupChime() {
+    if (soundMuted) return;
+    pendingStartupChime = true;
+    if (unlockListenersActive) return;
+    unlockListenersActive = true;
+    audioUnlockEvents.forEach((eventName) => {
+      document.addEventListener(eventName, playQueuedStartupChime, { capture: true, once: true, passive: true });
+    });
+  }
+
+  function playQueuedStartupChime() {
+    if (!pendingStartupChime || soundMuted) return;
+    primeAudio().then((isReady) => {
+      if (!isReady || !audioContext || audioContext.state !== "running") {
+        unlockListenersActive = false;
+        queueStartupChime();
+        return;
+      }
+      pendingStartupChime = false;
+      unlockListenersActive = false;
+      scheduleStartupChime();
+    });
+  }
+
+  function scheduleStartupChime() {
+    const start = audioContext.currentTime + 0.04;
+    const master = audioContext.createGain();
+    master.gain.setValueAtTime(0.0001, start);
+    master.gain.exponentialRampToValueAtTime(0.2, start + 0.04);
+    master.gain.exponentialRampToValueAtTime(0.0001, start + 1.55);
+    master.connect(audioContext.destination);
+
+    [
+      { frequency: 392, offset: 0, duration: 0.62 },
+      { frequency: 493.88, offset: 0.12, duration: 0.78 },
+      { frequency: 659.25, offset: 0.34, duration: 0.92 },
+      { frequency: 987.77, offset: 0.66, duration: 0.72 }
+    ].forEach((note) => {
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(note.frequency, start + note.offset);
+      gain.gain.setValueAtTime(0.0001, start + note.offset);
+      gain.gain.exponentialRampToValueAtTime(0.22, start + note.offset + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + note.offset + note.duration);
+      oscillator.connect(gain);
+      gain.connect(master);
+      oscillator.start(start + note.offset);
+      oscillator.stop(start + note.offset + note.duration + 0.05);
+    });
+  }
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
+  updateClock();
+  updateMeters();
+  window.setInterval(updateClock, 1000);
+  window.setInterval(updateMeters, 1400);
+  window.addEventListener("resize", () => {
+    windows.forEach((state) => {
+      if (state.open && !state.minimized) keepInsideViewport(state.element);
+      if (state.maximized) {
+        state.element.style.width = desktop.clientWidth + "px";
+        state.element.style.height = desktop.clientHeight + "px";
+      }
+    });
+  });
+  startBootSequence(BOOT_DURATION);
+})();
 </script>
 </body>
 </html>
