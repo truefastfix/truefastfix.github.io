@@ -17,6 +17,8 @@
   --xp-text: #101010;
   --desktop-bottom: 42px;
   --title-height: 30px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 * {
@@ -210,6 +212,7 @@ a {
   color: #fff;
   background: transparent;
   text-shadow: 1px 1px 2px #000, 0 0 5px #000;
+  touch-action: manipulation;
 }
 
 .desktop-icon:hover,
@@ -423,7 +426,7 @@ a {
 }
 
 .terminal-body {
-  height: 100%;
+  height: calc(100% - var(--title-height));
   display: grid;
   grid-template-rows: 1fr auto;
   padding: 0;
@@ -734,7 +737,8 @@ a {
 
 @media (max-width: 760px) {
   :root {
-    --desktop-bottom: 48px;
+    --desktop-bottom: calc(50px + var(--safe-bottom));
+    --title-height: 48px;
   }
 
   .desktop-icons {
@@ -752,11 +756,66 @@ a {
   }
 
   .window {
-    min-width: 260px;
+    width: 100vw;
+    max-width: 100vw;
+    min-width: 0;
+    min-height: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    font-size: 1rem;
+    transform-origin: bottom center;
+  }
+
+  .titlebar {
+    min-height: var(--title-height);
+    padding: 0 max(10px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px));
+    cursor: default;
+    touch-action: none;
+  }
+
+  .window-body {
+    padding: 16px;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    font-size: 1rem;
+  }
+
+  .window-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .title-text {
+    font-size: 0.98rem;
+  }
+
+  .title-controls {
+    gap: 6px;
+  }
+
+  .title-controls button {
+    width: 42px;
+    height: 38px;
+    font-size: 1.05rem;
+  }
+
+  .panel,
+  .service-card {
+    padding: 14px;
+  }
+
+  .terminal-input-row {
+    padding: 12px 14px;
+  }
+
+  .terminal-input {
+    min-height: 34px;
+    font-size: 1rem;
   }
 
   .task-button {
     min-width: 70px;
+    height: 36px;
   }
 
   .tray {
@@ -771,6 +830,46 @@ a {
 
   .start-menu {
     width: 100vw;
+    max-height: calc(100vh - var(--desktop-bottom) - var(--safe-top));
+    overflow: auto;
+  }
+
+  .start-item {
+    min-height: 50px;
+  }
+
+  .small-power {
+    min-height: 40px;
+  }
+
+  .window.mobile-opening {
+    animation: mobileAppOpen 220ms cubic-bezier(0.18, 0.9, 0.28, 1) both;
+  }
+
+  .window.mobile-closing {
+    animation: mobileAppClose 180ms ease-in both;
+  }
+}
+
+@keyframes mobileAppOpen {
+  from {
+    opacity: 0;
+    transform: translateY(26px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes mobileAppClose {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(36px) scale(0.98);
   }
 }
 </style>
@@ -797,6 +896,7 @@ a {
   <nav class="desktop-icons" aria-label="Desktop icons">
     <button class="desktop-icon" type="button" data-window="about"><span class="icon-art">PDF</span><span>About_Me.pdf.exe</span></button>
     <button class="desktop-icon" type="button" data-window="projects"><span class="icon-art folder">PRJ</span><span>Projects</span></button>
+    <button class="desktop-icon" type="button" data-window="services"><span class="icon-art">SVC</span><span>Services</span></button>
     <button class="desktop-icon" type="button" data-window="network"><span class="icon-art network">NET</span><span>Network Center</span></button>
     <button class="desktop-icon" type="button" data-window="applab"><span class="icon-art folder">APP</span><span>App Lab</span></button>
     <button class="desktop-icon" type="button" data-window="aitools"><span class="icon-art">AI</span><span>AI Tools</span></button>
@@ -858,6 +958,22 @@ a {
         <div class="panel"><strong>Troubleshooting</strong>DNS, DHCP, latency, packet loss, cable path, adapter, and service reachability workflows.</div>
         <div class="panel"><strong>Home Lab</strong>Service maps, small server maintenance, local dashboards, backup checks, and controlled experiments.</div>
         <div class="panel"><strong>Diagnostics</strong>Readable reports that separate symptoms, likely causes, commands run, and recommended next actions.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="win-services" class="window hidden" data-window-id="services" data-title="Services" style="width: 570px; height: 405px; left: 250px; top: 92px;">
+    <header class="titlebar"><div class="title-text"><span>SVC</span><span class="title-name">Services</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body">
+      <h2>Services</h2>
+      <p>Skyfall Creations focuses on practical technology work that is easy to inspect, explain, maintain, and improve.</p>
+      <div class="window-grid">
+        <div class="service-card"><strong>Networking Support</strong>Wi-Fi, router basics, device connectivity, DNS/DHCP checks, latency triage, and readable network troubleshooting notes.</div>
+        <div class="service-card"><strong>App Development</strong>Workflow-first interfaces, local-first data handling, validation states, and maintainable native or web app prototypes.</div>
+        <div class="service-card"><strong>Web Development</strong>Responsive single-page experiences, support portals, lightweight dashboards, and self-contained tools.</div>
+        <div class="service-card"><strong>Automation</strong>Repeatable scripts, browser checks, file audits, data cleanup, and technical reporting flows.</div>
+        <div class="service-card"><strong>AI Tooling</strong>Structured helpers for support drafts, log summaries, classification, workflow prompts, and reviewable documentation.</div>
+        <div class="service-card"><strong>Diagnostics and Repair</strong>Device triage, root-cause troubleshooting, customer-ready summaries, and follow-up checklists.</div>
       </div>
     </div>
   </section>
@@ -956,6 +1072,7 @@ a {
     <div class="start-left">
       <button class="start-item" type="button" data-window="about"><span class="start-icon">PDF</span><span>About_Me.pdf.exe<small>Focus areas</small></span></button>
       <button class="start-item" type="button" data-window="projects"><span class="start-icon">PRJ</span><span>Projects<small>Portfolio directory</small></span></button>
+      <button class="start-item" type="button" data-window="services"><span class="start-icon">SVC</span><span>Services<small>Support and build work</small></span></button>
       <button class="start-item" type="button" data-window="network"><span class="start-icon">NET</span><span>Network Center<small>Diagnostics and home lab</small></span></button>
       <button class="start-item" type="button" data-window="applab"><span class="start-icon">APP</span><span>App Lab<small>Apps, web, and automation</small></span></button>
       <button class="start-item" type="button" data-window="terminal"><span class="start-icon">C:\</span><span>Terminal<small>Command interface</small></span></button>
@@ -1000,6 +1117,7 @@ a {
   const memMeter = document.getElementById("memMeter");
 
   const BOOT_DURATION = 2500;
+  const MOBILE_QUERY = "(max-width: 760px)";
   const audioUnlockEvents = ["pointerdown", "click", "keydown", "touchstart"];
   const windows = new Map();
   let topZ = 100;
@@ -1031,9 +1149,17 @@ a {
       id,
       element: win,
       title: win.dataset.title || id,
+      defaultRect: {
+        left: win.style.left,
+        top: win.style.top,
+        width: win.style.width,
+        height: win.style.height
+      },
       open: false,
       minimized: false,
       maximized: false,
+      mobileFitted: false,
+      closeTimer: null,
       restore: null,
       taskButton: createTaskButton(id, win.dataset.title || id)
     });
@@ -1149,16 +1275,22 @@ a {
     if (!state) return;
     state.open = true;
     state.minimized = false;
+    window.clearTimeout(state.closeTimer);
+    state.element.classList.remove("mobile-closing");
     state.element.classList.remove("hidden", "inactive");
     state.taskButton.classList.add("visible");
     state.taskButton.classList.remove("minimized");
+    syncWindowToViewport(state);
+    animateMobileOpen(state);
     focusWindow(id);
-    keepInsideViewport(state.element);
     if (id === "terminal") {
       if (!terminalOutput.textContent.trim()) {
         appendTerminal("Skyfall OS Terminal\nType 'help' for available commands.");
       }
-      window.setTimeout(() => terminalInput.focus(), 0);
+      window.setTimeout(() => {
+        state.element.scrollTop = 0;
+        terminalInput.focus({ preventScroll: true });
+      }, 0);
     }
   }
 
@@ -1188,14 +1320,25 @@ a {
   function closeWindow(id) {
     const state = windows.get(id);
     if (!state) return;
+    window.clearTimeout(state.closeTimer);
     state.open = false;
     state.minimized = false;
     state.maximized = false;
+    state.mobileFitted = false;
     state.restore = null;
-    state.element.classList.add("hidden");
-    state.element.classList.remove("maximized", "active", "inactive");
+    state.element.classList.remove("maximized", "active", "inactive", "mobile-opening");
     state.taskButton.classList.remove("visible", "active", "minimized");
     if (activeWindowId === id) activeWindowId = null;
+    if (isMobileViewport() && !state.element.classList.contains("hidden")) {
+      state.element.classList.add("mobile-closing");
+      state.closeTimer = window.setTimeout(() => {
+        state.element.classList.add("hidden");
+        state.element.classList.remove("mobile-closing");
+      }, 190);
+      return;
+    }
+    state.element.classList.add("hidden");
+    state.element.classList.remove("mobile-closing");
   }
 
   function toggleTaskWindow(id) {
@@ -1209,6 +1352,8 @@ a {
       state.minimized = false;
       state.element.classList.remove("hidden");
       state.taskButton.classList.remove("minimized");
+      syncWindowToViewport(state);
+      animateMobileOpen(state);
       focusWindow(id);
       return;
     }
@@ -1233,6 +1378,7 @@ a {
       win.classList.remove("maximized");
       state.maximized = false;
       state.restore = null;
+      syncWindowToViewport(state);
     } else {
       state.restore = {
         left: win.style.left,
@@ -1240,10 +1386,11 @@ a {
         width: win.style.width,
         height: win.style.height
       };
+      const bounds = getDesktopBounds();
       win.style.left = "0px";
       win.style.top = "0px";
-      win.style.width = desktop.clientWidth + "px";
-      win.style.height = desktop.clientHeight + "px";
+      win.style.width = bounds.width + "px";
+      win.style.height = bounds.height + "px";
       win.classList.add("maximized");
       state.maximized = true;
     }
@@ -1256,6 +1403,7 @@ a {
     let drag = null;
 
     bar.addEventListener("pointerdown", (event) => {
+      if (isMobileViewport()) return;
       if (event.target.closest("button") || state.maximized) return;
       focusWindow(state.id);
       drag = {
@@ -1270,8 +1418,9 @@ a {
 
     bar.addEventListener("pointermove", (event) => {
       if (!drag || drag.pointerId !== event.pointerId) return;
-      const maxLeft = Math.max(0, desktop.clientWidth - 80);
-      const maxTop = Math.max(0, desktop.clientHeight - 34);
+      const bounds = getDesktopBounds();
+      const maxLeft = Math.max(0, bounds.width - Math.min(win.offsetWidth, bounds.width));
+      const maxTop = getMaxWindowTop(win, bounds);
       const left = clamp(drag.left + event.clientX - drag.startX, 0, maxLeft);
       const top = clamp(drag.top + event.clientY - drag.startY, 0, maxTop);
       win.style.left = left + "px";
@@ -1285,13 +1434,124 @@ a {
     bar.addEventListener("pointercancel", () => {
       drag = null;
     });
+
+    addMobileSwipeClose(state, bar);
   }
 
   function keepInsideViewport(win) {
-    const maxLeft = Math.max(0, desktop.clientWidth - Math.min(win.offsetWidth, 120));
-    const maxTop = Math.max(0, desktop.clientHeight - Math.min(win.offsetHeight, 80));
+    const bounds = getDesktopBounds();
+    const maxLeft = Math.max(0, bounds.width - Math.min(win.offsetWidth, bounds.width));
+    const maxTop = getMaxWindowTop(win, bounds);
     win.style.left = clamp(win.offsetLeft, 0, maxLeft) + "px";
     win.style.top = clamp(win.offsetTop, 0, maxTop) + "px";
+  }
+
+  function getMaxWindowTop(win, bounds) {
+    if (isMobileViewport()) {
+      return Math.max(0, bounds.height - Math.min(win.offsetHeight, bounds.height));
+    }
+    return Math.max(0, bounds.height - getTitlebarHeight(win));
+  }
+
+  function syncWindowToViewport(state) {
+    if (!state.open || state.minimized) return;
+    if (state.maximized) {
+      const bounds = getDesktopBounds();
+      state.element.style.width = bounds.width + "px";
+      state.element.style.height = bounds.height + "px";
+      state.element.style.left = "0px";
+      state.element.style.top = "0px";
+      return;
+    }
+    if (isMobileViewport()) {
+      fitMobileWindow(state);
+    } else if (state.mobileFitted) {
+      restoreDefaultWindow(state);
+    }
+    keepInsideViewport(state.element);
+  }
+
+  function fitMobileWindow(state) {
+    const bounds = getDesktopBounds();
+    const top = 0;
+    const height = bounds.height;
+    state.element.style.width = bounds.width + "px";
+    state.element.style.height = height + "px";
+    state.element.style.left = "0px";
+    state.element.style.top = top + "px";
+    state.mobileFitted = true;
+  }
+
+  function animateMobileOpen(state) {
+    state.element.classList.remove("mobile-opening");
+    if (!isMobileViewport()) return;
+    window.requestAnimationFrame(() => {
+      state.element.classList.add("mobile-opening");
+    });
+  }
+
+  function addMobileSwipeClose(state, bar) {
+    let swipe = null;
+
+    bar.addEventListener("pointerdown", (event) => {
+      if (!isMobileViewport() || event.target.closest("button")) return;
+      swipe = {
+        pointerId: event.pointerId,
+        startY: event.clientY,
+        latestY: event.clientY
+      };
+      bar.setPointerCapture(event.pointerId);
+    });
+
+    bar.addEventListener("pointermove", (event) => {
+      if (!swipe || swipe.pointerId !== event.pointerId) return;
+      swipe.latestY = event.clientY;
+      const offset = Math.max(0, event.clientY - swipe.startY);
+      state.element.style.transform = "translateY(" + Math.min(offset, 96) + "px)";
+    });
+
+    bar.addEventListener("pointerup", (event) => {
+      if (!swipe || swipe.pointerId !== event.pointerId) return;
+      const offset = swipe.latestY - swipe.startY;
+      swipe = null;
+      state.element.style.transform = "";
+      if (offset >= 88) closeWindow(state.id);
+    });
+
+    bar.addEventListener("pointercancel", () => {
+      swipe = null;
+      state.element.style.transform = "";
+    });
+  }
+
+  function restoreDefaultWindow(state) {
+    state.element.style.left = state.defaultRect.left;
+    state.element.style.top = state.defaultRect.top;
+    state.element.style.width = state.defaultRect.width;
+    state.element.style.height = state.defaultRect.height;
+    state.mobileFitted = false;
+  }
+
+  function getDesktopBounds() {
+    return {
+      width: Math.max(1, desktop.clientWidth),
+      height: Math.max(1, desktop.clientHeight)
+    };
+  }
+
+  function getTitlebarHeight(win) {
+    const bar = win.querySelector(".titlebar");
+    return bar ? Math.max(1, bar.offsetHeight) : 30;
+  }
+
+  function isMobileViewport() {
+    return window.matchMedia(MOBILE_QUERY).matches;
+  }
+
+  function readCssPixels(name) {
+    const value = window.getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    const pixels = Number.parseFloat(value);
+    return Number.isFinite(pixels) ? pixels : 0;
   }
 
   function runTerminal(command) {
@@ -1422,11 +1682,7 @@ a {
   window.setInterval(updateMeters, 1400);
   window.addEventListener("resize", () => {
     windows.forEach((state) => {
-      if (state.open && !state.minimized) keepInsideViewport(state.element);
-      if (state.maximized) {
-        state.element.style.width = desktop.clientWidth + "px";
-        state.element.style.height = desktop.clientHeight + "px";
-      }
+      syncWindowToViewport(state);
     });
   });
   startBootSequence(BOOT_DURATION);
