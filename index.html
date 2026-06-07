@@ -170,10 +170,11 @@ a {
   display: none;
   height: calc(100% - var(--desktop-bottom));
   background:
-    radial-gradient(ellipse 95% 45% at 50% 99%, rgba(66, 169, 57, 0.9) 0 18%, rgba(24, 117, 41, 0.88) 31%, transparent 53%),
-    radial-gradient(ellipse 48% 27% at 92% 92%, rgba(132, 205, 69, 0.72), transparent 67%),
-    radial-gradient(ellipse 55% 26% at 6% 100%, rgba(38, 139, 47, 0.78), transparent 65%),
-    linear-gradient(#0b63c6 0%, #1e9cf5 45%, #6ab9ff 68%, #66b140 69%, #238539 100%);
+    radial-gradient(ellipse 115% 44% at 74% 101%, rgba(130, 202, 70, 0.95) 0 17%, rgba(62, 152, 50, 0.9) 35%, transparent 55%),
+    radial-gradient(ellipse 82% 36% at 17% 105%, rgba(61, 160, 59, 0.92) 0 25%, rgba(30, 110, 45, 0.9) 55%, transparent 72%),
+    radial-gradient(ellipse 44% 22% at 88% 79%, rgba(191, 235, 114, 0.42), transparent 72%),
+    radial-gradient(circle at 19% 17%, rgba(255, 255, 255, 0.82) 0 5%, rgba(255, 245, 187, 0.44) 7%, transparent 18%),
+    linear-gradient(#0b54b8 0%, #1b8cea 36%, #83cdfd 67%, #74b84c 68%, #287d33 100%);
   overflow: hidden;
 }
 
@@ -182,9 +183,27 @@ a {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 17% 16%, rgba(255, 255, 255, 0.58), transparent 8%),
-    linear-gradient(120deg, transparent 0 32%, rgba(255, 255, 255, 0.18) 34%, transparent 39% 100%);
-  opacity: 0.72;
+    radial-gradient(ellipse 9% 4% at 28% 18%, rgba(255, 255, 255, 0.78) 0 42%, transparent 47%),
+    radial-gradient(ellipse 12% 5% at 36% 16%, rgba(255, 255, 255, 0.66) 0 38%, transparent 44%),
+    radial-gradient(ellipse 7% 3% at 44% 19%, rgba(255, 255, 255, 0.56) 0 40%, transparent 47%),
+    radial-gradient(ellipse 10% 4% at 70% 25%, rgba(255, 255, 255, 0.36) 0 38%, transparent 45%),
+    linear-gradient(118deg, transparent 0 27%, rgba(255, 255, 255, 0.16) 31%, transparent 39% 100%),
+    linear-gradient(165deg, transparent 0 58%, rgba(255, 255, 255, 0.1) 66%, transparent 82%);
+  opacity: 0.86;
+  pointer-events: none;
+}
+
+.desktop::after {
+  content: "";
+  position: absolute;
+  inset: auto -8% 0 -8%;
+  height: 40%;
+  background:
+    radial-gradient(ellipse 46% 34% at 76% 82%, rgba(150, 214, 76, 0.72), transparent 71%),
+    radial-gradient(ellipse 54% 42% at 18% 91%, rgba(39, 122, 42, 0.58), transparent 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.13), transparent 21%),
+    repeating-linear-gradient(106deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 18px);
+  mix-blend-mode: soft-light;
   pointer-events: none;
 }
 
@@ -213,13 +232,19 @@ a {
   background: transparent;
   text-shadow: 1px 1px 2px #000, 0 0 5px #000;
   touch-action: manipulation;
+  cursor: default;
 }
 
 .desktop-icon:hover,
 .desktop-icon:focus-visible {
   border-color: rgba(255, 255, 255, 0.45);
-  background: rgba(15, 71, 180, 0.36);
+  background: linear-gradient(rgba(89, 154, 246, 0.36), rgba(19, 80, 186, 0.34));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24), 0 2px 8px rgba(0, 32, 92, 0.2);
   outline: none;
+}
+
+.desktop-icon:active {
+  transform: translateY(1px);
 }
 
 .desktop-icon.recycle {
@@ -232,21 +257,33 @@ a {
 .icon-art {
   width: 42px;
   height: 42px;
-  display: grid;
-  place-items: center;
+  display: block;
   position: relative;
-  border: 2px solid rgba(255, 255, 255, 0.92);
-  border-radius: 5px;
-  background: linear-gradient(145deg, #fefefe, #b9cff4 58%, #6590d6);
-  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.45);
-  color: #07357d;
-  font-weight: 700;
-  font-size: 1.05rem;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #fff, #c9def8 55%, #5b8ad8);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.88),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.16),
+    2px 4px 7px rgba(0, 0, 0, 0.48);
+  color: transparent;
+  overflow: visible;
+}
+
+.icon-art *,
+.icon-art::before,
+.icon-art::after {
+  box-sizing: border-box;
 }
 
 .icon-art.folder {
-  border-color: #f4d36a;
-  background: linear-gradient(#ffe78d 0 27%, #e0a830 28% 100%);
+  border-radius: 4px 6px 6px 6px;
+  background:
+    linear-gradient(150deg, rgba(255, 255, 255, 0.5), transparent 42%),
+    linear-gradient(#ffe790 0 31%, #e6b23c 32% 61%, #b77716 100%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.8),
+    inset 0 -4px 5px rgba(104, 61, 0, 0.24),
+    2px 4px 7px rgba(0, 0, 0, 0.48);
 }
 
 .icon-art.folder::before {
@@ -254,35 +291,248 @@ a {
   position: absolute;
   top: -7px;
   left: 4px;
-  width: 22px;
+  width: 24px;
   height: 9px;
   border-radius: 3px 3px 0 0;
-  background: #f5c653;
+  background: linear-gradient(#ffe99a, #d99b28);
   border: 1px solid #bc8921;
+}
+
+.icon-art.folder::after {
+  content: "";
+  position: absolute;
+  inset: 13px 5px 7px;
+  border-radius: 3px;
+  background: linear-gradient(rgba(255, 255, 255, 0.35), transparent 45%);
+  border-top: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.icon-art.pdf {
+  border-radius: 4px;
+  background: linear-gradient(145deg, #ffffff 0 64%, #dce7ff 65%);
+  border: 1px solid #9aa7bd;
+}
+
+.icon-art.pdf::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  border-style: solid;
+  border-width: 0 0 12px 12px;
+  border-color: transparent transparent #b5c7e8 transparent;
+}
+
+.icon-art.pdf::after {
+  content: "PDF";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 8px;
+  padding: 2px 0;
+  border-radius: 2px;
+  color: #fff;
+  background: linear-gradient(#de3430, #9f1919);
+  font-size: 0.58rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.icon-art.services {
+  border-radius: 9px;
+  background:
+    radial-gradient(circle at 50% 50%, #dff2ff 0 19%, transparent 20%),
+    conic-gradient(from 15deg, #71849e 0 8%, #d8e3ef 8% 16%, #71849e 16% 24%, #d8e3ef 24% 32%, #71849e 32% 40%, #d8e3ef 40% 48%, #71849e 48% 56%, #d8e3ef 56% 64%, #71849e 64% 72%, #d8e3ef 72% 80%, #71849e 80% 88%, #d8e3ef 88% 100%);
+}
+
+.icon-art.services::after {
+  content: "";
+  position: absolute;
+  inset: 13px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #fff, #7fb7e9 70%);
+  border: 2px solid #56697b;
 }
 
 .icon-art.network {
   border-radius: 50%;
-  background: radial-gradient(circle at 42% 34%, #d9ffff 0 20%, #39a8ff 21% 56%, #074da8 57%);
+  background:
+    radial-gradient(circle at 35% 24%, #ffffff 0 8%, transparent 10%),
+    radial-gradient(circle at 50% 50%, #90f2ff 0 20%, #2ca1f1 21% 57%, #074da8 58% 100%);
+  border: 1px solid rgba(255, 255, 255, 0.86);
+}
+
+.icon-art.network::before,
+.icon-art.network::after {
+  content: "";
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-radius: 50%;
+}
+
+.icon-art.network::before {
+  inset: 9px 4px;
+}
+
+.icon-art.network::after {
+  inset: 4px 12px;
+  transform: rotate(90deg);
+}
+
+.icon-art.app::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border-radius: 5px;
+  background:
+    linear-gradient(90deg, transparent 47%, rgba(255, 255, 255, 0.78) 48% 52%, transparent 53%),
+    linear-gradient(transparent 47%, rgba(255, 255, 255, 0.78) 48% 52%, transparent 53%),
+    linear-gradient(135deg, #5fd06b, #116ebd);
+  box-shadow: 0 0 0 2px rgba(9, 65, 128, 0.42);
+}
+
+.icon-art.ai {
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 30%, #eaffff, #4cc6d2 42%, #1f6ca9 100%);
+}
+
+.icon-art.ai::before,
+.icon-art.ai::after {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border: 3px solid rgba(255, 255, 255, 0.88);
+  border-radius: 44% 56% 48% 52%;
+}
+
+.icon-art.ai::before {
+  transform: rotate(32deg);
+}
+
+.icon-art.ai::after {
+  transform: rotate(-32deg);
+  border-color: rgba(216, 249, 255, 0.82);
+}
+
+.icon-art.browser {
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 56% 49%, #d9ffff 0 17%, #3fb0ff 18% 38%, #174fa7 39% 100%);
+}
+
+.icon-art.browser::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  background:
+    conic-gradient(from 210deg, #f8a13d 0 23%, #f2632d 24% 42%, transparent 43% 68%, #ffc558 69% 86%, #f8a13d 87% 100%);
+  -webkit-mask: radial-gradient(circle, transparent 0 48%, #000 50%);
+  mask: radial-gradient(circle, transparent 0 48%, #000 50%);
+}
+
+.icon-art.mail {
+  border-radius: 5px;
+  background: linear-gradient(#ffffff, #c7dcf6);
+  border: 1px solid #8aa5c7;
+}
+
+.icon-art.mail::before,
+.icon-art.mail::after {
+  content: "";
+  position: absolute;
+  inset: 8px 5px;
+  border: 2px solid #3773b3;
+  border-radius: 2px;
+}
+
+.icon-art.mail::after {
+  inset: 10px 7px 12px;
+  border-width: 0 0 2px 2px;
+  transform: rotate(-45deg);
+  border-radius: 0;
+}
+
+.icon-art.terminal {
+  border-radius: 6px;
+  background: linear-gradient(#414141 0 15%, #0a0c0d 16% 100%);
+  border: 1px solid #070707;
+}
+
+.icon-art.terminal::before {
+  content: ">_";
+  position: absolute;
+  left: 7px;
+  top: 17px;
+  color: #89ff85;
+  font-family: "Courier New", monospace;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-shadow: 0 0 5px rgba(137, 255, 133, 0.8);
+}
+
+.icon-art.system {
+  border-radius: 5px;
+  background: linear-gradient(#dcecff 0 66%, #778fae 67% 100%);
+  border: 1px solid #58769f;
+}
+
+.icon-art.system::before {
+  content: "";
+  position: absolute;
+  inset: 7px 6px 14px;
+  border-radius: 3px;
+  background: linear-gradient(#132d5d, #2c73c9);
+  border: 2px solid #eef6ff;
+}
+
+.icon-art.system::after {
+  content: "";
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  bottom: 7px;
+  height: 4px;
+  border-radius: 3px 3px 0 0;
+  background: #f0f4fb;
+  box-shadow: 0 4px 0 #526a88;
 }
 
 .icon-art.recyclebin {
-  border-radius: 3px;
-  background: linear-gradient(#e9f9ff, #88b9db);
+  border-radius: 4px 4px 7px 7px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.38) 0 4px, rgba(77, 122, 157, 0.22) 4px 7px),
+    linear-gradient(#effbff, #8dbbda 54%, #5d8caf);
+  border: 1px solid rgba(222, 243, 255, 0.92);
+  transform: perspective(60px) rotateX(-4deg);
 }
 
 .icon-art.recyclebin::before {
   content: "";
   position: absolute;
   top: -6px;
-  left: 8px;
-  width: 24px;
+  left: 7px;
+  width: 26px;
   height: 7px;
-  border: 2px solid rgba(255, 255, 255, 0.92);
-  background: #dff2ff;
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 2px;
+  background: linear-gradient(#ffffff, #b8d8ed);
 }
 
-.desktop-icon span {
+.icon-art.recyclebin::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  top: 13px;
+  bottom: 7px;
+  border-left: 2px solid rgba(255, 255, 255, 0.62);
+  border-right: 2px solid rgba(30, 86, 130, 0.28);
+}
+
+.desktop-icon > span:last-child {
   max-width: 78px;
   color: #fff;
   font-size: 0.72rem;
@@ -894,18 +1144,18 @@ a {
 
 <main id="desktop" class="screen desktop" aria-label="Skyfall OS desktop">
   <nav class="desktop-icons" aria-label="Desktop icons">
-    <button class="desktop-icon" type="button" data-window="about"><span class="icon-art">PDF</span><span>About_Me.pdf.exe</span></button>
-    <button class="desktop-icon" type="button" data-window="projects"><span class="icon-art folder">PRJ</span><span>Projects</span></button>
-    <button class="desktop-icon" type="button" data-window="services"><span class="icon-art">SVC</span><span>Services</span></button>
-    <button class="desktop-icon" type="button" data-window="network"><span class="icon-art network">NET</span><span>Network Center</span></button>
-    <button class="desktop-icon" type="button" data-window="applab"><span class="icon-art folder">APP</span><span>App Lab</span></button>
-    <button class="desktop-icon" type="button" data-window="aitools"><span class="icon-art">AI</span><span>AI Tools</span></button>
-    <button class="desktop-icon" type="button" data-window="links"><span class="icon-art network">WWW</span><span>Tech Links</span></button>
-    <button class="desktop-icon" type="button" data-window="contact"><span class="icon-art">MAIL</span><span>Contact Me</span></button>
-    <button class="desktop-icon" type="button" data-window="terminal"><span class="icon-art">C:\</span><span>Terminal</span></button>
-    <button class="desktop-icon" type="button" data-window="system"><span class="icon-art">SYS</span><span>System Panel</span></button>
+    <button class="desktop-icon" type="button" data-window="about"><span class="icon-art pdf" aria-hidden="true"></span><span>About_Me.pdf.exe</span></button>
+    <button class="desktop-icon" type="button" data-window="projects"><span class="icon-art folder" aria-hidden="true"></span><span>Projects</span></button>
+    <button class="desktop-icon" type="button" data-window="services"><span class="icon-art services" aria-hidden="true"></span><span>Services</span></button>
+    <button class="desktop-icon" type="button" data-window="network"><span class="icon-art network" aria-hidden="true"></span><span>Network Center</span></button>
+    <button class="desktop-icon" type="button" data-window="applab"><span class="icon-art folder app" aria-hidden="true"></span><span>App Lab</span></button>
+    <button class="desktop-icon" type="button" data-window="aitools"><span class="icon-art ai" aria-hidden="true"></span><span>AI Tools</span></button>
+    <button class="desktop-icon" type="button" data-window="links"><span class="icon-art browser" aria-hidden="true"></span><span>Tech Links</span></button>
+    <button class="desktop-icon" type="button" data-window="contact"><span class="icon-art mail" aria-hidden="true"></span><span>Contact Me</span></button>
+    <button class="desktop-icon" type="button" data-window="terminal"><span class="icon-art terminal" aria-hidden="true"></span><span>Terminal</span></button>
+    <button class="desktop-icon" type="button" data-window="system"><span class="icon-art system" aria-hidden="true"></span><span>System Panel</span></button>
   </nav>
-  <button class="desktop-icon recycle" type="button" data-window="recycle"><span class="icon-art recyclebin">BIN</span><span>Recycle Bin</span></button>
+  <button class="desktop-icon recycle" type="button" data-window="recycle"><span class="icon-art recyclebin" aria-hidden="true"></span><span>Recycle Bin</span></button>
 
   <section id="win-welcome" class="window hidden" data-window-id="welcome" data-title="Welcome to Skyfall OS" style="width: 420px; height: 270px; left: 170px; top: 52px;">
     <header class="titlebar"><div class="title-text"><span>SKY</span><span class="title-name">Welcome to Skyfall OS</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
