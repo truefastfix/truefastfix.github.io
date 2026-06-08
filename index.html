@@ -209,25 +209,26 @@ a {
 
 .desktop-icons {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 14px;
+  left: 14px;
   z-index: 5;
   display: grid;
-  grid-template-columns: repeat(2, 86px);
-  grid-auto-rows: 92px;
-  gap: 8px 4px;
+  grid-template-columns: repeat(2, 92px);
+  grid-auto-rows: 98px;
+  gap: 9px 6px;
 }
 
 .desktop-icon {
-  width: 84px;
-  min-height: 88px;
+  width: 88px;
+  min-height: 94px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding: 6px 4px;
+  justify-content: flex-start;
+  gap: 7px;
+  padding: 7px 4px 6px;
   border: 1px solid transparent;
-  border-radius: 2px;
+  border-radius: 4px;
   color: #fff;
   background: transparent;
   text-shadow: 1px 1px 2px #000, 0 0 5px #000;
@@ -237,14 +238,31 @@ a {
 
 .desktop-icon:hover,
 .desktop-icon:focus-visible {
-  border-color: rgba(255, 255, 255, 0.45);
-  background: linear-gradient(rgba(89, 154, 246, 0.36), rgba(19, 80, 186, 0.34));
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24), 0 2px 8px rgba(0, 32, 92, 0.2);
+  border-color: rgba(218, 238, 255, 0.74);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.18), rgba(60, 145, 255, 0.22) 45%, rgba(13, 70, 181, 0.3)),
+    rgba(18, 86, 188, 0.18);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 3px 10px rgba(0, 32, 92, 0.28);
   outline: none;
+}
+
+.desktop-icon:hover .icon-art,
+.desktop-icon:focus-visible .icon-art {
+  transform: translateY(-1px) scale(1.04);
+  filter: saturate(1.08) brightness(1.05);
 }
 
 .desktop-icon:active {
   transform: translateY(1px);
+  background:
+    linear-gradient(rgba(22, 79, 171, 0.48), rgba(93, 169, 255, 0.28)),
+    rgba(9, 49, 128, 0.3);
+  box-shadow:
+    inset 0 2px 5px rgba(0, 24, 80, 0.36),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.28);
 }
 
 .desktop-icon.recycle {
@@ -255,18 +273,22 @@ a {
 }
 
 .icon-art {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   display: block;
   position: relative;
-  border-radius: 8px;
-  background: linear-gradient(145deg, #fff, #c9def8 55%, #5b8ad8);
+  border-radius: 10px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.78), transparent 42%),
+    linear-gradient(145deg, #fff, #c9def8 55%, #5b8ad8);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.88),
-    inset 0 -2px 3px rgba(0, 0, 0, 0.16),
-    2px 4px 7px rgba(0, 0, 0, 0.48);
+    inset 0 1px 1px rgba(255, 255, 255, 0.96),
+    inset 0 -3px 5px rgba(0, 0, 0, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.38),
+    3px 6px 10px rgba(0, 0, 0, 0.52);
   color: transparent;
   overflow: visible;
+  transition: transform 120ms ease, filter 120ms ease;
 }
 
 .icon-art *,
@@ -276,41 +298,53 @@ a {
 }
 
 .icon-art.folder {
-  border-radius: 4px 6px 6px 6px;
+  border-radius: 5px 7px 7px 7px;
   background:
-    linear-gradient(150deg, rgba(255, 255, 255, 0.5), transparent 42%),
-    linear-gradient(#ffe790 0 31%, #e6b23c 32% 61%, #b77716 100%);
+    linear-gradient(160deg, rgba(255, 255, 255, 0.64), transparent 35%),
+    linear-gradient(#fff2a8 0 30%, #f0c54e 31% 62%, #b87412 100%);
+  border: 1px solid #95620e;
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.8),
-    inset 0 -4px 5px rgba(104, 61, 0, 0.24),
-    2px 4px 7px rgba(0, 0, 0, 0.48);
+    inset 0 2px 1px rgba(255, 255, 255, 0.78),
+    inset 0 -5px 8px rgba(105, 57, 0, 0.32),
+    inset 5px 0 9px rgba(255, 229, 113, 0.24),
+    3px 6px 10px rgba(0, 0, 0, 0.52);
 }
 
 .icon-art.folder::before {
   content: "";
   position: absolute;
-  top: -7px;
+  top: -8px;
   left: 4px;
-  width: 24px;
-  height: 9px;
+  width: 28px;
+  height: 11px;
   border-radius: 3px 3px 0 0;
-  background: linear-gradient(#ffe99a, #d99b28);
-  border: 1px solid #bc8921;
+  background: linear-gradient(#fff0a4, #e1a832);
+  border: 1px solid #a87313;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
 .icon-art.folder::after {
   content: "";
   position: absolute;
-  inset: 13px 5px 7px;
-  border-radius: 3px;
-  background: linear-gradient(rgba(255, 255, 255, 0.35), transparent 45%);
-  border-top: 1px solid rgba(255, 255, 255, 0.45);
+  inset: 10px 4px 6px;
+  border-radius: 4px 4px 6px 6px;
+  background:
+    linear-gradient(170deg, rgba(255, 255, 255, 0.46), transparent 44%),
+    linear-gradient(180deg, rgba(255, 226, 108, 0.36), rgba(130, 73, 4, 0.1));
+  border-top: 1px solid rgba(255, 255, 255, 0.58);
+  box-shadow: inset 0 -4px 7px rgba(89, 50, 0, 0.2);
 }
 
 .icon-art.pdf {
-  border-radius: 4px;
-  background: linear-gradient(145deg, #ffffff 0 64%, #dce7ff 65%);
-  border: 1px solid #9aa7bd;
+  border-radius: 4px 7px 5px 5px;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.92), transparent 38%),
+    linear-gradient(145deg, #ffffff 0 68%, #dce7ff 69%);
+  border: 1px solid #8f9cb2;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.62),
+    inset 0 -4px 8px rgba(54, 83, 123, 0.12),
+    3px 6px 10px rgba(0, 0, 0, 0.52);
 }
 
 .icon-art.pdf::before {
@@ -319,54 +353,74 @@ a {
   right: 0;
   top: 0;
   border-style: solid;
-  border-width: 0 0 12px 12px;
-  border-color: transparent transparent #b5c7e8 transparent;
+  border-width: 0 0 15px 15px;
+  border-color: transparent transparent #b7c9e9 transparent;
+  filter: drop-shadow(-1px 1px 0 rgba(79, 98, 128, 0.38));
 }
 
 .icon-art.pdf::after {
   content: "PDF";
   position: absolute;
-  left: 6px;
-  right: 6px;
-  bottom: 8px;
-  padding: 2px 0;
-  border-radius: 2px;
+  left: 5px;
+  right: 5px;
+  bottom: 7px;
+  padding: 3px 0 2px;
+  border-radius: 3px;
   color: #fff;
-  background: linear-gradient(#de3430, #9f1919);
-  font-size: 0.58rem;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.32), transparent 46%),
+    linear-gradient(#f04b42, #a91417 62%, #7d0f13);
+  font-size: 0.62rem;
   font-weight: 700;
   text-align: center;
+  text-shadow: 0 1px 1px rgba(70, 0, 0, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.46),
+    0 1px 2px rgba(80, 0, 0, 0.36);
 }
 
 .icon-art.services {
-  border-radius: 9px;
+  border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 50%, #dff2ff 0 19%, transparent 20%),
-    conic-gradient(from 15deg, #71849e 0 8%, #d8e3ef 8% 16%, #71849e 16% 24%, #d8e3ef 24% 32%, #71849e 32% 40%, #d8e3ef 40% 48%, #71849e 48% 56%, #d8e3ef 56% 64%, #71849e 64% 72%, #d8e3ef 72% 80%, #71849e 80% 88%, #d8e3ef 88% 100%);
+    radial-gradient(circle at 34% 26%, rgba(255, 255, 255, 0.95) 0 9%, transparent 16%),
+    radial-gradient(circle at 50% 50%, #edf7ff 0 18%, #85b7dc 19% 27%, transparent 28%),
+    conic-gradient(from 8deg, #4d5c70 0 7%, #dfe8f2 7% 14%, #647990 14% 22%, #f7fbff 22% 29%, #52667d 29% 37%, #c7d6e4 37% 45%, #425267 45% 53%, #eff5fa 53% 61%, #667e96 61% 69%, #d8e4ee 69% 77%, #4d5f76 77% 85%, #f5f8fb 85% 93%, #4d5c70 93% 100%);
+  border: 1px solid #46556a;
+  box-shadow:
+    inset 0 2px 2px rgba(255, 255, 255, 0.9),
+    inset 0 -5px 8px rgba(37, 51, 70, 0.48),
+    3px 6px 10px rgba(0, 0, 0, 0.52);
 }
 
 .icon-art.services::after {
   content: "";
   position: absolute;
-  inset: 13px;
+  inset: 14px;
   border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #fff, #7fb7e9 70%);
-  border: 2px solid #56697b;
+  background: radial-gradient(circle at 36% 28%, #fff, #7fc0ef 54%, #2a5e96 100%);
+  border: 2px solid #4b5b70;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.76),
+    0 0 0 3px rgba(24, 42, 66, 0.18);
 }
 
 .icon-art.network {
   border-radius: 50%;
   background:
-    radial-gradient(circle at 35% 24%, #ffffff 0 8%, transparent 10%),
-    radial-gradient(circle at 50% 50%, #90f2ff 0 20%, #2ca1f1 21% 57%, #074da8 58% 100%);
+    radial-gradient(circle at 33% 23%, #ffffff 0 8%, rgba(255, 255, 255, 0.72) 9% 15%, transparent 25%),
+    radial-gradient(circle at 50% 50%, #9df3ff 0 14%, #32aef6 34%, #0752ad 72%, #062b70 100%);
   border: 1px solid rgba(255, 255, 255, 0.86);
+  box-shadow:
+    inset -6px -8px 9px rgba(0, 28, 98, 0.38),
+    inset 4px 5px 8px rgba(255, 255, 255, 0.32),
+    3px 6px 10px rgba(0, 0, 0, 0.52);
 }
 
 .icon-art.network::before,
 .icon-art.network::after {
   content: "";
   position: absolute;
-  border: 1px solid rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.74);
   border-left-color: transparent;
   border-right-color: transparent;
   border-radius: 50%;
@@ -379,31 +433,72 @@ a {
 .icon-art.network::after {
   inset: 4px 12px;
   transform: rotate(90deg);
+  box-shadow:
+    -11px -4px 0 -4px #eaffff,
+    11px 4px 0 -4px #eaffff,
+    0 13px 0 -4px #d8ffff;
+}
+
+.icon-art.folder.app {
+  border-radius: 7px;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.56), transparent 34%),
+    linear-gradient(#ffc75d 0 18%, #e98722 19% 62%, #a94d12 100%);
+  border-color: #8d4511;
+}
+
+.icon-art.folder.app::before {
+  top: 7px;
+  left: 12px;
+  width: 24px;
+  height: 8px;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  border: 3px solid #6b3912;
+  border-bottom: 0;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
 .icon-art.app::before {
   content: "";
   position: absolute;
-  inset: 8px;
-  border-radius: 5px;
+  inset: 17px 7px 7px;
+  border-radius: 4px;
   background:
     linear-gradient(90deg, transparent 47%, rgba(255, 255, 255, 0.78) 48% 52%, transparent 53%),
     linear-gradient(transparent 47%, rgba(255, 255, 255, 0.78) 48% 52%, transparent 53%),
-    linear-gradient(135deg, #5fd06b, #116ebd);
-  box-shadow: 0 0 0 2px rgba(9, 65, 128, 0.42);
+    linear-gradient(135deg, #66d979, #0f70bd);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.58),
+    0 0 0 2px rgba(79, 36, 8, 0.38);
+}
+
+.icon-art.folder.app::after {
+  inset: 18px 5px 6px;
+  border-radius: 3px 3px 6px 6px;
+  background:
+    linear-gradient(170deg, rgba(255, 255, 255, 0.38), transparent 42%),
+    linear-gradient(#f7a43a, #aa4e13);
 }
 
 .icon-art.ai {
   border-radius: 50%;
-  background: radial-gradient(circle at 38% 30%, #eaffff, #4cc6d2 42%, #1f6ca9 100%);
+  background:
+    radial-gradient(circle at 35% 24%, rgba(255, 255, 255, 0.98) 0 9%, rgba(224, 255, 255, 0.7) 10% 18%, transparent 28%),
+    radial-gradient(circle at 50% 52%, #95fbff 0 16%, #31c8d3 38%, #1966a9 72%, #102d72 100%);
+  border: 1px solid rgba(208, 255, 255, 0.82);
+  box-shadow:
+    inset -6px -8px 10px rgba(15, 45, 107, 0.44),
+    inset 5px 6px 10px rgba(255, 255, 255, 0.34),
+    3px 6px 10px rgba(0, 0, 0, 0.52);
 }
 
 .icon-art.ai::before,
 .icon-art.ai::after {
   content: "";
   position: absolute;
-  inset: 9px;
-  border: 3px solid rgba(255, 255, 255, 0.88);
+  inset: 10px;
+  border: 3px solid rgba(255, 255, 255, 0.9);
   border-radius: 44% 56% 48% 52%;
 }
 
@@ -413,131 +508,194 @@ a {
 
 .icon-art.ai::after {
   transform: rotate(-32deg);
-  border-color: rgba(216, 249, 255, 0.82);
+  border-color: rgba(193, 250, 255, 0.82);
+  box-shadow:
+    11px 0 0 -8px #ffffff,
+    -10px 5px 0 -8px #e6ffff,
+    3px -11px 0 -8px #e6ffff;
 }
 
 .icon-art.browser {
   border-radius: 50%;
   background:
-    radial-gradient(circle at 56% 49%, #d9ffff 0 17%, #3fb0ff 18% 38%, #174fa7 39% 100%);
+    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.9) 0 8%, transparent 20%),
+    radial-gradient(circle at 56% 49%, #e5ffff 0 14%, #55c1ff 15% 35%, #164fa8 36% 100%);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  box-shadow:
+    inset -5px -7px 9px rgba(8, 35, 109, 0.4),
+    inset 4px 6px 10px rgba(255, 255, 255, 0.3),
+    3px 6px 10px rgba(0, 0, 0, 0.52);
 }
 
 .icon-art.browser::before {
   content: "";
   position: absolute;
-  inset: -1px;
+  inset: -2px;
   border-radius: 50%;
   background:
-    conic-gradient(from 210deg, #f8a13d 0 23%, #f2632d 24% 42%, transparent 43% 68%, #ffc558 69% 86%, #f8a13d 87% 100%);
-  -webkit-mask: radial-gradient(circle, transparent 0 48%, #000 50%);
-  mask: radial-gradient(circle, transparent 0 48%, #000 50%);
+    conic-gradient(from 218deg, #ffbf48 0 18%, #f26f2f 19% 39%, transparent 40% 62%, #ffd45b 63% 83%, #f39a2c 84% 100%);
+  -webkit-mask: radial-gradient(circle, transparent 0 43%, #000 45% 77%, transparent 79%);
+  mask: radial-gradient(circle, transparent 0 43%, #000 45% 77%, transparent 79%);
+  filter: drop-shadow(0 1px 1px rgba(91, 38, 0, 0.36));
 }
 
 .icon-art.mail {
-  border-radius: 5px;
-  background: linear-gradient(#ffffff, #c7dcf6);
-  border: 1px solid #8aa5c7;
+  border-radius: 6px;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.86), transparent 42%),
+    linear-gradient(#ffffff 0 22%, #d7eaff 23% 100%);
+  border: 1px solid #7c9cc6;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -5px 8px rgba(77, 124, 177, 0.22),
+    3px 6px 10px rgba(0, 0, 0, 0.52);
 }
 
 .icon-art.mail::before,
 .icon-art.mail::after {
   content: "";
   position: absolute;
-  inset: 8px 5px;
-  border: 2px solid #3773b3;
-  border-radius: 2px;
+  inset: 10px 5px 8px;
+  border: 2px solid #2f75bd;
+  border-radius: 3px;
+  background: linear-gradient(#fafdff, #bfdfff);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 2px rgba(38, 89, 145, 0.22);
 }
 
 .icon-art.mail::after {
-  inset: 10px 7px 12px;
+  inset: 14px 9px 16px;
+  border-color: #2f75bd;
   border-width: 0 0 2px 2px;
   transform: rotate(-45deg);
   border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .icon-art.terminal {
-  border-radius: 6px;
-  background: linear-gradient(#414141 0 15%, #0a0c0d 16% 100%);
+  border-radius: 8px;
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.36), transparent 33%),
+    linear-gradient(#4d4d4d 0 16%, #111416 17% 100%);
   border: 1px solid #070707;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.42),
+    inset 0 -5px 10px rgba(0, 0, 0, 0.62),
+    3px 6px 10px rgba(0, 0, 0, 0.52);
 }
 
 .icon-art.terminal::before {
   content: ">_";
   position: absolute;
-  left: 7px;
-  top: 17px;
+  left: 8px;
+  top: 18px;
   color: #89ff85;
   font-family: "Courier New", monospace;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   font-weight: 700;
   text-shadow: 0 0 5px rgba(137, 255, 133, 0.8);
 }
 
 .icon-art.system {
-  border-radius: 5px;
-  background: linear-gradient(#dcecff 0 66%, #778fae 67% 100%);
-  border: 1px solid #58769f;
+  border-radius: 6px;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.66), transparent 38%),
+    linear-gradient(#dcecff 0 64%, #778fae 65% 100%);
+  border: 1px solid #506f99;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.78),
+    inset 0 -4px 8px rgba(42, 62, 88, 0.34),
+    3px 6px 10px rgba(0, 0, 0, 0.52);
 }
 
 .icon-art.system::before {
   content: "";
   position: absolute;
-  inset: 7px 6px 14px;
+  inset: 7px 6px 15px;
   border-radius: 3px;
-  background: linear-gradient(#132d5d, #2c73c9);
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.36), transparent 42%),
+    linear-gradient(#132d5d, #2c73c9);
   border: 2px solid #eef6ff;
+  box-shadow:
+    inset 0 -4px 8px rgba(0, 29, 85, 0.34),
+    0 1px 2px rgba(0, 36, 92, 0.28);
 }
 
 .icon-art.system::after {
   content: "";
   position: absolute;
-  left: 13px;
-  right: 13px;
-  bottom: 7px;
-  height: 4px;
+  left: 12px;
+  right: 12px;
+  bottom: 6px;
+  height: 7px;
   border-radius: 3px 3px 0 0;
-  background: #f0f4fb;
-  box-shadow: 0 4px 0 #526a88;
+  background:
+    radial-gradient(circle at 17% 46%, #63f56e 0 10%, transparent 13%),
+    radial-gradient(circle at 50% 46%, #ffe66a 0 9%, transparent 12%),
+    radial-gradient(circle at 83% 46%, #ff6a58 0 9%, transparent 12%),
+    linear-gradient(#f0f4fb, #9aadca);
+  box-shadow: 0 5px 0 #526a88;
 }
 
 .icon-art.recyclebin {
-  border-radius: 4px 4px 7px 7px;
+  border-radius: 5px 5px 8px 8px;
   background:
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.38) 0 4px, rgba(77, 122, 157, 0.22) 4px 7px),
-    linear-gradient(#effbff, #8dbbda 54%, #5d8caf);
+    linear-gradient(155deg, rgba(255, 255, 255, 0.7), transparent 38%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.42) 0 4px, rgba(77, 122, 157, 0.18) 4px 7px),
+    linear-gradient(rgba(244, 253, 255, 0.74), rgba(141, 187, 218, 0.68) 54%, rgba(93, 140, 175, 0.75));
   border: 1px solid rgba(222, 243, 255, 0.92);
   transform: perspective(60px) rotateX(-4deg);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.82),
+    inset 0 -6px 9px rgba(41, 89, 126, 0.32),
+    3px 6px 10px rgba(0, 0, 0, 0.52);
 }
 
 .icon-art.recyclebin::before {
   content: "";
   position: absolute;
-  top: -6px;
+  top: -7px;
   left: 7px;
-  width: 26px;
-  height: 7px;
+  width: 32px;
+  height: 8px;
   border: 1px solid rgba(255, 255, 255, 0.92);
-  border-radius: 2px;
-  background: linear-gradient(#ffffff, #b8d8ed);
+  border-radius: 3px;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.86), transparent 45%),
+    linear-gradient(#ffffff, #b8d8ed);
+  box-shadow: 0 1px 2px rgba(31, 78, 117, 0.32);
 }
 
 .icon-art.recyclebin::after {
   content: "";
   position: absolute;
-  left: 9px;
-  right: 9px;
-  top: 13px;
+  left: 10px;
+  right: 10px;
+  top: 12px;
   bottom: 7px;
   border-left: 2px solid rgba(255, 255, 255, 0.62);
   border-right: 2px solid rgba(30, 86, 130, 0.28);
+  box-shadow:
+    7px 0 0 -5px rgba(255, 255, 255, 0.52),
+    -7px 0 0 -5px rgba(55, 104, 143, 0.22);
 }
 
 .desktop-icon > span:last-child {
-  max-width: 78px;
+  max-width: 84px;
   color: #fff;
   font-size: 0.72rem;
   line-height: 1.15;
   word-break: break-word;
+  text-align: center;
+  padding: 1px 3px;
+  border-radius: 2px;
+  text-shadow:
+    1px 1px 1px #000,
+    0 0 4px #000,
+    0 0 8px rgba(0, 0, 0, 0.68);
 }
 
 .window {
@@ -992,17 +1150,28 @@ a {
   }
 
   .desktop-icons {
-    grid-template-columns: repeat(2, 78px);
-    grid-auto-rows: 86px;
+    top: 12px;
+    left: 10px;
+    grid-template-columns: repeat(2, 82px);
+    grid-auto-rows: 92px;
+    gap: 7px 2px;
   }
 
   .desktop-icon {
-    width: 76px;
+    width: 80px;
+    min-height: 90px;
+    gap: 6px;
+    padding-inline: 3px;
   }
 
   .icon-art {
-    width: 38px;
-    height: 38px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .desktop-icon > span:last-child {
+    max-width: 76px;
+    font-size: 0.68rem;
   }
 
   .window {
