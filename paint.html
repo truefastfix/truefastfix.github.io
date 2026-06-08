@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f5d3a">
+<title>Lied Lodge Hallway Paint Checklist</title>
+<style>
+:root{
+  --green:#2f5d3a; --cream:#f4f1e7; --paper:#fffdf7; --ink:#1f2a22;
+  --muted:#687466; --border:#d7d0bd; --warn:#b06028; --bad:#9f2f2f; --good:#2f6b3f;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  background:linear-gradient(180deg,#f7f3e8 0%,#ece6d5 100%);
+  color:var(--ink);
+}
+.app{max-width:560px;min-height:100vh;margin:0 auto;padding:16px 14px calc(112px + env(safe-area-inset-bottom))}
+.header{
+  background:linear-gradient(135deg,var(--green),#243e2b);
+  color:white;border-radius:22px;padding:18px;box-shadow:0 10px 24px rgba(31,42,34,.18)
+}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:48px;height:48px;border-radius:14px;background:#f4f1e7;display:grid;place-items:center;color:var(--green);font-size:28px;font-weight:800}
+.kicker{font-size:13px;opacity:.88;letter-spacing:.04em;text-transform:uppercase}
+h1{font-size:24px;line-height:1.05;margin:3px 0 0}
+.sub{margin:12px 0 0;font-size:14px;opacity:.88}
+.progress{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;font-size:13px}
+.bar{height:8px;background:rgba(255,255,255,.25);border-radius:999px;overflow:hidden;flex:1}
+.fill{height:100%;width:0;background:#d8e3c0;border-radius:999px;transition:.25s}
+.card{background:var(--paper);border:1px solid var(--border);border-radius:20px;padding:16px;margin-top:14px;box-shadow:0 8px 20px rgba(31,42,34,.08)}
+.page-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.page-title h2{font-size:21px;margin:0}
+.pill{background:#e4ead7;color:#27452e;border:1px solid #cbd6bf;border-radius:999px;padding:6px 10px;font-size:13px;font-weight:700}
+label.field{display:block;font-weight:700;margin:12px 0 7px}
+select, textarea, input[type="text"]{width:100%;border:1px solid var(--border);border-radius:14px;padding:13px 12px;font-size:16px;background:#fff;color:var(--ink)}
+textarea{min-height:96px;resize:vertical}
+.grid{display:grid;gap:10px;margin-top:10px}
+.choice{width:100%;border:1.5px solid var(--border);background:#fff;color:var(--ink);border-radius:16px;padding:14px;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left}
+.choice small{display:block;font-weight:500;color:var(--muted);margin-top:3px}
+.check{width:26px;height:26px;border:2px solid #a7aa9b;border-radius:8px;display:grid;place-items:center;flex:0 0 auto;color:white;background:white;font-size:17px}
+.choice.active{border-color:var(--green);background:#edf3e6}
+.choice.active .check{background:var(--green);border-color:var(--green)}
+.choice.active .check:before{content:"✓"}
+.choice.warn.active{border-color:var(--warn);background:#fff4e8}
+.choice.bad.active{border-color:var(--bad);background:#fff0f0}
+.help{font-size:13px;color:var(--muted);line-height:1.35;margin-top:8px}
+.result{border-radius:18px;padding:14px;margin-top:12px;font-weight:800;border:1px solid var(--border)}
+.result.good{background:#eaf4e8;color:#285730;border-color:#bed4b8}
+.result.warn{background:#fff4e6;color:#8b4b16;border-color:#efc89a}
+.result.bad{background:#fff0f0;color:#8a2d2d;border-color:#e1b0b0}
+.footer{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(244,241,231,.92);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:10px 14px calc(10px + env(safe-area-inset-bottom))}
+.footer-inner{max-width:560px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{border:0;border-radius:16px;padding:15px 14px;font-size:16px;font-weight:800;box-shadow:0 6px 12px rgba(31,42,34,.12)}
+.btn.secondary{background:#fff;color:var(--green);border:1px solid var(--border)}
+.btn.primary{background:var(--green);color:white}
+.btn.danger{background:#8b3a2f;color:white}
+.summary-row{border-bottom:1px solid #ebe5d6;padding:10px 0;font-size:14px}
+.summary-row b{display:block;font-size:15px;margin-bottom:3px}
+.summary-actions{display:grid;gap:10px;margin-top:14px}
+.notice{background:#eef4e8;border:1px solid #c9d8bf;border-radius:16px;padding:12px;font-size:14px;line-height:1.4;margin-top:12px;color:#2d4730}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="brand">
+      <div class="logo">🎨</div>
+      <div>
+        <div class="kicker">Lied Lodge</div>
+        <h1>Hallway Paint Checklist</h1>
+      </div>
+    </div>
+    <p class="sub">Four-hallway checklist for walls, trim, and doors: touch-up, roll, or no action.</p>
+    <div class="progress">
+      <span id="progressText">Hallway 1 of 4</span>
+      <div class="bar"><div class="fill" id="progressFill"></div></div>
+    </div>
+  </div>
+  <div id="screen"></div>
+</div>
+
+<div class="footer">
+  <div class="footer-inner">
+    <button class="btn secondary" id="backBtn">Cancel</button>
+    <button class="btn primary" id="nextBtn">Next</button>
+  </div>
+</div>
+
+<script>
+const HALLWAYS = ["Hallway 1", "Hallway 2", "Hallway 3", "Hallway 4"];
+const AREAS = [
+  {key:"wall", label:"Walls", examples:"Scuffs, patches, corner rubs, roller marks"},
+  {key:"trim", label:"Trim / Baseboard", examples:"Chips, scratches, black marks, corner damage"},
+  {key:"door", label:"Doors", examples:"Scuffs around handles, scratches, kick marks, chips"}
+];
+
+let hallwayIndex = 0;
+let page = 0;
+
+const blankArea = () => ({condition:"", action:"", paintColor:"", notes:""});
+const blank = () => ({
+  hallwayName:"",
+  locationNotes:"",
+  wall: blankArea(),
+  trim: blankArea(),
+  door: blankArea(),
+  final:"",
+  finalNotes:""
+});
+
+let data = JSON.parse(localStorage.getItem("hallwayPaintData") || "null") || Array.from({length:HALLWAYS.length}, blank);
+
+const screen = document.getElementById("screen");
+const backBtn = document.getElementById("backBtn");
+const nextBtn = document.getElementById("nextBtn");
+const progressText = document.getElementById("progressText");
+const progressFill = document.getElementById("progressFill");
+
+function save(){ localStorage.setItem("hallwayPaintData", JSON.stringify(data)); }
+function current(){ return data[hallwayIndex]; }
+function area(){ return AREAS[page]; }
+function areaData(){ return current()[area().key]; }
+function setArea(k,v){ areaData()[k]=v; calcFinal(current()); save(); render(); }
+function setHall(k,v){ current()[k]=v; calcFinal(current()); save(); render(); }
+
+function calcFinal(h){
+  const actions = [h.wall.action, h.trim.action, h.door.action];
+  if(actions.includes("Roll / Repaint")) h.final = "Paint Work Needed";
+  else if(actions.includes("Touch Up")) h.final = "Touch-Up Needed";
+  else if(actions.every(a => a === "No Action")) h.final = "OK";
+  else h.final = "";
+}
+
+function choice(label, key, value, sub="", cls=""){
+  const active = areaData()[key] === value;
+  return `<button class="choice ${cls} ${active?'active':''}" onclick="setArea('${key}','${value}')">
+    <span>${label}${sub?`<small>${sub}</small>`:""}</span><span class="check"></span>
+  </button>`;
+}
+
+function finalChoice(label, value, sub="", cls=""){
+  const active = current().final === value;
+  return `<button class="choice ${cls} ${active?'active':''}" onclick="setHall('final','${value}')">
+    <span>${label}${sub?`<small>${sub}</small>`:""}</span><span class="check"></span>
+  </button>`;
+}
+
+function render(){
+  if(hallwayIndex >= HALLWAYS.length){ renderSummary(); return; }
+
+  const h = current();
+  const a = area();
+  const ad = areaData();
+  const totalPages = HALLWAYS.length * AREAS.length;
+  const donePage = hallwayIndex * AREAS.length + page + 1;
+
+  progressText.textContent = `${HALLWAYS[hallwayIndex]} — ${a.label}`;
+  progressFill.style.width = `${(donePage / totalPages) * 100}%`;
+  backBtn.textContent = (hallwayIndex===0 && page===0) ? "Cancel" : "Back";
+  nextBtn.textContent = (hallwayIndex===HALLWAYS.length-1 && page===AREAS.length-1) ? "Review" : "Next";
+  nextBtn.onclick = next;
+
+  const resClass = h.final==="OK" ? "good" : h.final==="Paint Work Needed" ? "bad" : h.final ? "warn" : "";
+
+  screen.innerHTML = `
+    <div class="card">
+      <div class="page-title"><h2>${HALLWAYS[hallwayIndex]}: ${a.label}</h2><span class="pill">Step ${page+1} of 3</span></div>
+
+      <label class="field">Hallway name / location</label>
+      <input type="text" value="${escapeHtml(h.hallwayName)}" placeholder="Example: 2nd floor north hallway" oninput="current().hallwayName=this.value; save();">
+
+      <label class="field">${a.label} condition</label>
+      <div class="grid">
+        ${choice("OK","condition","OK","No paint work needed")}
+        ${choice("Minor marks","condition","Minor","Small scuffs/chips only","warn")}
+        ${choice("Heavy wear / damage","condition","Heavy","Multiple marks, bad patch, or broad area","bad")}
+      </div>
+
+      <label class="field">Action needed</label>
+      <div class="grid">
+        ${choice("No Action","action","No Action","Leave as-is")}
+        ${choice("Touch Up","action","Touch Up","Spot brush/mini roller only","warn")}
+        ${choice("Roll / Repaint","action","Roll / Repaint","Roll full section, door face, or trim run","bad")}
+      </div>
+
+      <label class="field">Paint / color note</label>
+      <input type="text" value="${escapeHtml(ad.paintColor)}" placeholder="Example: hallway wall paint / trim white / door color" oninput="areaData().paintColor=this.value; save();">
+
+      <label class="field">Notes</label>
+      <textarea placeholder="Example: Door has scuff near handle. Trim corner by elevator needs touch-up." oninput="areaData().notes=this.value; save();">${escapeHtml(ad.notes)}</textarea>
+
+      ${h.final ? `<div class="result ${resClass}">Current hallway status: ${h.final}</div>` : `<div class="notice">Pick an action for walls, trim, and doors to finish this hallway.</div>`}
+
+      <p class="help">Use “Touch Up” for small spots. Use “Roll / Repaint” when the area will flash, has multiple repairs, or needs a full clean section.</p>
+    </div>`;
+}
+
+function next(){
+  if(page < AREAS.length - 1){
+    page++;
+    render();
+    scrollTo(0,0);
+    return;
+  }
+  if(hallwayIndex < HALLWAYS.length - 1){
+    hallwayIndex++;
+    page = 0;
+    render();
+    scrollTo(0,0);
+    return;
+  }
+  hallwayIndex = HALLWAYS.length;
+  renderSummary();
+}
+
+function back(){
+  if(hallwayIndex >= HALLWAYS.length){
+    hallwayIndex = HALLWAYS.length - 1;
+    page = AREAS.length - 1;
+    render();
+    return;
+  }
+  if(hallwayIndex===0 && page===0){
+    if(confirm("Clear this paint checklist and start over?")) resetAll();
+    return;
+  }
+  if(page > 0){
+    page--;
+    render();
+    scrollTo(0,0);
+    return;
+  }
+  hallwayIndex--;
+  page = AREAS.length - 1;
+  render();
+  scrollTo(0,0);
+}
+
+function renderSummary(){
+  progressText.textContent = "Paint Checklist Complete";
+  progressFill.style.width = "100%";
+  backBtn.textContent = "Back";
+  nextBtn.textContent = "Save CSV";
+  nextBtn.onclick = saveCopy;
+
+  screen.innerHTML = `
+    <div class="card">
+      <div class="page-title"><h2>Paint Checklist Complete</h2><span class="pill">4 hallways</span></div>
+      <div class="notice">Save CSV for PM records, or copy the readable summary for a work note.</div>
+      ${data.map((h,i)=>`
+        <div class="summary-row">
+          <b>${HALLWAYS[i]}${h.hallwayName ? " - " + escapeHtml(h.hallwayName) : ""}</b>
+          Walls: ${h.wall.action || "Not selected"} | Trim: ${h.trim.action || "Not selected"} | Doors: ${h.door.action || "Not selected"}<br>
+          Final: ${h.final || "Not completed"}${h.finalNotes ? "<br>Final notes: " + escapeHtml(h.finalNotes) : ""}
+        </div>
+      `).join("")}
+      <div class="summary-actions">
+        <button class="btn primary" onclick="saveCopy()">Save CSV Copy</button>
+        <button class="btn secondary" onclick="copySummary()">Copy Text Summary</button>
+        <button class="btn danger" onclick="resetAll()">Reset Checklist</button>
+      </div>
+    </div>`;
+}
+
+function csvEscape(v){ return `"${String(v || "").replaceAll('"','""')}"`; }
+
+function saveCopy(){
+  const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,"-");
+  const headers = ["Hallway","Location","Area","Condition","Action","Paint/Color Note","Notes","Final Status"];
+  const rows = [];
+  data.forEach((h,i)=>{
+    AREAS.forEach(a=>{
+      const ad = h[a.key];
+      rows.push([HALLWAYS[i], h.hallwayName, a.label, ad.condition, ad.action, ad.paintColor, ad.notes, h.final].map(csvEscape).join(","));
+    });
+  });
+  const csv = headers.map(csvEscape).join(",") + "\n" + rows.join("\n");
+  const blob = new Blob([csv], {type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `hallway-paint-checklist-${stamp}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function copySummary(){
+  const today = new Date().toLocaleDateString();
+  const text = [
+    "Lied Lodge Hallway Paint Checklist",
+    `Date: ${today}`,
+    "",
+    data.map((h,i)=>[
+      `${HALLWAYS[i]}${h.hallwayName ? " - " + h.hallwayName : ""}`,
+      `Walls: ${h.wall.action || "Not selected"} — ${h.wall.notes || "No notes"}`,
+      `Trim: ${h.trim.action || "Not selected"} — ${h.trim.notes || "No notes"}`,
+      `Doors: ${h.door.action || "Not selected"} — ${h.door.notes || "No notes"}`,
+      `Final: ${h.final || "Not completed"}`
+    ].join("\n")).join("\n\n")
+  ].join("\n");
+  navigator.clipboard.writeText(text).then(()=>alert("Readable summary copied."));
+}
+
+function resetAll(){
+  data = Array.from({length:HALLWAYS.length}, blank);
+  hallwayIndex = 0;
+  page = 0;
+  save();
+  render();
+}
+
+function escapeHtml(str){
+  return String(str||"").replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+backBtn.onclick = back;
+nextBtn.onclick = next;
+render();
+</script>
+</body>
+</html>
