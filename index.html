@@ -1172,6 +1172,122 @@ a {
   background: linear-gradient(#74c35d, #247b28);
 }
 
+.desktop-icons-right {
+  position: absolute;
+  right: 14px;
+  bottom: 120px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+}
+
+.icon-art.folder.danger {
+  background:
+    linear-gradient(158deg, rgba(255, 255, 255, 0.56), transparent 28%),
+    linear-gradient(180deg, #ffb030 0 18%, #c84a10 19% 58%, #8c2a08 80%, #5c1505 100%);
+  border-color: #6e1e05;
+  box-shadow:
+    inset 0 2px 1px rgba(255, 255, 255, 0.64),
+    inset 0 -7px 10px rgba(80, 20, 0, 0.52),
+    inset 5px 0 9px rgba(255, 140, 50, 0.2),
+    2px 4px 4px rgba(0, 0, 0, 0.38),
+    5px 9px 13px rgba(0, 0, 0, 0.48),
+    0 0 0 1px rgba(200, 50, 0, 0.28);
+}
+
+.icon-art.folder.danger::before {
+  background: linear-gradient(#ffd060, #c04010 74%, #7a2005);
+  border-color: #6a1c04;
+}
+
+.icon-art.folder.danger::after {
+  background:
+    linear-gradient(170deg, rgba(255, 200, 80, 0.36), transparent 40%),
+    linear-gradient(180deg, rgba(255, 130, 50, 0.3), rgba(80, 20, 0, 0.12));
+  border-top-color: rgba(255, 130, 50, 0.44);
+}
+
+.file-list {
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.file-list-header {
+  padding: 8px 14px;
+  background: #f6f8fa;
+  border-bottom: 1px solid #d0d7de;
+  font-size: 0.8rem;
+  color: #57606a;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.file-list-header strong {
+  color: #24292f;
+  font-weight: 600;
+}
+
+.file-row {
+  display: grid;
+  grid-template-columns: 40px 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-bottom: 1px solid #eaecef;
+  font-size: 0.82rem;
+}
+
+.file-row:last-child {
+  border-bottom: 0;
+}
+
+.file-row:hover {
+  background: #f6f8fa;
+}
+
+.file-badge {
+  display: inline-block;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: #ddf4ff;
+  border: 1px solid #54aeff;
+  color: #0550ae;
+  font-size: 0.66rem;
+  font-weight: 700;
+  font-family: "Courier New", monospace;
+  text-align: center;
+}
+
+.file-badge.sw {
+  background: #fff8c5;
+  border-color: #d4a72c;
+  color: #7d4e00;
+}
+
+.file-name {
+  color: #0969da;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-meta {
+  color: #57606a;
+  font-size: 0.74rem;
+  white-space: nowrap;
+}
+
+.file-age {
+  color: #57606a;
+  font-size: 0.74rem;
+  white-space: nowrap;
+}
+
 @media (max-width: 760px) {
   :root {
     --desktop-bottom: calc(50px + var(--safe-bottom));
@@ -1290,6 +1406,20 @@ a {
     min-height: 40px;
   }
 
+  .desktop-icons-right {
+    bottom: 107px;
+    right: 10px;
+    gap: 7px;
+  }
+
+  .file-meta {
+    display: none;
+  }
+
+  .file-row {
+    grid-template-columns: 40px 1fr auto;
+  }
+
   .window.mobile-opening {
     animation: mobileAppOpen 220ms cubic-bezier(0.18, 0.9, 0.28, 1) both;
   }
@@ -1349,9 +1479,13 @@ a {
     <button class="desktop-icon" type="button" data-window="applab"><span class="icon-art folder app" aria-hidden="true"></span><span>App Lab</span></button>
     <button class="desktop-icon" type="button" data-window="aitools"><span class="icon-art ai" aria-hidden="true"></span><span>AI Tools</span></button>
     <button class="desktop-icon" type="button" data-window="links"><span class="icon-art browser" aria-hidden="true"></span><span>Tech Links</span></button>
+    <button class="desktop-icon" type="button" data-window="system"><span class="icon-art system" aria-hidden="true"></span><span>System Panel</span></button>
+  </nav>
+  <nav class="desktop-icons-right" aria-label="Right desktop icons">
     <button class="desktop-icon" type="button" data-window="contact"><span class="icon-art mail" aria-hidden="true"></span><span>Contact Me</span></button>
     <button class="desktop-icon" type="button" data-window="terminal"><span class="icon-art terminal" aria-hidden="true"></span><span>Terminal</span></button>
-    <button class="desktop-icon" type="button" data-window="system"><span class="icon-art system" aria-hidden="true"></span><span>System Panel</span></button>
+    <button class="desktop-icon" type="button" data-window="ownyourrisk"><span class="icon-art folder danger" aria-hidden="true"></span><span>OPEN AT YOUR OWN RISK</span></button>
+    <button class="desktop-icon" type="button" data-window="aiprompt"><span class="icon-art folder" aria-hidden="true"></span><span>AI Prompt Injection Projects</span></button>
   </nav>
   <button class="desktop-icon recycle" type="button" data-window="recycle"><span class="icon-art recyclebin" aria-hidden="true"></span><span>Recycle Bin</span></button>
 
@@ -1472,7 +1606,7 @@ a {
     <div class="window-body">
       <h2>Contact</h2>
       <p>For networking, app development, web development, automation, AI tools, diagnostics, troubleshooting, home lab projects, and tech repair requests, email:</p>
-      <p><a id="emailLink" href="mailto:support@truefastfix.com">support@truefastfix.com</a></p>
+      <p><a id="emailLink" href="mailto:support@skyfallcreations.com">support@skyfallcreations.com</a></p>
       <div class="panel">
         <strong>Good intake details</strong>
         Include the device or system, what changed, what already worked, exact errors, urgency, and any screenshots or logs you can share.
@@ -1507,6 +1641,41 @@ a {
     <div class="window-body">
       <h2>Recycle Bin</h2>
       <div class="empty-bin">This folder is empty.</div>
+    </div>
+  </section>
+
+  <section id="win-aiprompt" class="window hidden" data-window-id="aiprompt" data-title="AI Prompt Injection Projects" style="width: 640px; height: 460px; left: 180px; top: 60px;">
+    <header class="titlebar"><div class="title-text"><span>PRJ</span><span class="title-name">AI Prompt Injection Projects</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body">
+      <h2>AI Prompt Injection Projects</h2>
+      <p style="font-size:0.82rem;color:#595959;margin-bottom:14px;">Research and portfolio items only. These are demo and educational projects, not active tools.</p>
+      <div class="window-grid">
+        <div class="panel"><strong>Context Override Lab</strong>Controlled study of how injected context shifts model response framing. Documents boundary conditions and scope limitations.</div>
+        <div class="panel"><strong>System Prompt Boundary Tests</strong>Systematic cases where system-level instructions interact with user-turn inputs. Notes on observable behavior and edge cases.</div>
+        <div class="panel"><strong>Token Leak Simulation Notes</strong>Research log exploring partial prompt exposure through over-verbose outputs. All tests run in sandboxed environments.</div>
+        <div class="panel"><strong>Multi-Turn Jailbreak Pattern Study</strong>Documentation of incremental context-shifting patterns across multi-turn conversations. Analysis only, no automation.</div>
+        <div class="panel"><strong>Guardrail Regression Cases</strong>Catalog of prompt variants that revealed inconsistent safety behavior across model versions. Used for red-team reporting.</div>
+        <div class="panel"><strong>Prompt Sanitizer Bypass Research</strong>Evaluation of common input-cleaning heuristics and cases where they fail to block adversarial context framing.</div>
+        <div class="panel"><strong>Red-Team Response Matrix</strong>Structured output format for categorizing model responses during adversarial prompt sessions. Template reference only.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="win-ownyourrisk" class="window hidden" data-window-id="ownyourrisk" data-title="OPEN AT YOUR OWN RISK" style="width: 610px; height: 440px; left: 200px; top: 80px;">
+    <header class="titlebar"><div class="title-text"><span>!</span><span class="title-name">OPEN AT YOUR OWN RISK</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
+    <div class="window-body">
+      <h2>OPEN AT YOUR OWN RISK</h2>
+      <p style="font-size:0.82rem;color:#595959;margin-bottom:14px;">Demo repository. No real downloads. These are portfolio file stubs only.</p>
+      <div class="file-list">
+        <div class="file-list-header"><strong>skyfall-tools</strong><span>/ 7 files &mdash; demo only</span></div>
+        <div class="file-row"><span class="file-badge">PY</span><span class="file-name">network_audit_reporter.py</span><span class="file-meta">Audit script stub</span><span class="file-age">3 days ago</span></div>
+        <div class="file-row"><span class="file-badge">PY</span><span class="file-name">hvac_log_cleaner.py</span><span class="file-meta">Log cleanup demo</span><span class="file-age">5 days ago</span></div>
+        <div class="file-row"><span class="file-badge sw">SW</span><span class="file-name">ios_camera_permission_test.swift</span><span class="file-meta">Permission test stub</span><span class="file-age">1 week ago</span></div>
+        <div class="file-row"><span class="file-badge">PY</span><span class="file-name">prompt_sanitizer_demo.py</span><span class="file-meta">Sanitizer demo</span><span class="file-age">1 week ago</span></div>
+        <div class="file-row"><span class="file-badge">PY</span><span class="file-name">sqlite_maintenance_tracker.py</span><span class="file-meta">DB maintenance stub</span><span class="file-age">2 weeks ago</span></div>
+        <div class="file-row"><span class="file-badge sw">SW</span><span class="file-name">skyfall_terminal_mock.swift</span><span class="file-meta">Terminal mock UI</span><span class="file-age">2 weeks ago</span></div>
+        <div class="file-row"><span class="file-badge">PY</span><span class="file-name">router_latency_watchdog.py</span><span class="file-meta">Latency monitor stub</span><span class="file-age">3 weeks ago</span></div>
+      </div>
     </div>
   </section>
 </main>
@@ -1585,7 +1754,7 @@ a {
     network: "Network Center: LAN review, DNS/DHCP checks, latency triage, wireless planning, device inventory, and readable diagnostics.",
     applab: "App Lab: workflow-first apps, responsive web tools, local data flows, validation states, and maintainable interfaces.",
     aitools: "AI Tools: support drafts, log summaries, classification helpers, automation prompts, and reviewable technical notes.",
-    contact: "Contact: support@truefastfix.com",
+    contact: "Contact: support@skyfallcreations.com",
     ipconfig: "Skyfall Ethernet Adapter:\n   Connection-specific DNS Suffix  . : local.skyfall\n   IPv4 Address. . . . . . . . . . . : 192.168.5.24\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n   Default Gateway . . . . . . . . . : 192.168.5.1",
     ping: "Pinging skyfall.local [192.168.5.1] with 32 bytes of data:\nReply from 192.168.5.1: bytes=32 time=2ms TTL=64\nReply from 192.168.5.1: bytes=32 time=1ms TTL=64\nReply from 192.168.5.1: bytes=32 time=2ms TTL=64\nPackets: Sent = 3, Received = 3, Lost = 0 (0% loss)",
     whoami: "SKYFALL-OS\\Desktop"
