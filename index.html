@@ -170,13 +170,13 @@ a {
   display: none;
   height: calc(100% - var(--desktop-bottom));
   background:
-    radial-gradient(ellipse 70% 28% at 70% 78%, rgba(173, 226, 73, 0.96) 0 36%, rgba(73, 165, 42, 0.9) 61%, transparent 76%),
-    radial-gradient(ellipse 55% 24% at 18% 85%, rgba(70, 160, 47, 0.94) 0 44%, rgba(24, 108, 38, 0.84) 70%, transparent 83%),
-    radial-gradient(ellipse 82% 39% at 73% 104%, rgba(142, 213, 62, 0.98) 0 25%, rgba(75, 165, 40, 0.96) 49%, transparent 73%),
-    radial-gradient(ellipse 60% 30% at 22% 101%, rgba(94, 183, 47, 0.98) 0 30%, rgba(34, 125, 42, 0.94) 64%, transparent 82%),
-    radial-gradient(ellipse 36% 20% at 96% 81%, rgba(198, 235, 112, 0.62), transparent 68%),
-    radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.86) 0 4%, rgba(255, 244, 177, 0.46) 6%, transparent 17%),
-    linear-gradient(180deg, #0642a3 0%, #1477d4 33%, #65baf5 57%, #b7e2ff 66%, #8cca59 67%, #2f8838 86%, #16622a 100%);
+    radial-gradient(ellipse 72% 30% at 66% 80%, rgba(168, 228, 68, 0.97) 0 39%, rgba(66, 160, 36, 0.92) 63%, transparent 79%),
+    radial-gradient(ellipse 58% 27% at 16% 87%, rgba(64, 158, 42, 0.95) 0 47%, rgba(18, 106, 34, 0.86) 73%, transparent 87%),
+    radial-gradient(ellipse 86% 44% at 68% 107%, rgba(136, 216, 56, 0.99) 0 29%, rgba(68, 162, 36, 0.97) 53%, transparent 77%),
+    radial-gradient(ellipse 64% 36% at 16% 106%, rgba(88, 180, 42, 0.99) 0 34%, rgba(26, 122, 36, 0.95) 68%, transparent 87%),
+    radial-gradient(ellipse 40% 24% at 98% 84%, rgba(194, 236, 104, 0.64), transparent 72%),
+    radial-gradient(circle at 76% 5%, rgba(255, 252, 208, 0.56) 0 2%, rgba(255, 246, 176, 0.32) 4%, transparent 11%),
+    linear-gradient(180deg, #093a90 0%, #1062c4 16%, #1c7cde 34%, #48a6f4 54%, #86c8fc 62%, #b0dafc 65%, #74be3e 66%, #2a9a24 82%, #0e5c1c 100%);
   overflow: hidden;
 }
 
@@ -185,15 +185,18 @@ a {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 10% 4% at 24% 20%, rgba(255, 255, 255, 0.88) 0 39%, transparent 45%),
-    radial-gradient(ellipse 15% 6% at 34% 18%, rgba(255, 255, 255, 0.76) 0 38%, transparent 45%),
-    radial-gradient(ellipse 9% 4% at 45% 21%, rgba(255, 255, 255, 0.64) 0 39%, transparent 46%),
-    radial-gradient(ellipse 7% 3% at 31% 23%, rgba(225, 244, 255, 0.66) 0 45%, transparent 52%),
-    radial-gradient(ellipse 13% 5% at 72% 25%, rgba(255, 255, 255, 0.48) 0 38%, transparent 46%),
-    radial-gradient(ellipse 9% 3% at 81% 27%, rgba(240, 250, 255, 0.34) 0 42%, transparent 49%),
-    linear-gradient(118deg, transparent 0 26%, rgba(255, 255, 255, 0.17) 31%, transparent 42% 100%),
-    linear-gradient(166deg, transparent 0 57%, rgba(255, 255, 255, 0.12) 66%, transparent 82%);
-  opacity: 0.94;
+    radial-gradient(ellipse 22% 9% at 19% 29%, rgba(255, 255, 255, 0.99) 0 56%, rgba(230, 246, 255, 0.72) 72%, transparent 100%),
+    radial-gradient(ellipse 17% 7% at 28% 24%, rgba(255, 255, 255, 0.97) 0 56%, transparent 100%),
+    radial-gradient(ellipse 14% 6% at 11% 33%, rgba(255, 255, 255, 0.91) 0 56%, transparent 100%),
+    radial-gradient(ellipse 10% 4% at 23% 35%, rgba(218, 242, 255, 0.70) 0 54%, transparent 100%),
+    radial-gradient(ellipse 9% 3% at 17% 36%, rgba(198, 228, 248, 0.46) 0 52%, transparent 100%),
+    radial-gradient(ellipse 19% 8% at 77% 21%, rgba(255, 255, 255, 0.95) 0 56%, transparent 100%),
+    radial-gradient(ellipse 14% 6% at 86% 18%, rgba(255, 255, 255, 0.90) 0 56%, transparent 100%),
+    radial-gradient(ellipse 11% 5% at 71% 26%, rgba(255, 255, 255, 0.82) 0 56%, transparent 100%),
+    radial-gradient(ellipse 12% 5% at 51% 17%, rgba(255, 255, 255, 0.76) 0 56%, transparent 100%),
+    radial-gradient(ellipse 8% 3% at 59% 21%, rgba(255, 255, 255, 0.64) 0 54%, transparent 100%),
+    linear-gradient(to bottom, transparent 53%, rgba(196, 228, 255, 0.34) 61%, transparent 67%);
+  opacity: 0.97;
   pointer-events: none;
 }
 
@@ -218,21 +221,21 @@ a {
   top: 14px;
   left: 14px;
   z-index: 5;
-  display: grid;
-  grid-template-columns: repeat(2, 92px);
-  grid-auto-rows: 98px;
-  gap: 9px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
 .desktop-icon {
-  width: 88px;
-  min-height: 94px;
+  width: 100px;
+  min-height: 112px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   gap: 8px;
-  padding: 7px 4px 6px;
+  padding: 8px 5px 7px;
   border: 1px solid transparent;
   border-radius: 4px;
   color: #fff;
@@ -285,8 +288,8 @@ a {
 }
 
 .icon-art {
-  width: 52px;
-  height: 52px;
+  width: 62px;
+  height: 62px;
   display: block;
   position: relative;
   border-radius: 10px;
@@ -563,39 +566,43 @@ a {
 }
 
 .icon-art.mail {
-  border-radius: 50%;
+  border-radius: 4px 4px 5px 5px;
   background:
-    radial-gradient(circle at 34% 24%, rgba(255, 255, 255, 0.98) 0 10%, transparent 22%),
-    radial-gradient(circle at 50% 50%, #82d8ff 0 18%, #2a8fdc 48%, #0d4a9c 100%);
-  border: 1px solid #9bd5ff;
+    linear-gradient(165deg, rgba(255, 255, 255, 0.92), transparent 42%),
+    linear-gradient(#f4f9ff 0%, #c8deff 100%);
+  border: 2px solid #2660b8;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -5px 8px rgba(77, 124, 177, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88),
+    inset 0 -4px 8px rgba(18, 60, 148, 0.14),
     2px 4px 4px rgba(0, 0, 0, 0.38),
     5px 9px 13px rgba(0, 0, 0, 0.48);
 }
 
-.icon-art.mail::before,
+/* Envelope sealed flap — V pointing down from top */
+.icon-art.mail::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 46% 0;
+  background:
+    linear-gradient(to bottom right, #4882d4 50%, transparent 50%),
+    linear-gradient(to bottom left, #4882d4 50%, transparent 50%);
+  background-size: 50% 100%;
+  background-position: left top, right top;
+  background-repeat: no-repeat;
+  border-radius: 3px 3px 0 0;
+}
+
+/* Bottom fold lines — inverted V from corners */
 .icon-art.mail::after {
   content: "";
   position: absolute;
-  inset: 15px 8px 13px;
-  border: 2px solid #2f75bd;
-  border-radius: 3px;
-  background: linear-gradient(#ffffff, #d9ecff);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 1px 2px rgba(38, 89, 145, 0.22);
-}
-
-.icon-art.mail::after {
-  inset: 19px 12px 22px;
-  border-color: #2f75bd;
-  border-width: 0 0 2px 2px;
-  transform: rotate(-45deg);
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+  inset: 54% 0 0 0;
+  background:
+    linear-gradient(to top right, rgba(72, 120, 200, 0.36) 50%, transparent 50%),
+    linear-gradient(to top left, rgba(72, 120, 200, 0.36) 50%, transparent 50%);
+  background-size: 50% 100%;
+  background-position: left bottom, right bottom;
+  background-repeat: no-repeat;
 }
 
 .icon-art.terminal {
@@ -712,19 +719,19 @@ a {
 }
 
 .desktop-icon > span:last-child {
-  max-width: 84px;
+  max-width: 96px;
   color: #fff;
-  font-size: 0.72rem;
-  line-height: 1.15;
+  font-size: 0.80rem;
+  line-height: 1.18;
   word-break: break-word;
   text-align: center;
-  padding: 1px 4px 2px;
+  padding: 2px 5px 3px;
   border-radius: 2px;
-  background: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.10);
   text-shadow:
     1px 2px 1px #000,
-    0 0 4px #000,
-    0 0 9px rgba(0, 0, 0, 0.82);
+    0 0 5px #000,
+    0 0 10px rgba(0, 0, 0, 0.86);
 }
 
 .window {
@@ -1295,28 +1302,27 @@ a {
   }
 
   .desktop-icons {
-    top: 12px;
-    left: 10px;
-    grid-template-columns: repeat(2, 82px);
-    grid-auto-rows: 92px;
-    gap: 7px 2px;
+    top: 10px;
+    left: 8px;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .desktop-icon {
-    width: 80px;
-    min-height: 90px;
+    width: 84px;
+    min-height: 96px;
     gap: 6px;
-    padding-inline: 3px;
+    padding: 6px 4px 5px;
   }
 
   .icon-art {
-    width: 42px;
-    height: 42px;
+    width: 46px;
+    height: 46px;
   }
 
   .desktop-icon > span:last-child {
-    max-width: 76px;
-    font-size: 0.68rem;
+    max-width: 80px;
+    font-size: 0.72rem;
   }
 
   .window {
@@ -1406,12 +1412,6 @@ a {
     min-height: 40px;
   }
 
-  .desktop-icons-right {
-    bottom: 107px;
-    right: 10px;
-    gap: 7px;
-  }
-
   .file-meta {
     display: none;
   }
@@ -1473,19 +1473,11 @@ a {
 <main id="desktop" class="screen desktop" aria-label="Skyfall OS desktop">
   <nav class="desktop-icons" aria-label="Desktop icons">
     <button class="desktop-icon" type="button" data-window="about"><span class="icon-art pdf" aria-hidden="true"></span><span>About_Me.pdf.exe</span></button>
-    <button class="desktop-icon" type="button" data-window="projects"><span class="icon-art folder" aria-hidden="true"></span><span>Projects</span></button>
-    <button class="desktop-icon" type="button" data-window="services"><span class="icon-art services" aria-hidden="true"></span><span>Services</span></button>
-    <button class="desktop-icon" type="button" data-window="network"><span class="icon-art network" aria-hidden="true"></span><span>Network Center</span></button>
-    <button class="desktop-icon" type="button" data-window="applab"><span class="icon-art folder app" aria-hidden="true"></span><span>App Lab</span></button>
-    <button class="desktop-icon" type="button" data-window="aitools"><span class="icon-art ai" aria-hidden="true"></span><span>AI Tools</span></button>
-    <button class="desktop-icon" type="button" data-window="links"><span class="icon-art browser" aria-hidden="true"></span><span>Tech Links</span></button>
-    <button class="desktop-icon" type="button" data-window="system"><span class="icon-art system" aria-hidden="true"></span><span>System Panel</span></button>
-  </nav>
-  <nav class="desktop-icons-right" aria-label="Right desktop icons">
-    <button class="desktop-icon" type="button" data-window="contact"><span class="icon-art mail" aria-hidden="true"></span><span>Contact Me</span></button>
-    <button class="desktop-icon" type="button" data-window="terminal"><span class="icon-art terminal" aria-hidden="true"></span><span>Terminal</span></button>
-    <button class="desktop-icon" type="button" data-window="ownyourrisk"><span class="icon-art folder danger" aria-hidden="true"></span><span>OPEN AT YOUR OWN RISK</span></button>
     <button class="desktop-icon" type="button" data-window="aiprompt"><span class="icon-art folder" aria-hidden="true"></span><span>AI Prompt Injection Projects</span></button>
+    <button class="desktop-icon" type="button" data-window="ownyourrisk"><span class="icon-art folder danger" aria-hidden="true"></span><span>OPEN AT YOUR OWN RISK</span></button>
+    <button class="desktop-icon" type="button" data-window="links"><span class="icon-art browser" aria-hidden="true"></span><span>SkyBrowser</span></button>
+    <button class="desktop-icon" type="button" data-window="terminal"><span class="icon-art terminal" aria-hidden="true"></span><span>Terminal</span></button>
+    <button class="desktop-icon" type="button" data-window="contact"><span class="icon-art mail" aria-hidden="true"></span><span>Contact Me</span></button>
   </nav>
   <button class="desktop-icon recycle" type="button" data-window="recycle"><span class="icon-art recyclebin" aria-hidden="true"></span><span>Recycle Bin</span></button>
 
