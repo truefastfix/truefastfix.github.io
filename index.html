@@ -1,2401 +1,1007 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Skyfall OS | Skyfall Creations</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 64 64'%3E%3Crect width='30' height='30' x='4' y='4' fill='%23f35325'/%3E%3Crect width='26' height='30' x='36' y='4' fill='%2381bc06'/%3E%3Crect width='30' height='26' x='4' y='36' fill='%2305a6f0'/%3E%3Crect width='26' height='26' x='36' y='36' fill='%23ffba08'/%3E%3C/svg%3E">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0B1020" />
+<title>Skyfall Creations — Modern Developer Studio</title>
+<meta name="description" content="Skyfall Creations builds practical software, AI tools, automation, embedded systems, and developer utilities." />
+<meta property="og:title" content="Skyfall Creations" />
+<meta property="og:description" content="Building practical software, AI tools, automation, embedded systems, and developer utilities." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='29' fill='none' stroke='%232F8CFF' stroke-width='4'/%3E%3Cpath d='M40 20 L24 20 L24 30 L40 30 L40 44 L24 44' fill='none' stroke='%2355D7FF' stroke-width='5' stroke-linejoin='round' stroke-linecap='round'/%3E%3C/svg%3E" />
 <style>
-:root {
-  --xp-blue-1: #2f8cff;
-  --xp-blue-2: #0b55c7;
-  --xp-blue-3: #06348a;
-  --xp-green-1: #55d14f;
-  --xp-green-2: #1f8e24;
-  --xp-silver: #ece9d8;
-  --xp-border: #0a246a;
-  --xp-text: #101010;
-  --desktop-bottom: 42px;
-  --title-height: 30px;
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-  font-family: Tahoma, "Segoe UI", Arial, sans-serif;
-  background: #000;
-  color: #fff;
-  user-select: none;
-}
-
-button,
-input {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-a {
-  color: #074fbd;
-}
-
-.screen {
-  position: fixed;
-  inset: 0;
-}
-
-.hidden {
-  display: none !important;
-}
-
-.boot-screen {
-  z-index: 4000;
-  display: grid;
-  place-items: center;
-  background:
-    radial-gradient(circle at 50% 20%, rgba(21, 52, 104, 0.45), transparent 28%),
-    #000;
-}
-
-.boot-shell {
-  width: min(560px, 88vw);
-  text-align: center;
-}
-
-.boot-logo {
-  display: inline-grid;
-  grid-template-columns: 54px auto;
-  gap: 14px;
-  align-items: center;
-  margin-bottom: 34px;
-}
-
-.boot-mark {
-  width: 54px;
-  height: 54px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 4px;
-  transform: skewY(-7deg);
-}
-
-.boot-mark i {
-  display: block;
-  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.4);
-}
-
-.boot-mark i:nth-child(1) { background: #f35325; }
-.boot-mark i:nth-child(2) { background: #81bc06; }
-.boot-mark i:nth-child(3) { background: #05a6f0; }
-.boot-mark i:nth-child(4) { background: #ffba08; }
-
-.boot-title {
-  text-align: left;
-  line-height: 0.9;
-}
-
-.boot-title strong {
-  display: block;
-  font-size: clamp(2rem, 8vw, 4.2rem);
-  font-weight: 400;
-  letter-spacing: -2px;
-}
-
-.boot-title span {
-  display: block;
-  margin-top: 8px;
-  color: #c2d7ff;
-  font-size: 1rem;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-}
-
-.boot-loader {
-  width: 228px;
-  height: 18px;
-  margin: 0 auto;
-  padding: 2px;
-  overflow: hidden;
-  border: 1px solid #949494;
-  border-radius: 3px;
-  background: #050505;
-}
-
-.boot-progress {
-  width: 96px;
-  height: 100%;
-  border-radius: 2px;
-  background: linear-gradient(90deg, transparent, #2269ed 18%, #9dc2ff 50%, #2269ed 82%, transparent);
-  animation: bootBar 1.55s linear infinite;
-}
-
-.boot-loader.waiting .boot-progress {
-  animation-play-state: paused;
-  opacity: 0.35;
-}
-
-@keyframes bootBar {
-  from { transform: translateX(-110px); }
-  to { transform: translateX(238px); }
-}
-
-.boot-hint {
-  margin: 26px 0 0;
-  color: #c9c9c9;
-  font-size: 0.86rem;
-}
-
-.boot-copy {
-  position: fixed;
-  right: 24px;
-  bottom: 22px;
-  color: #5f5f5f;
-  font-size: 0.78rem;
-}
-
-.desktop {
-  z-index: 1;
-  display: none;
-  height: calc(100% - var(--desktop-bottom));
-  background:
-    radial-gradient(ellipse 88% 48% at 75% 95%, rgba(126, 193, 51, 0.97) 0 30%, rgba(68, 150, 36, 0.94) 52%, rgba(28, 104, 32, 0.74) 72%, transparent 84%),
-    radial-gradient(ellipse 72% 42% at 8% 105%, rgba(32, 118, 41, 0.94) 0 40%, rgba(18, 90, 31, 0.83) 64%, transparent 82%),
-    radial-gradient(ellipse 70% 24% at 48% 73%, rgba(190, 229, 78, 0.76) 0 24%, rgba(91, 169, 42, 0.7) 50%, transparent 72%),
-    radial-gradient(ellipse 34% 16% at 83% 68%, rgba(230, 250, 137, 0.46), transparent 72%),
-    linear-gradient(176deg, transparent 0 63%, rgba(40, 124, 35, 0.5) 64%, rgba(16, 77, 27, 0.78) 100%),
-    linear-gradient(180deg, #0d3d91 0%, #1767bf 20%, #2d8adf 42%, #71b9f3 58%, #b9def6 63%, #c9e6f4 65%, #78bd48 66%, #24802a 100%);
-  overflow: hidden;
-}
-
-.desktop::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 16% 5% at 18% 30%, rgba(255, 255, 255, 0.9) 0 42%, rgba(228, 243, 255, 0.58) 58%, transparent 100%),
-    radial-gradient(ellipse 12% 4% at 29% 27%, rgba(255, 255, 255, 0.84) 0 44%, rgba(228, 244, 255, 0.42) 63%, transparent 100%),
-    radial-gradient(ellipse 10% 3% at 10% 34%, rgba(247, 253, 255, 0.76) 0 46%, transparent 100%),
-    radial-gradient(ellipse 9% 3% at 24% 36%, rgba(215, 238, 250, 0.42) 0 48%, transparent 100%),
-    radial-gradient(ellipse 15% 5% at 75% 23%, rgba(255, 255, 255, 0.82) 0 40%, rgba(228, 244, 255, 0.44) 62%, transparent 100%),
-    radial-gradient(ellipse 11% 4% at 86% 20%, rgba(255, 255, 255, 0.72) 0 42%, transparent 100%),
-    radial-gradient(ellipse 9% 3% at 67% 27%, rgba(237, 249, 255, 0.58) 0 42%, transparent 100%),
-    linear-gradient(to bottom, transparent 57%, rgba(227, 246, 255, 0.28) 63%, transparent 68%),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 3px);
-  opacity: 0.95;
-  pointer-events: none;
-}
-
-.desktop::after {
-  content: "";
-  position: absolute;
-  inset: auto -8% 0 -8%;
-  height: 44%;
-  background:
-    radial-gradient(ellipse 46% 28% at 78% 58%, rgba(210, 241, 102, 0.56), transparent 70%),
-    radial-gradient(ellipse 56% 36% at 18% 70%, rgba(26, 109, 41, 0.56), transparent 76%),
-    radial-gradient(ellipse 60% 12% at 48% 6%, rgba(239, 255, 190, 0.22), transparent 72%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 20%),
-    repeating-linear-gradient(102deg, rgba(255, 255, 255, 0.075) 0 1px, transparent 1px 14px),
-    repeating-linear-gradient(82deg, rgba(4, 72, 21, 0.13) 0 1px, transparent 1px 19px),
-    repeating-linear-gradient(14deg, rgba(220, 255, 148, 0.06) 0 1px, transparent 1px 11px);
-  mix-blend-mode: overlay;
-  pointer-events: none;
-}
-
-.desktop-icons {
-  position: absolute;
-  top: 16px;
-  left: 14px;
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-
-.desktop-icon {
-  width: 124px;
-  min-height: 126px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 9px;
-  padding: 8px 6px 7px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  color: #fff;
-  background: transparent;
-  text-shadow: 1px 2px 2px #000, 0 0 6px #000;
-  touch-action: manipulation;
-  cursor: default;
-}
-
-.desktop-icon:hover,
-.desktop-icon:focus-visible {
-  border-color: rgba(218, 238, 255, 0.74);
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.18), rgba(60, 145, 255, 0.22) 45%, rgba(13, 70, 181, 0.3)),
-    rgba(18, 86, 188, 0.18);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.34),
-    inset 0 1px 0 rgba(255, 255, 255, 0.32),
-    0 3px 10px rgba(0, 32, 92, 0.28),
-    0 0 0 1px rgba(3, 49, 130, 0.18);
-  outline: none;
-}
-
-.desktop-icon:hover .icon-art,
-.desktop-icon:focus-visible .icon-art {
-  transform: translateY(-1px) scale(1.04);
-  filter: saturate(1.08) brightness(1.05);
-}
-
-.desktop-icon:active {
-  transform: translateY(1px);
-  background:
-    linear-gradient(rgba(22, 79, 171, 0.48), rgba(93, 169, 255, 0.28)),
-    rgba(9, 49, 128, 0.3);
-  box-shadow:
-    inset 0 2px 5px rgba(0, 24, 80, 0.36),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.28);
-}
-
-.desktop-icon:active .icon-art {
-  transform: translateY(1px) scale(0.98);
-  filter: brightness(0.96) saturate(1.05);
-}
-
-.desktop-icon.recycle {
-  position: absolute;
-  right: 18px;
-  bottom: 16px;
-  z-index: 5;
-}
-
-.icon-art {
-  width: 78px;
-  height: 78px;
-  display: block;
-  position: relative;
-  border-radius: 10px;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.78), transparent 42%),
-    linear-gradient(145deg, #fff, #c9def8 55%, #5b8ad8);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.96),
-    inset 0 -3px 5px rgba(0, 0, 0, 0.2),
-    0 1px 0 rgba(255, 255, 255, 0.38),
-    2px 4px 4px rgba(0, 0, 0, 0.38),
-    5px 9px 13px rgba(0, 0, 0, 0.48);
-  color: transparent;
-  overflow: visible;
-  transition: transform 120ms ease, filter 120ms ease;
-}
-
-.icon-art *,
-.icon-art::before,
-.icon-art::after {
-  box-sizing: border-box;
-}
-
-.icon-art.folder {
-  border-radius: 5px 7px 7px 7px;
-  background:
-    linear-gradient(158deg, rgba(255, 255, 255, 0.72), transparent 32%),
-    linear-gradient(180deg, #ffe98f 0 22%, #f5c044 23% 58%, #d58a1b 80%, #9c560c 100%);
-  border: 1px solid #95620e;
-  box-shadow:
-    inset 0 2px 1px rgba(255, 255, 255, 0.78),
-    inset 0 -7px 10px rgba(105, 57, 0, 0.35),
-    inset 5px 0 9px rgba(255, 229, 113, 0.24),
-    2px 4px 4px rgba(0, 0, 0, 0.38),
-    5px 9px 13px rgba(0, 0, 0, 0.48);
-}
-
-.icon-art.folder::before {
-  content: "";
-  position: absolute;
-  top: -10px;
-  left: 5px;
-  width: 39px;
-  height: 14px;
-  border-radius: 3px 3px 0 0;
-  background: linear-gradient(#fff5b4, #e5ad31 74%, #b87416);
-  border: 1px solid #a87313;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
-}
-
-.icon-art.folder::after {
-  content: "";
-  position: absolute;
-  inset: 10px 4px 6px;
-  border-radius: 4px 4px 6px 6px;
-  background:
-    linear-gradient(170deg, rgba(255, 255, 255, 0.46), transparent 44%),
-    linear-gradient(180deg, rgba(255, 229, 113, 0.42), rgba(130, 73, 4, 0.12));
-  border-top: 1px solid rgba(255, 255, 255, 0.58);
-  box-shadow: inset 0 -4px 7px rgba(89, 50, 0, 0.2);
-}
-
-.icon-art.pdf {
-  border-radius: 4px 7px 5px 5px;
-  background:
-    linear-gradient(155deg, rgba(255, 255, 255, 0.96), transparent 35%),
-    repeating-linear-gradient(180deg, transparent 0 8px, rgba(122, 145, 176, 0.16) 8px 9px, transparent 9px 13px),
-    linear-gradient(145deg, #ffffff 0 68%, #dce7ff 69%);
-  border: 1px solid #8f9cb2;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.62),
-    inset 0 -4px 8px rgba(54, 83, 123, 0.12),
-    2px 4px 4px rgba(0, 0, 0, 0.38),
-    5px 9px 13px rgba(0, 0, 0, 0.48);
-}
-
-.icon-art.pdf::before {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 0;
-  border-style: solid;
-  border-width: 0 0 22px 22px;
-  border-color: transparent transparent #b7c9e9 transparent;
-  filter: drop-shadow(-1px 1px 0 rgba(79, 98, 128, 0.38));
-}
-
-.icon-art.pdf::after {
-  content: "PDF";
-  position: absolute;
-  left: 7px;
-  right: 7px;
-  bottom: 10px;
-  padding: 4px 0 3px;
-  border-radius: 3px;
-  color: #fff;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.32), transparent 46%),
-    linear-gradient(#f04b42, #a91417 62%, #7d0f13);
-  font-size: 0.76rem;
-  font-weight: 700;
-  text-align: center;
-  text-shadow: 0 1px 1px rgba(70, 0, 0, 0.72);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.46),
-    0 1px 2px rgba(80, 0, 0, 0.36);
-}
-
-.icon-art.services {
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 33% 24%, rgba(255, 255, 255, 0.98) 0 8%, transparent 16%),
-    radial-gradient(circle at 50% 50%, #f5fbff 0 17%, #8fc4e8 18% 26%, transparent 27%),
-    conic-gradient(from 8deg, #46566c 0 6%, #d7e4ef 6% 13%, #6e8298 13% 21%, #f7fbff 21% 28%, #53687f 28% 36%, #c1d0df 36% 44%, #3f5066 44% 52%, #eff5fa 52% 60%, #6a829a 60% 68%, #d8e4ee 68% 76%, #4b5f78 76% 84%, #f5f8fb 84% 92%, #46566c 92% 100%);
-  border: 1px solid #46556a;
-  box-shadow:
-    inset 0 2px 2px rgba(255, 255, 255, 0.9),
-    inset 0 -5px 8px rgba(37, 51, 70, 0.48),
-    2px 4px 4px rgba(0, 0, 0, 0.38),
-    5px 9px 13px rgba(0, 0, 0, 0.48);
-}
-
-.icon-art.services::after {
-  content: "";
-  position: absolute;
-  inset: 15px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 36% 28%, #fff, #7fc0ef 54%, #2a5e96 100%);
-  border: 2px solid #4b5b70;
-  box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.76),
-    0 0 0 3px rgba(24, 42, 66, 0.18);
-}
-
-.icon-art.network {
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 33% 23%, #ffffff 0 8%, rgba(255, 255, 255, 0.72) 9% 15%, transparent 25%),
-    linear-gradient(90deg, transparent 43%, rgba(255, 255, 255, 0.52) 45% 46%, transparent 48%),
-    linear-gradient(0deg, transparent 43%, rgba(255, 255, 255, 0.42) 45% 46%, transparent 48%),
-    radial-gradient(circle at 50% 50%, #9df3ff 0 14%, #32aef6 34%, #0752ad 72%, #062b70 100%);
-  border: 1px solid rgba(255, 255, 255, 0.86);
-  box-shadow:
-    inset -6px -8px 9px rgba(0, 28, 98, 0.38),
-    inset 4px 5px 8px rgba(255, 255, 255, 0.32),
-    2px 4px 4px rgba(0, 0, 0, 0.38),
-    5px 9px 13px rgba(0, 0, 0, 0.48);
-}
-
-.icon-art.network::before,
-.icon-art.network::after {
-  content: "";
-  position: absolute;
-  border: 1px solid rgba(255, 255, 255, 0.74);
-  border-left-color: transparent;
-  border-right-color: transparent;
-  border-radius: 50%;
-}
-
-.icon-art.network::before {
-  inset: 9px 4px;
-}
-
-.icon-art.network::after {
-  inset: 4px 12px;
-  transform: rotate(90deg);
-  box-shadow:
-    -11px -4px 0 -4px #eaffff,
-    11px 4px 0 -4px #eaffff,
-    0 13px 0 -4px #d8ffff;
-}
-
-.icon-art.folder.app {
-  border-radius: 7px;
-  background:
-    linear-gradient(155deg, rgba(255, 255, 255, 0.66), transparent 34%),
-    linear-gradient(#ffd76e 0 18%, #ea8d22 19% 62%, #a94d12 100%);
-  border-color: #8d4511;
-}
-
-.icon-art.folder.app::before {
-  top: 7px;
-  left: 12px;
-  width: 24px;
-  height: 8px;
-  border-radius: 8px 8px 0 0;
-  background: transparent;
-  border: 3px solid #6b3912;
-  border-bottom: 0;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
-}
-
-.icon-art.app::before {
-  content: "";
-  position: absolute;
-  inset: 17px 7px 8px;
-  border-radius: 4px;
-  background:
-    linear-gradient(90deg, transparent 47%, rgba(255, 255, 255, 0.78) 48% 52%, transparent 53%),
-    linear-gradient(transparent 47%, rgba(255, 255, 255, 0.78) 48% 52%, transparent 53%),
-    linear-gradient(135deg, #66d979, #0f70bd);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.58),
-    0 0 0 2px rgba(79, 36, 8, 0.38);
-}
-
-.icon-art.folder.app::after {
-  inset: 18px 5px 6px;
-  border-radius: 3px 3px 6px 6px;
-  background:
-    linear-gradient(170deg, rgba(255, 255, 255, 0.38), transparent 42%),
-    linear-gradient(#f7a43a, #aa4e13);
-}
-
-.icon-art.ai {
-  border-radius: 13px;
-  background:
-    radial-gradient(circle at 35% 24%, rgba(255, 255, 255, 0.98) 0 9%, rgba(224, 255, 255, 0.7) 10% 18%, transparent 28%),
-    radial-gradient(circle at 48% 45%, #7ff7ff 0 14%, #2fc7c7 37%, #146c95 72%, #0d2743 100%);
-  border: 1px solid rgba(208, 255, 255, 0.82);
-  box-shadow:
-    inset -6px -8px 10px rgba(15, 45, 107, 0.44),
-    inset 5px 6px 10px rgba(255, 255, 255, 0.34),
-    2px 4px 4px rgba(0, 0, 0, 0.38),
-    5px 9px 13px rgba(0, 0, 0, 0.48);
-}
-
-.icon-art.ai::before,
-.icon-art.ai::after {
-  content: "";
-  position: absolute;
-  inset: 11px;
-  border: 3px solid rgba(255, 255, 255, 0.88);
-  border-radius: 42% 58% 48% 52%;
-}
-
-.icon-art.ai::before {
-  transform: rotate(32deg);
-}
-
-.icon-art.ai::after {
-  transform: rotate(-32deg);
-  border-color: rgba(193, 250, 255, 0.82);
-  box-shadow:
-    11px 0 0 -8px #ffffff,
-    -10px 5px 0 -8px #e6ffff,
-    3px -11px 0 -8px #e6ffff;
-}
-
-.icon-art.browser {
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.9) 0 8%, transparent 20%),
-    radial-gradient(circle at 56% 49%, #e5ffff 0 13%, #62d3ff 14% 33%, #1663bf 34% 72%, #092f83 100%);
-  border: 1px solid rgba(255, 255, 255, 0.82);
-  box-shadow:
-    inset -5px -7px 9px rgba(8, 35, 109, 0.4),
-    inset 4px 6px 10px rgba(255, 255, 255, 0.3),
-    2px 4px 4px rgba(0, 0, 0, 0.38),
-    5px 9px 13px rgba(0, 0, 0, 0.48);
-}
-
-.icon-art.browser::before {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  background:
-    radial-gradient(ellipse 42% 26% at 33% 76%, #ffe66f 0 31%, transparent 34%),
-    conic-gradient(from 215deg, #ffca4c 0 18%, #f26f2f 19% 40%, transparent 41% 61%, #ffe06a 62% 82%, #f2972d 83% 100%);
-  -webkit-mask: radial-gradient(circle, transparent 0 39%, #000 42% 78%, transparent 80%);
-  mask: radial-gradient(circle, transparent 0 39%, #000 42% 78%, transparent 80%);
-  filter: drop-shadow(0 1px 1px rgba(91, 38, 0, 0.36));
-}
-
-.icon-art.mail {
-  border-radius: 4px 4px 5px 5px;
-  background:
-    linear-gradient(165deg, rgba(255, 255, 255, 0.96), transparent 38%),
-    linear-gradient(#ffffff 0%, #eaf2ff 52%, #bdd5fb 100%);
-  border: 2px solid #2e62ae;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.88),
-    inset 0 -4px 8px rgba(18, 60, 148, 0.14),
-    2px 4px 4px rgba(0, 0, 0, 0.38),
-    5px 9px 13px rgba(0, 0, 0, 0.48);
-}
-
-.icon-art.mail::before {
-  content: "";
-  position: absolute;
-  left: 5px;
-  right: 5px;
-  top: 7px;
-  height: 32px;
-  background:
-    linear-gradient(148deg, transparent 48%, #5e8fd2 49% 51%, transparent 52%),
-    linear-gradient(32deg, transparent 48%, #5e8fd2 49% 51%, transparent 52%),
-    linear-gradient(#f7fbff, #d7e6ff);
-  border: 1px solid rgba(47, 96, 171, 0.45);
-  border-bottom: 0;
-  clip-path: polygon(0 0, 50% 72%, 100% 0, 100% 100%, 0 100%);
-}
-
-.icon-art.mail::after {
-  content: "";
-  position: absolute;
-  left: 5px;
-  right: 5px;
-  bottom: 8px;
-  height: 31px;
-  background:
-    linear-gradient(32deg, transparent 48%, rgba(58, 105, 183, 0.55) 49% 51%, transparent 52%),
-    linear-gradient(148deg, transparent 48%, rgba(58, 105, 183, 0.55) 49% 51%, transparent 52%),
-    linear-gradient(#eef5ff, #c6dcfb);
-  border: 1px solid rgba(47, 96, 171, 0.45);
-  border-top: 0;
-  clip-path: polygon(0 0, 50% 48%, 100% 0, 100% 100%, 0 100%);
-}
-
-.icon-art.terminal {
-  border-radius: 10px;
-  background:
-    linear-gradient(155deg, rgba(255, 255, 255, 0.44), transparent 31%),
-    linear-gradient(#6f7377 0 11%, #202326 12% 100%);
-  border: 1px solid #070707;
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.42),
-    inset 0 -5px 10px rgba(0, 0, 0, 0.62),
-    inset 0 0 0 3px rgba(130, 134, 138, 0.28),
-    2px 4px 4px rgba(0, 0, 0, 0.38),
-    5px 9px 13px rgba(0, 0, 0, 0.48);
-}
-
-.icon-art.terminal::before {
-  content: ">_";
-  position: absolute;
-  left: 10px;
-  top: 25px;
-  color: #89ff85;
-  font-family: "Courier New", monospace;
-  font-size: 1.12rem;
-  font-weight: 700;
-  text-shadow: 0 0 5px rgba(137, 255, 133, 0.8);
-}
-
-.icon-art.system {
-  border-radius: 6px;
-  background:
-    linear-gradient(155deg, rgba(255, 255, 255, 0.66), transparent 38%),
-    linear-gradient(#dcecff 0 64%, #778fae 65% 100%);
-  border: 1px solid #506f99;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.78),
-    inset 0 -4px 8px rgba(42, 62, 88, 0.34),
-    2px 4px 4px rgba(0, 0, 0, 0.38),
-    5px 9px 13px rgba(0, 0, 0, 0.48);
-}
-
-.icon-art.system::before {
-  content: "";
-  position: absolute;
-  inset: 8px 6px 16px;
-  border-radius: 3px;
-  background:
-    linear-gradient(155deg, rgba(255, 255, 255, 0.36), transparent 42%),
-    linear-gradient(#132d5d, #2c73c9);
-  border: 2px solid #eef6ff;
-  box-shadow:
-    inset 0 -4px 8px rgba(0, 29, 85, 0.34),
-    0 1px 2px rgba(0, 36, 92, 0.28);
-}
-
-.icon-art.system::after {
-  content: "";
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 6px;
-  height: 7px;
-  border-radius: 3px 3px 0 0;
-  background:
-    radial-gradient(circle at 17% 46%, #63f56e 0 10%, transparent 13%),
-    radial-gradient(circle at 50% 46%, #ffe66a 0 9%, transparent 12%),
-    radial-gradient(circle at 83% 46%, #ff6a58 0 9%, transparent 12%),
-    linear-gradient(#f0f4fb, #9aadca);
-  box-shadow: 0 5px 0 #526a88;
-}
-
-.icon-art.recyclebin {
-  border-radius: 5px 5px 9px 9px;
-  background:
-    linear-gradient(155deg, rgba(255, 255, 255, 0.7), transparent 38%),
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0 4px, rgba(77, 122, 157, 0.18) 4px 8px),
-    linear-gradient(rgba(244, 253, 255, 0.78), rgba(141, 187, 218, 0.7) 54%, rgba(82, 132, 170, 0.78));
-  border: 1px solid rgba(222, 243, 255, 0.92);
-  transform: perspective(60px) rotateX(-4deg);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.82),
-    inset 0 -6px 9px rgba(41, 89, 126, 0.32),
-    2px 4px 4px rgba(0, 0, 0, 0.38),
-    5px 9px 13px rgba(0, 0, 0, 0.48);
-}
-
-.icon-art.recyclebin::before {
-  content: "";
-  position: absolute;
-  top: -9px;
-  left: 9px;
-  width: 45px;
-  height: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.92);
-  border-radius: 3px;
-  background:
-    linear-gradient(155deg, rgba(255, 255, 255, 0.86), transparent 45%),
-    linear-gradient(#ffffff, #b8d8ed);
-  box-shadow: 0 1px 2px rgba(31, 78, 117, 0.32);
-}
-
-.icon-art.recyclebin::after {
-  content: "";
-  position: absolute;
-  left: 13px;
-  right: 13px;
-  top: 15px;
-  bottom: 9px;
-  border-left: 2px solid rgba(255, 255, 255, 0.62);
-  border-right: 2px solid rgba(30, 86, 130, 0.28);
-  box-shadow:
-    7px 0 0 -5px rgba(255, 255, 255, 0.52),
-    -7px 0 0 -5px rgba(55, 104, 143, 0.22);
-}
-
-.desktop-icon > span:last-child {
-  max-width: 118px;
-  color: #fff;
-  font-size: 0.9rem;
-  line-height: 1.16;
-  word-break: break-word;
-  text-align: center;
-  padding: 2px 6px 3px;
-  border-radius: 2px;
-  background: rgba(0, 0, 0, 0.14);
-  text-shadow:
-    1px 2px 0 #000,
-    -1px 1px 0 rgba(0, 0, 0, 0.74),
-    0 0 5px #000,
-    0 0 10px rgba(0, 0, 0, 0.86);
-}
-
-.window {
-  position: absolute;
-  z-index: 20;
-  min-width: 280px;
-  min-height: 190px;
-  border: 3px solid var(--xp-border);
-  border-top-width: 0;
-  border-radius: 8px 8px 0 0;
-  background: var(--xp-silver);
-  color: var(--xp-text);
-  box-shadow: 5px 8px 18px rgba(0, 0, 0, 0.45);
-  overflow: hidden;
-}
-
-.window.active {
-  z-index: 90;
-}
-
-.window.maximized {
-  border-radius: 0;
-}
-
-.titlebar {
-  height: var(--title-height);
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  padding: 0 4px 0 8px;
-  color: #fff;
-  background: linear-gradient(#2a8af5, #0b55c7 48%, #073b9f);
-  cursor: move;
-}
-
-.window.inactive .titlebar {
-  background: linear-gradient(#91a7c8, #6b7f9e);
-}
-
-.title-text {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  gap: 7px;
-  font-size: 0.82rem;
-  font-weight: 700;
-  text-shadow: 1px 1px 1px #0b2961;
-}
-
-.title-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.title-controls {
-  display: flex;
-  gap: 3px;
-}
-
-.title-controls button {
-  width: 23px;
-  height: 22px;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 3px;
-  background: linear-gradient(#75a7ff, #1b5fd4);
-  font-weight: 700;
-  line-height: 1;
-}
-
-.title-controls .close {
-  background: linear-gradient(#ff9b73, #d43c19);
-}
-
-.window-body {
-  height: calc(100% - var(--title-height));
-  padding: 12px;
-  overflow: auto;
-  background: #f7f5eb;
-  font-size: 0.88rem;
-  line-height: 1.45;
-}
-
-.window-body h2,
-.window-body h3 {
-  margin: 0 0 8px;
-  color: #073b9f;
-}
-
-.window-body p {
-  margin: 0 0 10px;
-}
-
-.window-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 10px;
-}
-
-.panel,
-.service-card {
-  padding: 10px;
-  border: 1px solid #c0bca6;
-  border-radius: 2px;
-  background: #fffef7;
-}
-
-.service-card strong,
-.panel strong {
-  display: block;
-  margin-bottom: 4px;
-  color: #0a4aaf;
-}
-
-.list {
-  margin: 7px 0 0 18px;
-  padding: 0;
-}
-
-.meter {
-  height: 18px;
-  margin-top: 5px;
-  border: 1px solid #7f9db9;
-  background: #fff;
-  padding: 2px;
-}
-
-.meter span {
-  display: block;
-  height: 100%;
-  background: linear-gradient(90deg, #35a842, #95df5b);
-}
-
-.terminal-body {
-  height: calc(100% - var(--title-height));
-  display: grid;
-  grid-template-rows: 1fr auto;
-  padding: 0;
-  background: #030303;
-  color: #a9ff9d;
-  font-family: Consolas, "Courier New", monospace;
-  font-size: 0.84rem;
-}
-
-.terminal-output {
-  overflow: auto;
-  padding: 12px;
-  white-space: pre-wrap;
-}
-
-.terminal-input-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 12px;
-  border-top: 1px solid #1b441b;
-}
-
-.terminal-input {
-  flex: 1;
-  min-width: 0;
-  color: #a9ff9d;
-  border: 0;
-  outline: none;
-  background: transparent;
-  font-family: inherit;
-}
-
-.empty-bin {
-  min-height: 120px;
-  display: grid;
-  place-items: center;
-  color: #595959;
-  border: 1px dashed #aaa;
-  background: #fff;
-}
-
-.taskbar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2000;
-  height: var(--desktop-bottom);
-  display: none;
-  align-items: center;
-  gap: 6px;
-  padding-right: 8px;
-  background: linear-gradient(#2f8cff 0%, #0d5bd1 42%, #063b9f 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-
-.start-button {
-  height: 36px;
-  min-width: 106px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 0 18px 0 12px;
-  color: #fff;
-  border: 0;
-  border-radius: 0 18px 18px 0;
-  background: linear-gradient(#68db62, #23952b 54%, #13701b);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 2px 0 5px rgba(0, 0, 0, 0.38);
-  font-size: 1rem;
-  font-style: italic;
-  font-weight: 700;
-  text-shadow: 1px 1px 1px #0c4a14;
-}
-
-.start-mark {
-  width: 19px;
-  height: 19px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-  transform: skewY(-7deg);
-}
-
-.start-mark i:nth-child(1) { background: #f35325; }
-.start-mark i:nth-child(2) { background: #81bc06; }
-.start-mark i:nth-child(3) { background: #05a6f0; }
-.start-mark i:nth-child(4) { background: #ffba08; }
-
-.task-buttons {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  gap: 4px;
-  overflow: hidden;
-}
-
-.task-button {
-  max-width: 180px;
-  min-width: 92px;
-  height: 30px;
-  display: none;
-  align-items: center;
-  gap: 6px;
-  padding: 0 9px;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.26);
-  border-radius: 3px;
-  background: linear-gradient(#3c8bf7, #1458c4);
-  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.24);
-}
-
-.task-button.visible {
-  display: flex;
-}
-
-.task-button.minimized {
-  background: linear-gradient(#2f63b5, #0d398c);
-}
-
-.task-button.active {
-  background: linear-gradient(#70a8ff, #256ad9 54%, #154aa8);
-}
-
-.task-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 0.78rem;
-}
-
-.tray {
-  height: 100%;
-  min-width: 158px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 0 12px;
-  border-left: 1px solid rgba(255, 255, 255, 0.32);
-  background: linear-gradient(#19a9ef, #0b78c7);
-  font-size: 0.76rem;
-}
-
-.sound-toggle {
-  width: 25px;
-  height: 24px;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.46);
-  border-radius: 3px;
-  background: linear-gradient(#52c8ff, #0872bd);
-  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.28);
-  font-size: 0.86rem;
-  line-height: 1;
-}
-
-.sound-toggle[aria-pressed="true"] {
-  background: linear-gradient(#6f8ca3, #31566f);
-}
-
-.tray-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #80ff7d;
-  box-shadow: 0 0 4px #80ff7d;
-}
-
-.clock {
-  min-width: 58px;
-  text-align: right;
-}
-
-.start-menu {
-  position: fixed;
-  left: 0;
-  bottom: var(--desktop-bottom);
-  z-index: 2100;
-  width: min(430px, 96vw);
-  display: none;
-  overflow: hidden;
-  border: 2px solid #0b55c7;
-  border-bottom: 0;
-  border-radius: 8px 8px 0 0;
-  background: #fff;
-  color: #111;
-  box-shadow: 6px -6px 18px rgba(0, 0, 0, 0.42);
-}
-
-.start-menu.open {
-  display: block;
-}
-
-.start-head {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  color: #fff;
-  background: linear-gradient(#2b87f2, #0c55bf);
-}
-
-.start-avatar {
-  width: 48px;
-  height: 48px;
-  display: grid;
-  place-items: center;
-  border: 2px solid #fff;
-  border-radius: 6px;
-  background: linear-gradient(145deg, #dfffff, #2c7ade);
-  color: #092f7a;
-  font-weight: 700;
-}
-
-.start-head strong {
-  display: block;
-  font-size: 1.05rem;
-}
-
-.start-head span {
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 0.78rem;
-}
-
-.start-columns {
-  display: grid;
-  grid-template-columns: 1.18fr 0.82fr;
-  min-height: 345px;
-}
-
-.start-left,
-.start-right {
-  padding: 8px 0;
-}
-
-.start-right {
-  background: #d3e5fa;
-  border-left: 1px solid #9cb7d7;
-}
-
-.start-item {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 30px 1fr;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  color: #111;
-  border: 0;
-  background: transparent;
-  text-align: left;
-}
-
-.start-item:hover,
-.start-item:focus-visible {
-  color: #fff;
-  background: #316ac5;
-  outline: none;
-}
-
-.start-item small {
-  display: block;
-  color: #555;
-  font-size: 0.68rem;
-}
-
-.start-item:hover small {
-  color: #e7f1ff;
-}
-
-.start-icon {
-  width: 26px;
-  height: 26px;
-  display: grid;
-  place-items: center;
-  border-radius: 4px;
-  background: linear-gradient(#fff, #9ec4ff);
-  border: 1px solid #668ec8;
-  color: #073b9f;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.start-foot {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 8px 12px;
-  color: #fff;
-  background: linear-gradient(#0c55bf, #063b9f);
-}
-
-.small-power {
-  padding: 6px 10px;
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  border-radius: 3px;
-  background: linear-gradient(#e7793d, #b34326);
-}
-
-.small-power.restart {
-  background: linear-gradient(#74c35d, #247b28);
-}
-
-.icon-art.folder.danger {
-  background:
-    linear-gradient(158deg, rgba(255, 255, 255, 0.56), transparent 28%),
-    linear-gradient(180deg, #ffb030 0 18%, #c84a10 19% 58%, #8c2a08 80%, #5c1505 100%);
-  border-color: #6e1e05;
-  box-shadow:
-    inset 0 2px 1px rgba(255, 255, 255, 0.64),
-    inset 0 -7px 10px rgba(80, 20, 0, 0.52),
-    inset 5px 0 9px rgba(255, 140, 50, 0.2),
-    2px 4px 4px rgba(0, 0, 0, 0.38),
-    5px 9px 13px rgba(0, 0, 0, 0.48),
-    0 0 0 1px rgba(200, 50, 0, 0.28);
-}
-
-.icon-art.folder.danger::before {
-  background: linear-gradient(#ffd060, #c04010 74%, #7a2005);
-  border-color: #6a1c04;
-}
-
-.icon-art.folder.danger::after {
-  background:
-    linear-gradient(170deg, rgba(255, 200, 80, 0.36), transparent 40%),
-    linear-gradient(180deg, rgba(255, 130, 50, 0.3), rgba(80, 20, 0, 0.12));
-  border-top-color: rgba(255, 130, 50, 0.44);
-}
-
-.file-list {
-  border: 1px solid #d0d7de;
-  border-radius: 6px;
-  overflow: hidden;
-  background: #fff;
-}
-
-.file-list-header {
-  padding: 8px 14px;
-  background: #f6f8fa;
-  border-bottom: 1px solid #d0d7de;
-  font-size: 0.8rem;
-  color: #57606a;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.file-list-header strong {
-  color: #24292f;
-  font-weight: 600;
-}
-
-.file-row {
-  display: grid;
-  grid-template-columns: 40px 1fr auto auto;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  border-bottom: 1px solid #eaecef;
-  font-size: 0.82rem;
-}
-
-.file-row:last-child {
-  border-bottom: 0;
-}
-
-.file-row:hover {
-  background: #f6f8fa;
-}
-
-.file-badge {
-  display: inline-block;
-  padding: 1px 4px;
-  border-radius: 3px;
-  background: #ddf4ff;
-  border: 1px solid #54aeff;
-  color: #0550ae;
-  font-size: 0.66rem;
-  font-weight: 700;
-  font-family: "Courier New", monospace;
-  text-align: center;
-}
-
-.file-badge.sw {
-  background: #fff8c5;
-  border-color: #d4a72c;
-  color: #7d4e00;
-}
-
-.file-name {
-  color: #0969da;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.file-meta {
-  color: #57606a;
-  font-size: 0.74rem;
-  white-space: nowrap;
-}
-
-.file-age {
-  color: #57606a;
-  font-size: 0.74rem;
-  white-space: nowrap;
-}
-
-.browser-chrome {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 7px;
-  margin-bottom: 10px;
-  padding: 6px;
-  border: 1px solid #b7c5d7;
-  background: linear-gradient(#f9fbff, #d9e8fb);
-}
-
-.browser-buttons {
-  display: flex;
-  gap: 4px;
-}
-
-.browser-buttons span {
-  width: 18px;
-  height: 18px;
-  display: grid;
-  place-items: center;
-  border: 1px solid #7a9ac1;
-  border-radius: 2px;
-  background: linear-gradient(#fff, #b9d3f4);
-  color: #164b91;
-  font-size: 0.65rem;
-  font-weight: 700;
-}
-
-.browser-address {
-  min-width: 0;
-  padding: 4px 7px;
-  border: 1px solid #7f9db9;
-  background: #fff;
-  color: #24415f;
-  font-size: 0.78rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-@media (max-height: 820px) and (min-width: 761px) {
-  .desktop-icons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
+  /* ============================================================
+     DESIGN TOKENS
+     ============================================================ */
+  :root{
+    --blue-700:#0D6EFF;
+    --blue-500:#2F8CFF;
+    --blue-300:#55D7FF;
+    --violet:#7C3DFF;
+    --mint:#20E3B2;
+    --ink-900:#0B1020;
+    --ink-800:#111827;
+    --paper:#E8F1FF;
+
+    --bg:#070A14;
+    --text:#E8F1FF;
+    --text-dim:rgba(232,241,255,.62);
+    --text-faint:rgba(232,241,255,.40);
+
+    --glass:rgba(18,26,46,.55);
+    --glass-strong:rgba(20,30,54,.78);
+    --stroke:rgba(120,160,235,.16);
+    --stroke-strong:rgba(120,170,255,.30);
+
+    --radius-lg:28px;
+    --radius-md:20px;
+    --radius-sm:14px;
+    --radius-pill:999px;
+
+    --glow-blue:0 0 0 1px rgba(47,140,255,.18), 0 18px 60px -18px rgba(13,110,255,.45);
+    --blur:18px;
+
+    --t-slow:1.2s;
+    --t-med:.45s;
+    --t-fast:.18s;
+    --ease:cubic-bezier(.22,.61,.36,1);
+
+    --maxw:1180px;
+    --gap:20px;
+
+    --font-sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-mono:"JetBrains Mono","SF Mono",ui-monospace,Menlo,Consolas,monospace;
   }
 
-  .desktop-icon {
-    width: 152px;
-    min-height: 108px;
-    gap: 5px;
-    padding: 4px 5px 4px;
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+  body{
+    margin:0;
+    font-family:var(--font-sans);
+    color:var(--text);
+    background:var(--bg);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:clip;
   }
 
-  .icon-art {
-    width: 66px;
-    height: 66px;
+  /* Ambient background layers */
+  .bg-fx{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden}
+  .bg-fx .glow{
+    position:absolute;border-radius:50%;filter:blur(80px);opacity:.55;
+  }
+  .bg-fx .g1{top:-220px;left:-120px;width:680px;height:680px;
+    background:radial-gradient(circle at center, rgba(13,110,255,.55), transparent 62%);}
+  .bg-fx .g2{top:8%;right:-200px;width:560px;height:560px;
+    background:radial-gradient(circle at center, rgba(85,215,255,.30), transparent 60%);opacity:.4}
+  .bg-fx .g3{bottom:-260px;left:30%;width:620px;height:620px;
+    background:radial-gradient(circle at center, rgba(124,61,255,.30), transparent 62%);opacity:.35}
+  #stars{position:fixed;inset:0;z-index:-1;pointer-events:none;display:block}
+
+  a{color:inherit;text-decoration:none}
+  ::selection{background:rgba(85,215,255,.30)}
+  :focus-visible{outline:2px solid var(--blue-300);outline-offset:3px;border-radius:8px}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+  /* ============================================================
+     PRIMITIVES
+     ============================================================ */
+  .glass{
+    background:var(--glass);
+    border:1px solid var(--stroke);
+    border-radius:var(--radius-lg);
+    backdrop-filter:blur(var(--blur)) saturate(140%);
+    -webkit-backdrop-filter:blur(var(--blur)) saturate(140%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 24px 60px -30px rgba(0,0,0,.8);
+    position:relative;
+  }
+  .glass::before{
+    content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:linear-gradient(180deg, rgba(255,255,255,.06), transparent 30%);
+    opacity:.6;
   }
 
-  .desktop-icon > span:last-child {
-    max-width: 144px;
-    font-size: 0.8rem;
-    line-height: 1.12;
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;justify-content:center;
+    font:600 15px/1 var(--font-sans);
+    padding:13px 20px;border-radius:var(--radius-pill);
+    border:1px solid transparent;cursor:pointer;
+    transition:transform var(--t-fast) var(--ease), box-shadow var(--t-med) var(--ease), background var(--t-med) var(--ease), border-color var(--t-med) var(--ease);
+    color:var(--text);background:transparent;white-space:nowrap;
   }
-}
-
-@media (max-width: 760px), (max-height: 520px) {
-  :root {
-    --desktop-bottom: calc(50px + var(--safe-bottom));
-    --title-height: 48px;
+  .btn:hover{transform:translateY(-2px)}
+  .btn:active{transform:translateY(0)}
+  .btn-primary{
+    background:linear-gradient(180deg,var(--blue-500),var(--blue-700));
+    box-shadow:0 10px 30px -10px rgba(13,110,255,.7), inset 0 1px 0 rgba(255,255,255,.25);
+    color:#fff;
   }
+  .btn-primary:hover{box-shadow:0 16px 40px -12px rgba(47,140,255,.8), inset 0 1px 0 rgba(255,255,255,.3)}
+  .btn-ghost{border-color:var(--stroke-strong);background:rgba(255,255,255,.03)}
+  .btn-ghost:hover{border-color:var(--blue-300);background:rgba(85,215,255,.07)}
+  .btn[disabled]{cursor:not-allowed;opacity:.5;border-color:var(--stroke);background:rgba(255,255,255,.02);transform:none}
+  .btn[disabled]:hover{transform:none;box-shadow:none}
+  .btn-sm{padding:9px 14px;font-size:13px}
 
-  .desktop-icons {
-    top: 10px;
-    left: 8px;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;
+    font:600 12px/1 var(--font-mono);letter-spacing:.02em;
+    padding:6px 11px;border-radius:var(--radius-pill);
+    border:1px solid var(--stroke-strong);background:rgba(85,215,255,.06);
+    color:var(--text-dim);
   }
+  .badge-dot::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 8px var(--mint)}
+  .badge-soon{color:var(--text-faint);background:rgba(255,255,255,.03);border-color:var(--stroke)}
+  .badge-soon::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--text-faint)}
 
-  .desktop-icon {
-    width: 96px;
-    min-height: 104px;
-    gap: 6px;
-    padding: 6px 4px 5px;
-  }
-
-  .icon-art {
-    width: 56px;
-    height: 56px;
-  }
-
-  .desktop-icon > span:last-child {
-    max-width: 92px;
-    font-size: 0.78rem;
-  }
-
-  .desktop-icon.recycle {
-    right: 10px;
-    bottom: 10px;
+  .eyebrow{
+    font:700 12px/1 var(--font-mono);letter-spacing:.22em;text-transform:uppercase;
+    color:var(--blue-300);display:inline-block;margin-bottom:14px;
   }
 
-  .window {
-    width: 100vw;
-    max-width: 100vw;
-    min-width: 0;
-    min-height: 0;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
-    font-size: 1rem;
-    transform-origin: bottom center;
+  .section{padding:96px 0;position:relative}
+  .section-head{max-width:640px;margin-bottom:48px}
+  .section-head h2{
+    font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0 0 14px;
+    letter-spacing:-.02em;font-weight:700;
+  }
+  .section-head p{margin:0;color:var(--text-dim);font-size:17px}
+
+  /* ============================================================
+     HEADER / NAV
+     ============================================================ */
+  header.site{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(14px) saturate(140%);
+    -webkit-backdrop-filter:blur(14px) saturate(140%);
+    background:rgba(7,10,20,.6);
+    border-bottom:1px solid rgba(120,160,235,.10);
+  }
+  .nav{display:flex;align-items:center;gap:18px;height:68px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:-.01em;font-size:17px}
+  .brand .mark{width:34px;height:34px;flex:0 0 auto}
+  .mark img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+  .nav-links{display:flex;gap:4px;margin-left:18px}
+  .nav-links a{
+    padding:9px 14px;border-radius:var(--radius-pill);font-size:14.5px;font-weight:500;color:var(--text-dim);
+    transition:color var(--t-fast),background var(--t-fast);
+  }
+  .nav-links a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+  .nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .nav-toggle{display:none;background:none;border:1px solid var(--stroke-strong);border-radius:12px;width:42px;height:42px;cursor:pointer;color:var(--text)}
+  .nav-toggle svg{width:20px;height:20px}
+
+  .drawer{
+    position:fixed;inset:0;z-index:60;display:none;
+    background:rgba(5,8,16,.7);backdrop-filter:blur(10px);
+  }
+  .drawer.open{display:block}
+  .drawer-panel{
+    position:absolute;top:0;right:0;height:100%;width:min(82vw,340px);
+    background:var(--glass-strong);border-left:1px solid var(--stroke-strong);
+    backdrop-filter:blur(20px);padding:26px 22px;
+    display:flex;flex-direction:column;gap:6px;
+    transform:translateX(100%);transition:transform var(--t-med) var(--ease);
+  }
+  .drawer.open .drawer-panel{transform:translateX(0)}
+  .drawer-panel a{padding:14px 12px;border-radius:14px;font-size:17px;font-weight:600;color:var(--text-dim)}
+  .drawer-panel a:hover{background:rgba(255,255,255,.05);color:var(--text)}
+  .drawer-close{align-self:flex-end;background:none;border:1px solid var(--stroke-strong);border-radius:12px;width:42px;height:42px;color:var(--text);cursor:pointer;margin-bottom:8px}
+
+  /* ============================================================
+     HERO + ORB (signature)
+     ============================================================ */
+  .hero{padding:80px 0 64px;text-align:center;position:relative}
+  .orb-wrap{display:flex;justify-content:center;margin-bottom:30px}
+  .orb{
+    width:172px;height:172px;position:relative;
+    perspective:1100px;
+    filter:drop-shadow(0 26px 64px rgba(13,110,255,.6));
+  }
+  .orb3d{position:absolute;inset:0;transform-style:preserve-3d;animation:coin 15s linear infinite;will-change:transform}
+  .orb .face{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;
+    backface-visibility:hidden;-webkit-backface-visibility:hidden;object-fit:cover}
+  .orb .face.back{transform:rotateY(180deg)}
+  @keyframes coin{to{transform:rotateY(360deg)}}
+
+  .hero h1{
+    font-size:clamp(40px,7vw,76px);line-height:1.02;margin:0 0 20px;
+    letter-spacing:-.035em;font-weight:700;
+    background:linear-gradient(180deg,#fff 30%, #9fc6ff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero .tagline{
+    font-size:clamp(18px,2.6vw,24px);color:var(--text);font-weight:500;
+    max-width:680px;margin:0 auto 14px;line-height:1.4;
+  }
+  .hero .tagline b{
+    background:linear-gradient(90deg,var(--blue-300),var(--blue-500));
+    -webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700;
+  }
+  .hero .sub{max-width:560px;margin:0 auto 34px;color:var(--text-dim);font-size:17px}
+  .hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:30px}
+  .status-chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .status-chips .badge{font-size:11px}
+
+  /* ============================================================
+     BENTO DASHBOARD
+     ============================================================ */
+  .bento{
+    display:grid;grid-template-columns:repeat(12,1fr);gap:var(--gap);
+    grid-auto-rows:minmax(10px,auto);
+  }
+  .cell{padding:26px}
+  .cell h3{margin:0 0 6px;font-size:20px;font-weight:700;letter-spacing:-.01em}
+  .cell .lead{margin:0 0 20px;color:var(--text-dim);font-size:14.5px;max-width:42ch}
+  .c-stack{grid-column:span 7;grid-row:span 2}
+  .c-hub{grid-column:span 5;grid-row:span 2}
+  .c-tech{grid-column:span 5}
+  .c-dl{grid-column:span 3}
+  .c-contact{grid-column:span 4}
+
+  .cell.glow-card{transition:transform var(--t-med) var(--ease), box-shadow var(--t-med) var(--ease), border-color var(--t-med) var(--ease)}
+  .cell.glow-card:hover{transform:translateY(-3px);border-color:var(--stroke-strong);box-shadow:var(--glow-blue),0 30px 70px -30px rgba(0,0,0,.9)}
+  /* mouse-follow glow */
+  .glow-card{--mx:50%;--my:50%}
+  .glow-card::after{
+    content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;
+    transition:opacity var(--t-med);
+    background:radial-gradient(360px circle at var(--mx) var(--my), rgba(85,215,255,.14), transparent 65%);
+  }
+  @media (hover:hover) and (pointer:fine){.glow-card:hover::after{opacity:1}}
+
+  /* dev stack chips */
+  .chips{display:flex;flex-wrap:wrap;gap:9px}
+  .chip{
+    font:600 13px/1 var(--font-mono);padding:9px 13px;border-radius:12px;
+    border:1px solid var(--stroke);background:rgba(255,255,255,.025);color:var(--text-dim);
+    transition:all var(--t-fast) var(--ease);cursor:default;
+  }
+  .chip:hover{
+    color:#fff;border-color:var(--blue-300);
+    background:linear-gradient(180deg,rgba(47,140,255,.20),rgba(13,110,255,.10));
+    box-shadow:0 6px 20px -8px rgba(47,140,255,.6);transform:translateY(-1px);
   }
 
-  .titlebar {
-    min-height: var(--title-height);
-    padding: 0 max(10px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px));
-    cursor: default;
-    touch-action: none;
+  /* project hub */
+  .hub{position:relative;height:260px;margin-top:8px}
+  .hub svg{position:absolute;inset:0;width:100%;height:100%}
+  .hub .link{stroke:rgba(85,215,255,.4);stroke-width:1.4;fill:none;stroke-dasharray:5 7;animation:dash 3.2s linear infinite}
+  @keyframes dash{to{stroke-dashoffset:-48}}
+  .node{
+    position:absolute;transform:translate(-50%,-50%);
+    width:auto;padding:7px 12px;border-radius:var(--radius-pill);
+    font:600 12px/1 var(--font-mono);white-space:nowrap;cursor:pointer;
+    border:1px solid var(--stroke-strong);background:var(--glass-strong);color:var(--text-dim);
+    transition:all var(--t-fast) var(--ease);
+  }
+  .node:hover,.node:focus-visible{color:#fff;border-color:var(--blue-300);box-shadow:0 0 0 4px rgba(85,215,255,.12);background:rgba(20,40,80,.9)}
+  .node.center{
+    background:linear-gradient(180deg,var(--blue-500),var(--blue-700));color:#fff;
+    border-color:transparent;box-shadow:0 0 30px rgba(47,140,255,.5);font-weight:700;
+    animation:nodepulse 3.6s ease-in-out infinite;
+  }
+  @keyframes nodepulse{0%,100%{box-shadow:0 0 24px rgba(47,140,255,.4)}50%{box-shadow:0 0 38px rgba(47,140,255,.7)}}
+  .hub-pop{
+    position:absolute;z-index:5;left:50%;bottom:8px;transform:translateX(-50%);
+    width:min(94%,300px);padding:14px;border-radius:var(--radius-md);
+    background:var(--glass-strong);border:1px solid var(--stroke-strong);
+    backdrop-filter:blur(16px);opacity:0;visibility:hidden;transition:opacity var(--t-fast);
+    text-align:left;
+  }
+  .hub-pop.show{opacity:1;visibility:visible}
+  .hub-pop h4{margin:0 0 6px;font-size:15px}
+  .hub-pop .meta{font:600 11px/1 var(--font-mono);color:var(--blue-300);margin-bottom:8px;display:flex;gap:8px;flex-wrap:wrap}
+  .hub-pop p{margin:0;font-size:13px;color:var(--text-dim);line-height:1.5}
+
+  /* current tech drifting badges */
+  .drift-field{position:relative;height:240px;margin-top:6px;overflow:hidden}
+  .drift{
+    position:absolute;font:600 12px/1 var(--font-mono);padding:8px 12px;border-radius:var(--radius-pill);
+    border:1px solid var(--stroke-strong);background:rgba(20,32,58,.6);color:var(--text-dim);
+    box-shadow:0 0 18px -6px rgba(47,140,255,.5);
+    animation:drift var(--dur,7s) ease-in-out var(--del,0s) infinite alternate;will-change:transform;
+  }
+  @keyframes drift{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+
+  /* contact cta card */
+  .c-contact .env{
+    width:64px;height:64px;border-radius:18px;display:grid;place-items:center;margin-bottom:16px;
+    background:linear-gradient(160deg,rgba(47,140,255,.25),rgba(124,61,255,.18));
+    border:1px solid var(--stroke-strong);
+  }
+  .c-contact .env svg{width:30px;height:30px;color:var(--blue-300)}
+  .c-contact .actions{display:flex;flex-direction:column;gap:10px;margin-top:18px}
+
+  .c-dl .dl-mini{display:flex;flex-direction:column;gap:11px;margin-top:14px}
+  .c-dl .dl-row{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;color:var(--text-dim)}
+  .c-dl .dl-row .badge{font-size:10px;padding:4px 8px}
+
+  /* ============================================================
+     PROJECT CARDS (featured + also building)
+     ============================================================ */
+  .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--gap)}
+  .also-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap)}
+  .proj{padding:24px;display:flex;flex-direction:column}
+  .proj .thumb{
+    height:120px;border-radius:var(--radius-md);margin-bottom:18px;position:relative;overflow:hidden;
+    border:1px solid var(--stroke);display:grid;place-items:center;
+    background:radial-gradient(120% 120% at 20% 0%, rgba(47,140,255,.18), rgba(11,16,32,.4));
+  }
+  .proj .thumb .glyph{width:48px;height:48px;color:var(--blue-300);opacity:.9}
+  .proj .thumb .scan{position:absolute;inset:0;background:linear-gradient(120deg,transparent 40%,rgba(85,215,255,.10) 50%,transparent 60%);background-size:300% 100%;animation:scan 5s linear infinite}
+  @keyframes scan{to{background-position:-200% 0}}
+  .proj .ptitle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+  .proj h3{margin:0;font-size:19px;font-weight:700}
+  .proj .pmeta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .proj .pdesc{margin:0 0 18px;font-size:14px;color:var(--text-dim);line-height:1.55;flex:1}
+  .proj .pbtns{display:flex;gap:8px;flex-wrap:wrap}
+  .also .proj{padding:20px}
+  .also .proj h3{font-size:17px}
+
+  /* ============================================================
+     DOWNLOADS (release style)
+     ============================================================ */
+  .releases{display:flex;flex-direction:column;gap:12px}
+  .release{
+    display:flex;align-items:center;gap:18px;padding:18px 22px;
+  }
+  .release .ricon{width:44px;height:44px;border-radius:13px;flex:0 0 auto;display:grid;place-items:center;
+    background:rgba(47,140,255,.10);border:1px solid var(--stroke);color:var(--blue-300)}
+  .release .ricon svg{width:22px;height:22px}
+  .release .rmain{flex:1;min-width:0}
+  .release .rmain h3{margin:0 0 4px;font-size:16px;font-weight:700}
+  .release .rmain .rsub{font:600 12px/1 var(--font-mono);color:var(--text-dim);display:flex;gap:10px;flex-wrap:wrap}
+  .release .ract{flex:0 0 auto}
+
+  /* ============================================================
+     ABOUT TIMELINE
+     ============================================================ */
+  .timeline{position:relative;padding-left:8px}
+  .tl-head{display:flex;align-items:baseline;gap:16px;margin-bottom:30px;flex-wrap:wrap}
+  .tl-head .big{font-size:clamp(44px,7vw,72px);font-weight:800;letter-spacing:-.04em;line-height:1;
+    background:linear-gradient(180deg,var(--blue-300),var(--blue-700));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tl-head .big-sub{color:var(--text-dim);font-size:16px;max-width:34ch}
+  .tl-track{display:flex;flex-wrap:wrap;gap:12px}
+  .tl-item{
+    display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:var(--radius-pill);
+    border:1px solid var(--stroke);background:rgba(255,255,255,.025);font-weight:600;font-size:14px;
+  }
+  .tl-item .dot{width:9px;height:9px;border-radius:50%;background:var(--blue-500);box-shadow:0 0 12px var(--blue-500);flex:0 0 auto}
+
+  /* ============================================================
+     FUTURE PROJECTS
+     ============================================================ */
+  .future-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+  .future{
+    padding:20px;border-radius:var(--radius-md);border:1px dashed var(--stroke-strong);
+    background:rgba(255,255,255,.02);transition:border-color var(--t-fast),background var(--t-fast);
+  }
+  .future:hover{border-color:var(--blue-300);background:rgba(85,215,255,.04)}
+  .future h4{margin:0 0 10px;font-size:16px;font-weight:600}
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer.site{border-top:1px solid rgba(120,160,235,.10);padding:54px 0 40px;margin-top:40px}
+  .foot{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}
+  .foot .fbrand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:18px}
+  .foot .fbrand .mark{width:38px;height:38px}
+  .foot .fcol h5{margin:0 0 12px;font:700 12px/1 var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--text-faint)}
+  .foot .fcol a,.foot .fcol span{display:block;color:var(--text-dim);font-size:14px;margin-bottom:8px}
+  .foot .fcol a:hover{color:var(--blue-300)}
+  .foot-bottom{margin-top:40px;padding-top:22px;border-top:1px solid rgba(120,160,235,.08);
+    display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;color:var(--text-faint);font-size:13px}
+
+  /* ============================================================
+     MODALS
+     ============================================================ */
+  .modal{
+    position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:22px;
+    background:rgba(4,7,14,.72);backdrop-filter:blur(8px);
+  }
+  .modal.open{display:flex}
+  .modal-card{
+    width:min(560px,100%);max-height:90vh;overflow:auto;padding:30px;border-radius:var(--radius-lg);
+    background:var(--glass-strong);border:1px solid var(--stroke-strong);
+    backdrop-filter:blur(22px);box-shadow:0 40px 100px -30px rgba(0,0,0,.9);
+    transform:scale(.96);opacity:0;transition:transform var(--t-med) var(--ease),opacity var(--t-med) var(--ease);
+  }
+  .modal.open .modal-card{transform:scale(1);opacity:1}
+  .modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:8px}
+  .modal-head h3{margin:0;font-size:24px;font-weight:700;letter-spacing:-.01em}
+  .modal-close{background:none;border:1px solid var(--stroke-strong);border-radius:12px;width:40px;height:40px;color:var(--text);cursor:pointer;flex:0 0 auto;font-size:18px}
+  .modal-meta{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 18px}
+  .modal-card p.mdesc{color:var(--text-dim);font-size:15px;margin:0 0 18px}
+  .modal-card h4{font:700 12px/1 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint);margin:0 0 12px}
+  .modal-card ul{margin:0;padding-left:18px;color:var(--text-dim);font-size:14.5px}
+  .modal-card ul li{margin-bottom:7px}
+
+  /* contact form */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:6px}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field.full{grid-column:1 / -1}
+  .field label{font:600 12px/1 var(--font-mono);letter-spacing:.04em;color:var(--text-dim)}
+  .field input,.field select,.field textarea{
+    font:500 15px/1.4 var(--font-sans);color:var(--text);
+    background:rgba(255,255,255,.03);border:1px solid var(--stroke-strong);border-radius:12px;
+    padding:12px 13px;width:100%;transition:border-color var(--t-fast),background var(--t-fast);
+  }
+  .field textarea{resize:vertical;min-height:92px}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue-300);background:rgba(85,215,255,.05)}
+  .field select{appearance:none;cursor:pointer}
+  .form-actions{display:flex;gap:10px;align-items:center;margin-top:18px;flex-wrap:wrap}
+  .copy-fallback{
+    margin-top:16px;padding:13px 15px;border-radius:12px;font-size:13.5px;color:var(--text-dim);
+    background:rgba(255,255,255,.03);border:1px solid var(--stroke);
+  }
+  .copy-fallback b{color:var(--text)}
+  .copy-fallback button{margin-left:8px}
+
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width:1100px){
+    .c-stack{grid-column:span 12}
+    .c-hub{grid-column:span 12}
+    .c-tech{grid-column:span 7}
+    .c-dl{grid-column:span 5}
+    .c-contact{grid-column:span 12}
+  }
+  @media (max-width:880px){
+    .nav-links{display:none}
+    .nav-toggle{display:grid;place-items:center}
+    .nav .brand-contact{display:none}
+    .also-grid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:768px){
+    .section{padding:72px 0}
+    .c-tech{grid-column:span 12}
+    .c-dl{grid-column:span 12}
+    .proj-grid{grid-template-columns:1fr}
+  }
+  @media (max-width:600px){
+    .wrap{padding:0 18px}
+    .hero{padding:54px 0 40px}
+    .also-grid{grid-template-columns:1fr}
+    .form-grid{grid-template-columns:1fr}
+    .release{flex-wrap:wrap}
+    .release .ract{width:100%}
+    .release .ract .btn{width:100%}
+    .modal-card{padding:24px 20px}
+    .cell{padding:22px}
+  }
+  /* landscape phone */
+  @media (max-height:480px) and (orientation:landscape){
+    .hero{padding:34px 0 26px}
+    .orb{width:108px;height:108px}
+    .modal-card{max-height:96vh}
   }
 
-  .window-body {
-    padding: 16px;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-    font-size: 1rem;
+  @media (prefers-reduced-motion:reduce){
+    .orb3d,.hub .link,.node.center,.drift,.proj .thumb .scan{animation:none !important}
+    *{transition-duration:.001ms !important}
   }
-
-  .window-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .title-text {
-    font-size: 0.98rem;
-  }
-
-  .title-controls {
-    gap: 6px;
-  }
-
-  .title-controls button {
-    width: 42px;
-    height: 38px;
-    font-size: 1.05rem;
-  }
-
-  .panel,
-  .service-card {
-    padding: 14px;
-  }
-
-  .terminal-input-row {
-    padding: 12px 14px;
-  }
-
-  .terminal-input {
-    min-height: 34px;
-    font-size: 1rem;
-  }
-
-  .task-button {
-    min-width: 70px;
-    height: 36px;
-  }
-
-  .tray {
-    min-width: 116px;
-    padding: 0 8px;
-  }
-
-  .tray .network-label,
-  .tray-dot {
-    display: none;
-  }
-
-  .start-menu {
-    width: 100vw;
-    max-height: calc(100vh - var(--desktop-bottom) - var(--safe-top));
-    overflow: auto;
-  }
-
-  .start-item {
-    min-height: 50px;
-  }
-
-  .small-power {
-    min-height: 40px;
-  }
-
-  .file-meta {
-    display: none;
-  }
-
-  .file-row {
-    grid-template-columns: 40px 1fr auto;
-  }
-
-  .window.mobile-opening {
-    animation: mobileAppOpen 220ms cubic-bezier(0.18, 0.9, 0.28, 1) both;
-  }
-
-  .window.mobile-closing {
-    animation: mobileAppClose 180ms ease-in both;
-  }
-}
-
-@media (max-width: 920px) and (max-height: 520px) {
-  .desktop-icons {
-    display: grid;
-    grid-template-rows: repeat(3, minmax(0, auto));
-    grid-auto-flow: column;
-    align-items: start;
-    gap: 4px 7px;
-  }
-
-  .desktop-icon {
-    width: 92px;
-    min-height: 91px;
-    gap: 4px;
-    padding: 4px 3px;
-  }
-
-  .icon-art {
-    width: 48px;
-    height: 48px;
-  }
-
-  .desktop-icon > span:last-child {
-    max-width: 88px;
-    font-size: 0.7rem;
-    line-height: 1.08;
-  }
-}
-
-@keyframes mobileAppOpen {
-  from {
-    opacity: 0;
-    transform: translateY(26px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes mobileAppClose {
-  from {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(36px) scale(0.98);
-  }
-}
 </style>
 </head>
 <body>
-<section id="bootScreen" class="screen boot-screen" aria-label="Skyfall OS boot screen">
-  <div class="boot-shell">
-    <div class="boot-logo" aria-hidden="true">
-      <div class="boot-mark"><i></i><i></i><i></i><i></i></div>
-      <div class="boot-title">
-        <strong>Skyfall OS</strong>
-        <span>Professional</span>
+
+<!-- ambient background -->
+<div class="bg-fx" aria-hidden="true">
+  <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
+</div>
+<canvas id="stars" aria-hidden="true"></canvas>
+
+<!-- ============================ HEADER ============================ -->
+<header class="site">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="#home" aria-label="Skyfall Creations home">
+        <span class="mark" aria-hidden="true"></span>
+        Skyfall Creations
+      </a>
+      <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#projects">Projects</a>
+        <a href="#downloads">Downloads</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
       </div>
-    </div>
-    <div id="bootLoader" class="boot-loader waiting" aria-label="Loading">
-      <div class="boot-progress"></div>
-    </div>
-    <p class="boot-hint">For best experience, enter fullscreen</p>
+      <div class="nav-right">
+        <button class="btn btn-primary btn-sm brand-contact" data-open-contact>Request a quote</button>
+        <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" data-open-drawer>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        </button>
+      </div>
+    </nav>
   </div>
-  <div class="boot-copy">Skyfall Creations</div>
+</header>
+
+<!-- mobile drawer -->
+<div class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-panel" role="dialog" aria-modal="true" aria-label="Menu">
+    <button class="drawer-close" aria-label="Close menu" data-close-drawer>✕</button>
+    <a href="#home" data-close-drawer>Home</a>
+    <a href="#projects" data-close-drawer>Projects</a>
+    <a href="#downloads" data-close-drawer>Downloads</a>
+    <a href="#about" data-close-drawer>About</a>
+    <a href="#contact" data-close-drawer>Contact</a>
+    <button class="btn btn-primary" style="margin-top:14px" data-open-contact data-close-drawer>Request a quote</button>
+  </div>
+</div>
+
+<main>
+
+<!-- ============================ HERO ============================ -->
+<section id="home" class="hero wrap">
+  <div class="orb-wrap"><div class="orb" aria-label="Skyfall logo" role="img"></div></div>
+  <h1>Skyfall Creations</h1>
+  <p class="tagline">Building <b>practical software</b>, AI tools, automation, embedded systems, and developer utilities.</p>
+  <p class="sub">From field diagnostics to app prototypes, Skyfall Creations turns real-world problems into working tools.</p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">View projects</a>
+    <a href="#contact" class="btn btn-ghost">Contact Skyfall</a>
+    <button class="btn btn-ghost" data-open-contact>Request project info</button>
+  </div>
+  <div class="status-chips">
+    <span class="badge badge-dot">Solo studio · shipping</span>
+    <span class="badge">macOS · iOS · Linux · Embedded</span>
+    <span class="badge">Local-first &amp; private</span>
+  </div>
 </section>
 
-<main id="desktop" class="screen desktop" aria-label="Skyfall OS desktop">
-  <nav class="desktop-icons" aria-label="Desktop icons">
-    <button class="desktop-icon" type="button" data-window="about"><span class="icon-art pdf" aria-hidden="true"></span><span>About_Me.pdf.exe</span></button>
-    <button class="desktop-icon" type="button" data-window="aiprompt"><span class="icon-art folder" aria-hidden="true"></span><span>AI Prompt Injection Projects</span></button>
-    <button class="desktop-icon" type="button" data-window="ownyourrisk"><span class="icon-art folder danger" aria-hidden="true"></span><span>OPEN AT YOUR OWN RISK</span></button>
-    <button class="desktop-icon" type="button" data-window="links"><span class="icon-art browser" aria-hidden="true"></span><span>SkyBrowser</span></button>
-    <button class="desktop-icon" type="button" data-window="terminal"><span class="icon-art terminal" aria-hidden="true"></span><span>Terminal</span></button>
-    <button class="desktop-icon" type="button" data-window="contact"><span class="icon-art mail" aria-hidden="true"></span><span>Contact Me</span></button>
-  </nav>
-  <button class="desktop-icon recycle" type="button" data-window="recycle"><span class="icon-art recyclebin" aria-hidden="true"></span><span>Recycle Bin</span></button>
+<!-- ============================ BENTO ============================ -->
+<section class="wrap" style="padding-bottom:40px">
+  <div class="bento">
 
-  <section id="win-welcome" class="window hidden" data-window-id="welcome" data-title="Welcome to Skyfall OS" style="width: 420px; height: 270px; left: 170px; top: 52px;">
-    <header class="titlebar"><div class="title-text"><span>SKY</span><span class="title-name">Welcome to Skyfall OS</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body">
-      <h2>Skyfall Creations</h2>
-      <p>This desktop is a single-file interactive portfolio for practical technology work: web interfaces, app workflows, automation, networking, diagnostics, AI tooling, home lab systems, troubleshooting, and tech repair.</p>
-      <div class="panel">
-        <strong>Start here</strong>
-        Use the desktop icons or Start menu to open each section. Contact stays available through the Contact Me window.
+    <!-- Developer Stack -->
+    <div class="cell glass glow-card c-stack">
+      <span class="eyebrow">01 — Toolset</span>
+      <h3>Developer Stack</h3>
+      <p class="lead">A practical mix of app development, automation, embedded systems, networking, and AI-assisted tooling.</p>
+      <div class="chips" id="stackChips"></div>
+    </div>
+
+    <!-- Featured Projects hub -->
+    <div class="cell glass glow-card c-hub">
+      <span class="eyebrow">02 — Portfolio</span>
+      <h3>Featured Projects</h3>
+      <p class="lead">A focused set of builds. Hover a node for the details.</p>
+      <div class="hub" id="hub">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <line class="link" x1="50" y1="50" x2="18" y2="22"/>
+          <line class="link" x1="50" y1="50" x2="84" y2="24"/>
+          <line class="link" x1="50" y1="50" x2="16" y2="80"/>
+          <line class="link" x1="50" y1="50" x2="86" y2="80"/>
+        </svg>
+        <div class="node center" style="left:50%;top:50%">Skyfall</div>
+        <div class="hub-pop" id="hubPop" aria-live="polite"></div>
       </div>
     </div>
-  </section>
 
-  <section id="win-about" class="window hidden" data-window-id="about" data-title="About_Me.pdf.exe" style="width: 560px; height: 410px; left: 210px; top: 72px;">
-    <header class="titlebar"><div class="title-text"><span>PDF</span><span class="title-name">About_Me.pdf.exe</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body">
-      <h2>Skyfall Creations</h2>
-      <p>Skyfall OS is a compact desktop portfolio for practical technology work: networks, apps, websites, diagnostics, troubleshooting, automation, AI workflows, home lab systems, and tech repair.</p>
-      <div class="window-grid">
-        <div class="service-card"><strong>Builder Notes</strong>Local-first systems, clean interfaces, repeatable tools, and technical support workflows that make problems easier to inspect and fix.</div>
-        <div class="service-card"><strong>Operating Style</strong>Root-cause troubleshooting, minimal dependencies, clear documentation, and maintainable solutions over fragile showpieces.</div>
-        <div class="service-card"><strong>Core Stack</strong>Web UI, app prototyping, network utilities, diagnostics scripts, automation dashboards, AI-assisted tooling, and repair intake workflows.</div>
-        <div class="service-card"><strong>Primary Focus</strong>Useful technology that can be explained, tested, repaired, and improved without losing track of the original problem.</div>
+    <!-- Current Technologies -->
+    <div class="cell glass glow-card c-tech">
+      <span class="eyebrow">03 — In rotation</span>
+      <h3>Current Technologies</h3>
+      <p class="lead">What's actively in use across current builds.</p>
+      <div class="drift-field" id="driftField"></div>
+    </div>
+
+    <!-- Downloads teaser -->
+    <div class="cell glass glow-card c-dl">
+      <span class="eyebrow">04 — Releases</span>
+      <h3>Downloads</h3>
+      <div class="dl-mini">
+        <div class="dl-row"><span>SkyUSBInspector</span><span class="badge badge-soon">Coming soon</span></div>
+        <div class="dl-row"><span>Shopping Saver</span><span class="badge badge-soon">Prototype</span></div>
+        <div class="dl-row"><span>Skyfall Microscope</span><span class="badge badge-soon">In dev</span></div>
+      </div>
+      <a href="#downloads" class="btn btn-ghost btn-sm" style="margin-top:18px;width:100%">All releases</a>
+    </div>
+
+    <!-- Contact -->
+    <div class="cell glass glow-card c-contact">
+      <span class="eyebrow">05 — Get in touch</span>
+      <div class="env" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 7l9 6 9-6"/></svg>
+      </div>
+      <h3>Contact Skyfall</h3>
+      <p class="lead">Have a project idea or need a hand? Send the basics and it becomes a practical next step.</p>
+      <div class="actions">
+        <button class="btn btn-primary" data-open-contact>Request a project quote</button>
+        <a class="btn btn-ghost" href="mailto:support@skyfallcreations.com">Email support</a>
       </div>
     </div>
-  </section>
 
-  <section id="win-projects" class="window hidden" data-window-id="projects" data-title="Projects" style="width: 620px; height: 430px; left: 220px; top: 78px;">
-    <header class="titlebar"><div class="title-text"><span>PRJ</span><span class="title-name">Projects</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body">
-      <h2>Project Directory</h2>
-      <div class="window-grid">
-        <div class="panel"><strong>Network Diagnostics Console</strong>LAN checks, device discovery planning, troubleshooting notes, and repeatable command flows for support calls.</div>
-        <div class="panel"><strong>Repair Intake Workspace</strong>Simple web forms and internal checklists for device triage, customer communication, and service follow-up.</div>
-        <div class="panel"><strong>Home Lab Monitor</strong>Local dashboards for uptime, device status, service health, and maintenance reminders.</div>
-        <div class="panel"><strong>Automation Toolkit</strong>Small scripts and browser tools that reduce repetitive checks, summarize data, and document technical outcomes.</div>
-        <div class="panel"><strong>App Experiments</strong>Native and web app prototypes focused on clear workflows, offline-friendly behavior, and diagnostic usefulness.</div>
-        <div class="panel"><strong>AI Workbench</strong>Prompted utilities for support drafts, logs, summarization, classification, and repeatable troubleshooting notes.</div>
-      </div>
-    </div>
-  </section>
+  </div>
+</section>
 
-  <section id="win-network" class="window hidden" data-window-id="network" data-title="Network Center" style="width: 560px; height: 380px; left: 260px; top: 98px;">
-    <header class="titlebar"><div class="title-text"><span>NET</span><span class="title-name">Network Center</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body">
-      <h2>Network Center</h2>
-      <p>Status: connected to Skyfall local workspace. This panel highlights networking and diagnostics capabilities without performing any live scan.</p>
-      <div class="window-grid">
-        <div class="panel"><strong>LAN Review</strong>Router basics, IP planning, wireless coverage, device inventory, and connectivity checks.</div>
-        <div class="panel"><strong>Troubleshooting</strong>DNS, DHCP, latency, packet loss, cable path, adapter, and service reachability workflows.</div>
-        <div class="panel"><strong>Home Lab</strong>Service maps, small server maintenance, local dashboards, backup checks, and controlled experiments.</div>
-        <div class="panel"><strong>Diagnostics</strong>Readable reports that separate symptoms, likely causes, commands run, and recommended next actions.</div>
-      </div>
-    </div>
-  </section>
+<!-- ============================ FEATURED PROJECTS ============================ -->
+<section id="projects" class="section wrap">
+  <div class="section-head">
+    <span class="eyebrow">Featured</span>
+    <h2>Projects in focus</h2>
+    <p>A curated set of the builds Skyfall Creations is putting real time into right now.</p>
+  </div>
+  <div class="proj-grid" id="featuredGrid"></div>
 
-  <section id="win-services" class="window hidden" data-window-id="services" data-title="Services" style="width: 570px; height: 405px; left: 250px; top: 92px;">
-    <header class="titlebar"><div class="title-text"><span>SVC</span><span class="title-name">Services</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body">
-      <h2>Services</h2>
-      <p>Skyfall Creations focuses on practical technology work that is easy to inspect, explain, maintain, and improve.</p>
-      <div class="window-grid">
-        <div class="service-card"><strong>Networking Support</strong>Wi-Fi, router basics, device connectivity, DNS/DHCP checks, latency triage, and readable network troubleshooting notes.</div>
-        <div class="service-card"><strong>App Development</strong>Workflow-first interfaces, local-first data handling, validation states, and maintainable native or web app prototypes.</div>
-        <div class="service-card"><strong>Web Development</strong>Responsive single-page experiences, support portals, lightweight dashboards, and self-contained tools.</div>
-        <div class="service-card"><strong>Automation</strong>Repeatable scripts, browser checks, file audits, data cleanup, and technical reporting flows.</div>
-        <div class="service-card"><strong>AI Tooling</strong>Structured helpers for support drafts, log summaries, classification, workflow prompts, and reviewable documentation.</div>
-        <div class="service-card"><strong>Diagnostics and Repair</strong>Device triage, root-cause troubleshooting, customer-ready summaries, and follow-up checklists.</div>
-      </div>
-    </div>
-  </section>
+  <div class="section-head" style="margin-top:64px">
+    <span class="eyebrow">Also building</span>
+    <h2>The wider lab</h2>
+    <p>Smaller tools and experiments moving through the home lab.</p>
+  </div>
+  <div class="also-grid also" id="alsoGrid"></div>
+</section>
 
-  <section id="win-applab" class="window hidden" data-window-id="applab" data-title="App Lab" style="width: 560px; height: 395px; left: 300px; top: 118px;">
-    <header class="titlebar"><div class="title-text"><span>APP</span><span class="title-name">App Lab</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body">
-      <h2>App Lab</h2>
-      <div class="window-grid">
-        <div class="service-card"><strong>App Development</strong>Workflow-first app interfaces, local persistence, validation states, and maintainable component structure.</div>
-        <div class="service-card"><strong>Web Development</strong>Single-page interfaces, responsive layouts, interactive tools, lightweight dashboards, and support portals.</div>
-        <div class="service-card"><strong>Automation</strong>Task runners, small data transforms, browser checks, file audits, and repeatable technical reporting.</div>
-        <div class="service-card"><strong>Repair Tools</strong>Checklists, intake flows, diagnostics views, and customer-ready summaries for tech repair operations.</div>
-      </div>
-    </div>
-  </section>
+<!-- ============================ DOWNLOADS ============================ -->
+<section id="downloads" class="section wrap">
+  <div class="section-head">
+    <span class="eyebrow">Releases</span>
+    <h2>Downloads</h2>
+    <p>Builds appear here as they're ready. Nothing fake — disabled means it isn't shipping yet.</p>
+  </div>
+  <div class="releases glass" style="padding:14px" id="releases"></div>
+</section>
 
-  <section id="win-aitools" class="window hidden" data-window-id="aitools" data-title="AI Tools" style="width: 540px; height: 370px; left: 340px; top: 138px;">
-    <header class="titlebar"><div class="title-text"><span>AI</span><span class="title-name">AI Tools</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body">
-      <h2>AI Tools</h2>
-      <p>AI work is treated as practical tooling: structured inputs, bounded outputs, reviewable changes, and clear handoffs.</p>
-      <ul class="list">
-        <li>Support response drafts and troubleshooting summaries.</li>
-        <li>Log review, classification, and incident notes.</li>
-        <li>Workflow automation for repetitive technical checks.</li>
-        <li>Prompted helpers for app, web, network, and repair documentation.</li>
-        <li>Local-first usage patterns when privacy and control matter.</li>
-      </ul>
+<!-- ============================ ABOUT ============================ -->
+<section id="about" class="section wrap">
+  <div class="section-head"><span class="eyebrow">Background</span><h2>A long runway of real-world work</h2></div>
+  <div class="glass" style="padding:34px">
+    <div class="tl-head">
+      <span class="big">25+ yrs</span>
+      <span class="big-sub">Hands-on across trades, hardware, networks, and software — the throughline is making things actually work in the field.</span>
     </div>
-  </section>
+    <div class="tl-track" id="timeline"></div>
+  </div>
+</section>
 
-  <section id="win-links" class="window hidden" data-window-id="links" data-title="SkyBrowser" style="width: 650px; height: 430px; left: 260px; top: 108px;">
-    <header class="titlebar"><div class="title-text"><span>WWW</span><span class="title-name">SkyBrowser</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body">
-      <div class="browser-chrome" aria-hidden="true">
-        <div class="browser-buttons"><span>&lt;</span><span>&gt;</span><span>R</span></div>
-        <div class="browser-address">http://skyfall.local/start</div>
-      </div>
-      <h2>SkyBrowser</h2>
-      <div class="window-grid">
-        <div class="panel"><strong>Projects</strong>Portfolio directory for diagnostics consoles, repair intake screens, home lab dashboards, and small automation utilities.</div>
-        <div class="panel"><strong>Tools</strong>Local-first helpers for repeatable checks, support notes, browser verification, file audits, and workflow cleanup.</div>
-        <div class="panel"><strong>Network Notes</strong>Readable references for IP addressing, wireless setup, DNS, DHCP, latency, and service reachability checks.</div>
-        <div class="panel"><strong>App Lab</strong>Native and web app prototypes focused on clear state, responsive behavior, local data, and maintainable UI.</div>
-        <div class="panel"><strong>Contact</strong>Open the Contact Me desktop icon for the click-only email link and intake details.</div>
-        <div class="panel"><strong>Support</strong>Troubleshooting summaries, repair notes, device triage, automation handoffs, and practical next-step reports.</div>
-      </div>
-    </div>
-  </section>
+<!-- ============================ FUTURE ============================ -->
+<section class="section wrap">
+  <div class="section-head"><span class="eyebrow">On the horizon</span><h2>Future projects</h2><p>Concepts queued up. Marked clearly so nothing reads as shipped before it is.</p></div>
+  <div class="future-grid" id="futureGrid"></div>
+</section>
 
-  <section id="win-contact" class="window hidden" data-window-id="contact" data-title="Contact Me" style="width: 480px; height: 310px; left: 420px; top: 178px;">
-    <header class="titlebar"><div class="title-text"><span>MAIL</span><span class="title-name">Contact Me</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body">
-      <h2>Contact</h2>
-      <p>For networking, app development, web development, automation, AI tools, diagnostics, troubleshooting, home lab projects, and tech repair requests, email:</p>
-      <p><a id="emailLink" href="mailto:support@skyfallcreations.com">support@skyfallcreations.com</a></p>
-      <div class="panel">
-        <strong>Good intake details</strong>
-        Include the device or system, what changed, what already worked, exact errors, urgency, and any screenshots or logs you can share.
-      </div>
-    </div>
-  </section>
-
-  <section id="win-terminal" class="window hidden" data-window-id="terminal" data-title="Terminal" style="width: 620px; height: 390px; left: 210px; top: 122px;">
-    <header class="titlebar"><div class="title-text"><span>C:\</span><span class="title-name">Terminal</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body terminal-body">
-      <div id="terminalOutput" class="terminal-output" aria-live="polite"></div>
-      <form id="terminalForm" class="terminal-input-row">
-        <span>C:\Skyfall&gt;</span>
-        <input id="terminalInput" class="terminal-input" autocomplete="off" spellcheck="false" aria-label="Terminal command">
-      </form>
-    </div>
-  </section>
-
-  <section id="win-system" class="window hidden" data-window-id="system" data-title="System Panel" style="width: 520px; height: 385px; left: 460px; top: 94px;">
-    <header class="titlebar"><div class="title-text"><span>SYS</span><span class="title-name">System Panel</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body">
-      <h2>System Panel</h2>
-      <div class="panel"><strong>Skyfall OS</strong>Interactive desktop portfolio, single-file edition.</div>
-      <div class="panel"><strong>CPU</strong><div class="meter"><span id="cpuMeter" style="width: 38%"></span></div></div>
-      <div class="panel"><strong>Memory</strong><div class="meter"><span id="memMeter" style="width: 54%"></span></div></div>
-      <div class="panel"><strong>Modules</strong>Networking, app lab, web tools, automation, AI tools, diagnostics, troubleshooting, home lab, tech repair.</div>
-    </div>
-  </section>
-
-  <section id="win-recycle" class="window hidden" data-window-id="recycle" data-title="Recycle Bin" style="width: 420px; height: 270px; left: 520px; top: 210px;">
-    <header class="titlebar"><div class="title-text"><span>BIN</span><span class="title-name">Recycle Bin</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body">
-      <h2>Recycle Bin</h2>
-      <div class="empty-bin">This folder is empty.</div>
-    </div>
-  </section>
-
-  <section id="win-aiprompt" class="window hidden" data-window-id="aiprompt" data-title="AI Prompt Injection Projects" style="width: 640px; height: 460px; left: 180px; top: 60px;">
-    <header class="titlebar"><div class="title-text"><span>PRJ</span><span class="title-name">AI Prompt Injection Projects</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body">
-      <h2>AI Prompt Injection Projects</h2>
-      <p style="font-size:0.82rem;color:#595959;margin-bottom:14px;">Research and portfolio items only. These are demo and educational projects, not active tools.</p>
-      <div class="window-grid">
-        <div class="panel"><strong>Context Override Lab</strong>Controlled study of how injected context shifts model response framing. Documents boundary conditions and scope limitations.</div>
-        <div class="panel"><strong>System Prompt Boundary Tests</strong>Systematic cases where system-level instructions interact with user-turn inputs. Notes on observable behavior and edge cases.</div>
-        <div class="panel"><strong>Token Leak Simulation Notes</strong>Research log exploring partial prompt exposure through over-verbose outputs. All tests run in sandboxed environments.</div>
-        <div class="panel"><strong>Multi-Turn Jailbreak Pattern Study</strong>Documentation of incremental context-shifting patterns across multi-turn conversations. Analysis only, no automation.</div>
-        <div class="panel"><strong>Guardrail Regression Cases</strong>Catalog of prompt variants that revealed inconsistent safety behavior across model versions. Used for red-team reporting.</div>
-        <div class="panel"><strong>Prompt Sanitizer Bypass Research</strong>Evaluation of common input-cleaning heuristics and cases where they fail to block adversarial context framing.</div>
-        <div class="panel"><strong>Red-Team Response Matrix</strong>Structured output format for categorizing model responses during adversarial prompt sessions. Template reference only.</div>
-      </div>
-    </div>
-  </section>
-
-  <section id="win-ownyourrisk" class="window hidden" data-window-id="ownyourrisk" data-title="OPEN AT YOUR OWN RISK" style="width: 610px; height: 440px; left: 200px; top: 80px;">
-    <header class="titlebar"><div class="title-text"><span>!</span><span class="title-name">OPEN AT YOUR OWN RISK</span></div><div class="title-controls"><button type="button" data-control="min">_</button><button type="button" data-control="max">[]</button><button class="close" type="button" data-control="close">X</button></div></header>
-    <div class="window-body">
-      <h2>OPEN AT YOUR OWN RISK</h2>
-      <p style="font-size:0.82rem;color:#595959;margin-bottom:14px;">Demo repository. No real downloads. These are portfolio file stubs only.</p>
-      <div class="file-list">
-        <div class="file-list-header"><strong>skyfall-tools</strong><span>/ 7 files &mdash; demo only</span></div>
-        <div class="file-row"><span class="file-badge">PY</span><span class="file-name">network_audit_reporter.py</span><span class="file-meta">Audit script stub</span><span class="file-age">3 days ago</span></div>
-        <div class="file-row"><span class="file-badge">PY</span><span class="file-name">hvac_log_cleaner.py</span><span class="file-meta">Log cleanup demo</span><span class="file-age">5 days ago</span></div>
-        <div class="file-row"><span class="file-badge sw">SW</span><span class="file-name">ios_camera_permission_test.swift</span><span class="file-meta">Permission test stub</span><span class="file-age">1 week ago</span></div>
-        <div class="file-row"><span class="file-badge">PY</span><span class="file-name">prompt_sanitizer_demo.py</span><span class="file-meta">Sanitizer demo</span><span class="file-age">1 week ago</span></div>
-        <div class="file-row"><span class="file-badge">PY</span><span class="file-name">sqlite_maintenance_tracker.py</span><span class="file-meta">DB maintenance stub</span><span class="file-age">2 weeks ago</span></div>
-        <div class="file-row"><span class="file-badge sw">SW</span><span class="file-name">skyfall_terminal_mock.swift</span><span class="file-meta">Terminal mock UI</span><span class="file-age">2 weeks ago</span></div>
-        <div class="file-row"><span class="file-badge">PY</span><span class="file-name">router_latency_watchdog.py</span><span class="file-meta">Latency monitor stub</span><span class="file-age">3 weeks ago</span></div>
-      </div>
-    </div>
-  </section>
 </main>
 
-<aside id="startMenu" class="start-menu" aria-label="Start menu">
-  <div class="start-head">
-    <div class="start-avatar">S</div>
-    <div><strong>Skyfall Creations</strong><span>Desktop Portfolio</span></div>
-  </div>
-  <div class="start-columns">
-    <div class="start-left">
-      <button class="start-item" type="button" data-window="about"><span class="start-icon">PDF</span><span>About_Me.pdf.exe<small>Focus areas</small></span></button>
-      <button class="start-item" type="button" data-window="projects"><span class="start-icon">PRJ</span><span>Projects<small>Portfolio directory</small></span></button>
-      <button class="start-item" type="button" data-window="services"><span class="start-icon">SVC</span><span>Services<small>Support and build work</small></span></button>
-      <button class="start-item" type="button" data-window="network"><span class="start-icon">NET</span><span>Network Center<small>Diagnostics and home lab</small></span></button>
-      <button class="start-item" type="button" data-window="applab"><span class="start-icon">APP</span><span>App Lab<small>Apps, web, and automation</small></span></button>
-      <button class="start-item" type="button" data-window="terminal"><span class="start-icon">C:\</span><span>Terminal<small>Command interface</small></span></button>
+<!-- ============================ FOOTER ============================ -->
+<footer class="site">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <div class="fbrand"><span class="mark" aria-hidden="true"></span>Skyfall Creations</div>
+        <p style="max-width:32ch;color:var(--text-dim);margin:14px 0 0;font-size:14px">Practical software, AI tools, automation, embedded systems, and developer utilities.</p>
+      </div>
+      <div class="fcol">
+        <h5>Explore</h5>
+        <a href="#projects">Projects</a>
+        <a href="#downloads">Downloads</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="fcol">
+        <h5>Contact</h5>
+        <a href="mailto:support@skyfallcreations.com">support@skyfallcreations.com</a>
+        <a href="mailto:info@skyfallcreations.com">info@skyfallcreations.com</a>
+        <span style="margin-top:6px">Support &amp; project inquiries</span>
+      </div>
     </div>
-    <div class="start-right">
-      <button class="start-item" type="button" data-window="aitools"><span class="start-icon">AI</span><span>AI Tools</span></button>
-      <button class="start-item" type="button" data-window="links"><span class="start-icon">WWW</span><span>SkyBrowser</span></button>
-      <button class="start-item" type="button" data-window="contact"><span class="start-icon">MAIL</span><span>Contact Me</span></button>
-      <button class="start-item" type="button" data-window="system"><span class="start-icon">SYS</span><span>System Panel</span></button>
-      <button class="start-item" type="button" data-window="recycle"><span class="start-icon">BIN</span><span>Recycle Bin</span></button>
+    <div class="foot-bottom">
+      <span>© <span id="year"></span> Skyfall Creations. All rights reserved.</span>
+      <span>Built as a single file · no trackers</span>
     </div>
   </div>
-  <div class="start-foot">
-    <button class="small-power restart" type="button" data-action="restart">Restart</button>
-    <button class="small-power" type="button" data-action="turnoff">Shut Down</button>
-  </div>
-</aside>
-
-<footer id="taskbar" class="taskbar" aria-label="Skyfall OS taskbar">
-  <button id="startButton" class="start-button" type="button"><span class="start-mark"><i></i><i></i><i></i><i></i></span>start</button>
-  <div id="taskButtons" class="task-buttons" aria-label="Open windows"></div>
-  <div class="tray"><button id="soundToggle" class="sound-toggle" type="button" aria-label="Mute startup sound" aria-pressed="false" title="Mute startup sound">AUD</button><span class="tray-dot"></span><span class="network-label">LAN</span><span id="clock" class="clock">--:--</span></div>
 </footer>
 
+<!-- ============================ PROJECT MODAL ============================ -->
+<div class="modal" id="projModal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+    <div class="modal-head">
+      <h3 id="pmTitle"></h3>
+      <button class="modal-close" data-close-modal aria-label="Close">✕</button>
+    </div>
+    <div class="modal-meta" id="pmMeta"></div>
+    <p class="mdesc" id="pmDesc"></p>
+    <h4>Highlights</h4>
+    <ul id="pmList"></ul>
+  </div>
+</div>
+
+<!-- ============================ CONTACT MODAL ============================ -->
+<div class="modal" id="contactModal" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="cmTitle">
+    <div class="modal-head">
+      <div>
+        <h3 id="cmTitle">Request a project quote</h3>
+        <p style="margin:6px 0 0;color:var(--text-dim);font-size:14px">Sends to info@skyfallcreations.com via your mail app.</p>
+      </div>
+      <button class="modal-close" data-close-modal aria-label="Close">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label for="f-name">Name</label><input id="f-name" type="text" autocomplete="name" /></div>
+      <div class="field"><label for="f-company">Company</label><input id="f-company" type="text" autocomplete="organization" /></div>
+      <div class="field"><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email" /></div>
+      <div class="field"><label for="f-project">Project</label><input id="f-project" type="text" placeholder="App, tool, automation…" /></div>
+      <div class="field"><label for="f-budget">Budget</label>
+        <select id="f-budget"><option value="">Select…</option><option>Under $1k</option><option>$1k–$5k</option><option>$5k–$15k</option><option>$15k+</option><option>Not sure yet</option></select>
+      </div>
+      <div class="field"><label for="f-timeline">Timeline</label>
+        <select id="f-timeline"><option value="">Select…</option><option>ASAP</option><option>2–4 weeks</option><option>1–3 months</option><option>Flexible</option></select>
+      </div>
+      <div class="field full"><label for="f-desc">Description</label><textarea id="f-desc" placeholder="What problem are you trying to solve?"></textarea></div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" id="sendBtn">Send</button>
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+    </div>
+    <div class="copy-fallback">
+      Mail app didn't open? Email <b>info@skyfallcreations.com</b> directly.
+      <button class="btn btn-ghost btn-sm" id="copyEmail">Copy address</button>
+    </div>
+  </div>
+</div>
+
 <script>
-(function () {
-  "use strict";
-
-  const bootScreen = document.getElementById("bootScreen");
-  const bootLoader = document.getElementById("bootLoader");
-  const desktop = document.getElementById("desktop");
-  const taskbar = document.getElementById("taskbar");
-  const startMenu = document.getElementById("startMenu");
-  const startButton = document.getElementById("startButton");
-  const soundToggle = document.getElementById("soundToggle");
-  const taskButtons = document.getElementById("taskButtons");
-  const terminalOutput = document.getElementById("terminalOutput");
-  const terminalInput = document.getElementById("terminalInput");
-  const terminalForm = document.getElementById("terminalForm");
-  const clock = document.getElementById("clock");
-  const cpuMeter = document.getElementById("cpuMeter");
-  const memMeter = document.getElementById("memMeter");
-
-  const BOOT_DURATION = 2500;
-  const MOBILE_QUERY = "(max-width: 760px), (max-height: 520px)";
-  const audioUnlockEvents = ["pointerdown", "click", "keydown", "touchstart"];
-  const windows = new Map();
-  let topZ = 100;
-  let activeWindowId = null;
-  let bootTime = Date.now();
-  let bootTimer = null;
-  let audioContext = null;
-  let soundMuted = false;
-  let pendingStartupChime = false;
-  let unlockListenersActive = false;
-
-  const terminalCommands = {
-    help: "Available commands: help, about, projects, services, network, applab, aitools, contact, ipconfig, ping, clear, whoami, uptime",
-    about: "Skyfall Creations builds practical web, app, network, automation, AI, diagnostics, troubleshooting, home lab, and repair tools.",
-    projects: "Projects: network diagnostics console, repair intake workspace, home lab monitor, automation toolkit, app experiments, AI workbench.",
-    services: "Services: networking support, app development, web development, automation, AI tooling, diagnostics, troubleshooting, home lab projects, tech repair.",
-    network: "Network Center: LAN review, DNS/DHCP checks, latency triage, wireless planning, device inventory, and readable diagnostics.",
-    applab: "App Lab: workflow-first apps, responsive web tools, local data flows, validation states, and maintainable interfaces.",
-    aitools: "AI Tools: support drafts, log summaries, classification helpers, automation prompts, and reviewable technical notes.",
-    contact: "Contact: support@skyfallcreations.com",
-    ipconfig: "Skyfall Ethernet Adapter:\n   Connection-specific DNS Suffix  . : local.skyfall\n   IPv4 Address. . . . . . . . . . . : 192.168.5.24\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n   Default Gateway . . . . . . . . . : 192.168.5.1",
-    ping: "Pinging skyfall.local [192.168.5.1] with 32 bytes of data:\nReply from 192.168.5.1: bytes=32 time=2ms TTL=64\nReply from 192.168.5.1: bytes=32 time=1ms TTL=64\nReply from 192.168.5.1: bytes=32 time=2ms TTL=64\nPackets: Sent = 3, Received = 3, Lost = 0 (0% loss)",
-    whoami: "SKYFALL-OS\\Desktop"
-  };
-
-  document.querySelectorAll(".window").forEach((win) => {
-    const id = win.dataset.windowId;
-    windows.set(id, {
-      id,
-      element: win,
-      title: win.dataset.title || id,
-      defaultRect: {
-        left: win.style.left,
-        top: win.style.top,
-        width: win.style.width,
-        height: win.style.height
-      },
-      open: false,
-      minimized: false,
-      maximized: false,
-      mobileFitted: false,
-      closeTimer: null,
-      restore: null,
-      taskButton: createTaskButton(id, win.dataset.title || id)
-    });
-  });
-
-  document.querySelectorAll("[data-action='restart']").forEach((button) => {
-    button.addEventListener("click", () => {
-      resetDesktop();
-      startBootSequence(BOOT_DURATION);
-    });
-  });
-
-  document.querySelectorAll("[data-action='turnoff']").forEach((button) => {
-    button.addEventListener("click", () => {
-      resetDesktop();
-      startBootSequence(BOOT_DURATION);
-    });
-  });
-
-  soundToggle.addEventListener("click", () => {
-    soundMuted = !soundMuted;
-    soundToggle.setAttribute("aria-pressed", String(soundMuted));
-    soundToggle.setAttribute("aria-label", soundMuted ? "Unmute startup sound" : "Mute startup sound");
-    soundToggle.title = soundMuted ? "Unmute startup sound" : "Mute startup sound";
-    soundToggle.textContent = soundMuted ? "MUT" : "AUD";
-  });
-
-  document.querySelectorAll("[data-window]").forEach((button) => {
-    button.addEventListener("click", (event) => {
-      const id = event.currentTarget.dataset.window;
-      openWindow(id);
-      startMenu.classList.remove("open");
-    });
-  });
-
-  startButton.addEventListener("click", (event) => {
-    event.stopPropagation();
-    startMenu.classList.toggle("open");
-  });
-
-  document.addEventListener("pointerdown", (event) => {
-    if (!startMenu.contains(event.target) && !startButton.contains(event.target)) {
-      startMenu.classList.remove("open");
-    }
-  });
-
-  windows.forEach((state) => {
-    const win = state.element;
-    win.addEventListener("pointerdown", () => focusWindow(state.id));
-    win.querySelector("[data-control='min']").addEventListener("click", () => minimizeWindow(state.id));
-    win.querySelector("[data-control='max']").addEventListener("click", () => toggleMaximize(state.id));
-    win.querySelector("[data-control='close']").addEventListener("click", () => closeWindow(state.id));
-    makeDraggable(state);
-  });
-
-  terminalForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const command = terminalInput.value.trim();
-    terminalInput.value = "";
-    runTerminal(command);
-  });
-
-  function startBootSequence(duration) {
-    window.clearTimeout(bootTimer);
-    bootScreen.classList.remove("hidden");
-    desktop.style.display = "none";
-    taskbar.style.display = "none";
-    startMenu.classList.remove("open");
-    bootLoader.classList.remove("waiting");
-    bootTimer = window.setTimeout(showDesktop, duration);
-  }
-
-  function showDesktop() {
-    bootScreen.classList.add("hidden");
-    bootLoader.classList.add("waiting");
-    desktop.style.display = "block";
-    taskbar.style.display = "flex";
-    bootTime = Date.now();
-    playStartupChime();
-  }
-
-  function resetDesktop() {
-    window.clearTimeout(bootTimer);
-    windows.forEach((state) => closeWindow(state.id));
-    desktop.style.display = "none";
-    taskbar.style.display = "none";
-    startMenu.classList.remove("open");
-    bootScreen.classList.remove("hidden");
-  }
-
-  function createTaskButton(id, title) {
-    const button = document.createElement("button");
-    button.className = "task-button";
-    button.type = "button";
-    button.innerHTML = '<span class="start-icon">' + taskIcon(title) + '</span><span class="task-label">' + escapeHtml(title) + "</span>";
-    button.addEventListener("click", () => toggleTaskWindow(id));
-    taskButtons.appendChild(button);
-    return button;
-  }
-
-  function taskIcon(title) {
-    const upper = title.toUpperCase();
-    if (upper.includes("TERMINAL")) return "C:\\";
-    if (upper.includes("NETWORK")) return "NET";
-    if (upper.includes("CONTACT")) return "MAIL";
-    if (upper.includes("RECYCLE")) return "BIN";
-    return upper.replace(/[^A-Z]/g, "").slice(0, 3) || "APP";
-  }
-
-  function openWindow(id) {
-    const state = windows.get(id);
-    if (!state) return;
-    state.open = true;
-    state.minimized = false;
-    window.clearTimeout(state.closeTimer);
-    state.element.classList.remove("mobile-closing");
-    state.element.classList.remove("hidden", "inactive");
-    state.taskButton.classList.add("visible");
-    state.taskButton.classList.remove("minimized");
-    syncWindowToViewport(state);
-    animateMobileOpen(state);
-    focusWindow(id);
-    if (id === "terminal") {
-      if (!terminalOutput.textContent.trim()) {
-        appendTerminal("Skyfall OS Terminal\nType 'help' for available commands.");
-      }
-      window.setTimeout(() => {
-        state.element.scrollTop = 0;
-        terminalInput.focus({ preventScroll: true });
-      }, 0);
-    }
-  }
-
-  function focusWindow(id) {
-    const state = windows.get(id);
-    if (!state || !state.open || state.minimized) return;
-    activeWindowId = id;
-    topZ += 1;
-    windows.forEach((other) => {
-      other.element.classList.toggle("active", other.id === id);
-      other.element.classList.toggle("inactive", other.id !== id && other.open);
-      other.taskButton.classList.toggle("active", other.id === id);
-    });
-    state.element.style.zIndex = String(topZ);
-  }
-
-  function minimizeWindow(id) {
-    const state = windows.get(id);
-    if (!state || !state.open) return;
-    state.minimized = true;
-    state.element.classList.add("hidden");
-    state.taskButton.classList.add("minimized");
-    state.taskButton.classList.remove("active");
-    if (activeWindowId === id) activeWindowId = null;
-  }
-
-  function closeWindow(id) {
-    const state = windows.get(id);
-    if (!state) return;
-    window.clearTimeout(state.closeTimer);
-    state.open = false;
-    state.minimized = false;
-    state.maximized = false;
-    state.mobileFitted = false;
-    state.restore = null;
-    state.element.classList.remove("maximized", "active", "inactive", "mobile-opening");
-    state.taskButton.classList.remove("visible", "active", "minimized");
-    if (activeWindowId === id) activeWindowId = null;
-    if (isMobileViewport() && !state.element.classList.contains("hidden")) {
-      state.element.classList.add("mobile-closing");
-      state.closeTimer = window.setTimeout(() => {
-        state.element.classList.add("hidden");
-        state.element.classList.remove("mobile-closing");
-      }, 190);
-      return;
-    }
-    state.element.classList.add("hidden");
-    state.element.classList.remove("mobile-closing");
-  }
-
-  function toggleTaskWindow(id) {
-    const state = windows.get(id);
-    if (!state) return;
-    if (!state.open) {
-      openWindow(id);
-      return;
-    }
-    if (state.minimized) {
-      state.minimized = false;
-      state.element.classList.remove("hidden");
-      state.taskButton.classList.remove("minimized");
-      syncWindowToViewport(state);
-      animateMobileOpen(state);
-      focusWindow(id);
-      return;
-    }
-    if (activeWindowId === id) {
-      minimizeWindow(id);
-    } else {
-      focusWindow(id);
-    }
-  }
-
-  function toggleMaximize(id) {
-    const state = windows.get(id);
-    if (!state) return;
-    const win = state.element;
-    if (state.maximized) {
-      if (state.restore) {
-        win.style.left = state.restore.left;
-        win.style.top = state.restore.top;
-        win.style.width = state.restore.width;
-        win.style.height = state.restore.height;
-      }
-      win.classList.remove("maximized");
-      state.maximized = false;
-      state.restore = null;
-      syncWindowToViewport(state);
-    } else {
-      state.restore = {
-        left: win.style.left,
-        top: win.style.top,
-        width: win.style.width,
-        height: win.style.height
-      };
-      const bounds = getDesktopBounds();
-      win.style.left = "0px";
-      win.style.top = "0px";
-      win.style.width = bounds.width + "px";
-      win.style.height = bounds.height + "px";
-      win.classList.add("maximized");
-      state.maximized = true;
-    }
-    focusWindow(id);
-  }
-
-  function makeDraggable(state) {
-    const win = state.element;
-    const bar = win.querySelector(".titlebar");
-    let drag = null;
-
-    bar.addEventListener("pointerdown", (event) => {
-      if (isMobileViewport()) return;
-      if (event.target.closest("button") || state.maximized) return;
-      focusWindow(state.id);
-      drag = {
-        pointerId: event.pointerId,
-        startX: event.clientX,
-        startY: event.clientY,
-        left: win.offsetLeft,
-        top: win.offsetTop
-      };
-      bar.setPointerCapture(event.pointerId);
-    });
-
-    bar.addEventListener("pointermove", (event) => {
-      if (!drag || drag.pointerId !== event.pointerId) return;
-      const bounds = getDesktopBounds();
-      const maxLeft = Math.max(0, bounds.width - Math.min(win.offsetWidth, bounds.width));
-      const maxTop = getMaxWindowTop(win, bounds);
-      const left = clamp(drag.left + event.clientX - drag.startX, 0, maxLeft);
-      const top = clamp(drag.top + event.clientY - drag.startY, 0, maxTop);
-      win.style.left = left + "px";
-      win.style.top = top + "px";
-    });
-
-    bar.addEventListener("pointerup", () => {
-      drag = null;
-    });
-
-    bar.addEventListener("pointercancel", () => {
-      drag = null;
-    });
-
-    addMobileSwipeClose(state, bar);
-  }
-
-  function keepInsideViewport(win) {
-    const bounds = getDesktopBounds();
-    const maxLeft = Math.max(0, bounds.width - Math.min(win.offsetWidth, bounds.width));
-    const maxTop = getMaxWindowTop(win, bounds);
-    win.style.left = clamp(win.offsetLeft, 0, maxLeft) + "px";
-    win.style.top = clamp(win.offsetTop, 0, maxTop) + "px";
-  }
-
-  function getMaxWindowTop(win, bounds) {
-    if (isMobileViewport()) {
-      return Math.max(0, bounds.height - Math.min(win.offsetHeight, bounds.height));
-    }
-    return Math.max(0, bounds.height - getTitlebarHeight(win));
-  }
-
-  function syncWindowToViewport(state) {
-    if (!state.open || state.minimized) return;
-    if (state.maximized) {
-      const bounds = getDesktopBounds();
-      state.element.style.width = bounds.width + "px";
-      state.element.style.height = bounds.height + "px";
-      state.element.style.left = "0px";
-      state.element.style.top = "0px";
-      return;
-    }
-    if (isMobileViewport()) {
-      fitMobileWindow(state);
-    } else if (state.mobileFitted) {
-      restoreDefaultWindow(state);
-    }
-    keepInsideViewport(state.element);
-  }
-
-  function fitMobileWindow(state) {
-    const bounds = getDesktopBounds();
-    const top = 0;
-    const height = bounds.height;
-    state.element.style.width = bounds.width + "px";
-    state.element.style.height = height + "px";
-    state.element.style.left = "0px";
-    state.element.style.top = top + "px";
-    state.mobileFitted = true;
-  }
-
-  function animateMobileOpen(state) {
-    state.element.classList.remove("mobile-opening");
-    if (!isMobileViewport()) return;
-    window.requestAnimationFrame(() => {
-      state.element.classList.add("mobile-opening");
-    });
-  }
-
-  function addMobileSwipeClose(state, bar) {
-    let swipe = null;
-
-    bar.addEventListener("pointerdown", (event) => {
-      if (!isMobileViewport() || event.target.closest("button")) return;
-      swipe = {
-        pointerId: event.pointerId,
-        startY: event.clientY,
-        latestY: event.clientY
-      };
-      bar.setPointerCapture(event.pointerId);
-    });
-
-    bar.addEventListener("pointermove", (event) => {
-      if (!swipe || swipe.pointerId !== event.pointerId) return;
-      swipe.latestY = event.clientY;
-      const offset = Math.max(0, event.clientY - swipe.startY);
-      state.element.style.transform = "translateY(" + Math.min(offset, 96) + "px)";
-    });
-
-    bar.addEventListener("pointerup", (event) => {
-      if (!swipe || swipe.pointerId !== event.pointerId) return;
-      const offset = swipe.latestY - swipe.startY;
-      swipe = null;
-      state.element.style.transform = "";
-      if (offset >= 88) closeWindow(state.id);
-    });
-
-    bar.addEventListener("pointercancel", () => {
-      swipe = null;
-      state.element.style.transform = "";
-    });
-  }
-
-  function restoreDefaultWindow(state) {
-    state.element.style.left = state.defaultRect.left;
-    state.element.style.top = state.defaultRect.top;
-    state.element.style.width = state.defaultRect.width;
-    state.element.style.height = state.defaultRect.height;
-    state.mobileFitted = false;
-  }
-
-  function getDesktopBounds() {
-    return {
-      width: Math.max(1, desktop.clientWidth),
-      height: Math.max(1, desktop.clientHeight)
-    };
-  }
-
-  function getTitlebarHeight(win) {
-    const bar = win.querySelector(".titlebar");
-    return bar ? Math.max(1, bar.offsetHeight) : 30;
-  }
-
-  function isMobileViewport() {
-    return window.matchMedia(MOBILE_QUERY).matches;
-  }
-
-  function readCssPixels(name) {
-    const value = window.getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    const pixels = Number.parseFloat(value);
-    return Number.isFinite(pixels) ? pixels : 0;
-  }
-
-  function runTerminal(command) {
-    if (!command) return;
-    appendTerminal("C:\\Skyfall> " + command);
-    const lower = command.toLowerCase();
-    if (lower === "clear") {
-      terminalOutput.textContent = "";
-      return;
-    }
-    if (lower === "uptime") {
-      const seconds = Math.floor((Date.now() - bootTime) / 1000);
-      appendTerminal("System uptime: " + seconds + " seconds");
-      return;
-    }
-    appendTerminal(terminalCommands[lower] || "Command not recognized. Type 'help'.");
-  }
-
-  function appendTerminal(text) {
-    terminalOutput.textContent += (terminalOutput.textContent ? "\n" : "") + text;
-    terminalOutput.scrollTop = terminalOutput.scrollHeight;
-  }
-
-  function updateClock() {
-    const now = new Date();
-    clock.textContent = now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-  }
-
-  function updateMeters() {
-    const t = Date.now() / 1000;
-    cpuMeter.style.width = Math.round(34 + Math.sin(t) * 9 + Math.random() * 8) + "%";
-    memMeter.style.width = Math.round(52 + Math.cos(t / 1.7) * 7 + Math.random() * 5) + "%";
-  }
-
-  function primeAudio() {
-    const AudioEngine = window.AudioContext || window.webkitAudioContext;
-    if (!AudioEngine) return Promise.resolve(false);
-    if (!audioContext) {
-      audioContext = new AudioEngine();
-    }
-    if (audioContext.state === "suspended") {
-      return audioContext.resume().then(() => audioContext.state === "running").catch(() => false);
-    }
-    return Promise.resolve(audioContext.state === "running");
-  }
-
-  function playStartupChime() {
-    if (soundMuted) return;
-    primeAudio().then((isReady) => {
-      if (!isReady || !audioContext || audioContext.state !== "running") {
-        queueStartupChime();
-        return;
-      }
-      pendingStartupChime = false;
-      scheduleStartupChime();
-    });
-  }
-
-  function queueStartupChime() {
-    if (soundMuted) return;
-    pendingStartupChime = true;
-    if (unlockListenersActive) return;
-    unlockListenersActive = true;
-    audioUnlockEvents.forEach((eventName) => {
-      document.addEventListener(eventName, playQueuedStartupChime, { capture: true, once: true, passive: true });
-    });
-  }
-
-  function playQueuedStartupChime() {
-    if (!pendingStartupChime || soundMuted) return;
-    primeAudio().then((isReady) => {
-      if (!isReady || !audioContext || audioContext.state !== "running") {
-        unlockListenersActive = false;
-        queueStartupChime();
-        return;
-      }
-      pendingStartupChime = false;
-      unlockListenersActive = false;
-      scheduleStartupChime();
-    });
-  }
-
-  function scheduleStartupChime() {
-    const start = audioContext.currentTime + 0.04;
-    const master = audioContext.createGain();
-    master.gain.setValueAtTime(0.0001, start);
-    master.gain.exponentialRampToValueAtTime(0.2, start + 0.04);
-    master.gain.exponentialRampToValueAtTime(0.0001, start + 1.55);
-    master.connect(audioContext.destination);
-
-    [
-      { frequency: 392, offset: 0, duration: 0.62 },
-      { frequency: 493.88, offset: 0.12, duration: 0.78 },
-      { frequency: 659.25, offset: 0.34, duration: 0.92 },
-      { frequency: 987.77, offset: 0.66, duration: 0.72 }
-    ].forEach((note) => {
-      const oscillator = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-      oscillator.type = "sine";
-      oscillator.frequency.setValueAtTime(note.frequency, start + note.offset);
-      gain.gain.setValueAtTime(0.0001, start + note.offset);
-      gain.gain.exponentialRampToValueAtTime(0.22, start + note.offset + 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + note.offset + note.duration);
-      oscillator.connect(gain);
-      gain.connect(master);
-      oscillator.start(start + note.offset);
-      oscillator.stop(start + note.offset + note.duration + 0.05);
-    });
-  }
-
-  function clamp(value, min, max) {
-    return Math.min(max, Math.max(min, value));
-  }
-
-  function escapeHtml(value) {
-    return String(value).replace(/[&<>"']/g, (char) => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    })[char]);
-  }
-
-  updateClock();
-  updateMeters();
-  window.setInterval(updateClock, 1000);
-  window.setInterval(updateMeters, 1400);
-  window.addEventListener("resize", () => {
-    windows.forEach((state) => {
-      syncWindowToViewport(state);
-    });
-  });
-  startBootSequence(BOOT_DURATION);
+"use strict";
+/* ---------- brand logo (embedded, real Skyfall logo) ---------- */
+(function(){
+  var LOGO = "data:image/webp;base64,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";
+  var img = '<img src="'+LOGO+'" alt="Skyfall Creations">';
+  document.querySelectorAll('.mark').forEach(function(el){ el.innerHTML = img; });
+  var orb = document.querySelector('.orb');
+  if(orb) orb.innerHTML = '<div class="orb3d"><img class="face front" src="'+LOGO+'" alt="Skyfall Creations logo"><img class="face back" src="'+LOGO+'" alt=""></div>';
 })();
+
+/* ---------- data ---------- */
+var STACK = ["Swift","SwiftUI","Python","C#","JavaScript","TypeScript","HTML","CSS","SQLite","Node.js","ESP32","Raspberry Pi","OpenWrt","Linux","Docker","Git","Xcode","Arduino"];
+var TECH = ["Swift","Python","ESP32","SQLite","OpenWrt","AI","Vision","Networking","Bluetooth","Linux","macOS","iOS","Docker","GitHub","Embedded","Computer Vision","Automation","OCR"];
+var TIMELINE = ["HVAC","Automation","Networking","Programming","Embedded Systems","AI","Computer Vision"];
+var FUTURE = ["Skyfall Assistant","SkyNotes","SkyCloud","SkyAI","Field Console","Inventory Manager","Building Automation Suite","Home Automation","OpenClaw Dashboard","AI Voice Assistant"];
+
+var FEATURED = [
+  {name:"Shopping Saver", platform:"iOS", status:"Prototype", tools:"Swift · SwiftUI",
+   desc:"Compare store prices and find the best real value by price, usable quantity, unit cost, and quality.",
+   highlights:["Product entry with barcode / photo capture idea","Value comparison by true unit cost","Shopping history tracking","Practical in-store workflow"]},
+  {name:"Skyfall Microscope", platform:"macOS", status:"In development", tools:"Swift",
+   desc:"Native macOS microscope capture and inspection software with live preview and measurement tools.",
+   highlights:["Live microscope view & capture","Calibration wizard","On-image measurement tools","Fullscreen inspection mode","Future AI-assisted inspection"]},
+  {name:"SkyUSBInspector", platform:"macOS", status:"Coming soon", tools:"Swift",
+   desc:"A read-only USB and HID inspection utility built on supported Apple APIs. Safe by design.",
+   highlights:["USB device inventory","HID descriptor details","Local diagnostics only","Read-only v1 scope"]},
+  {name:"Skyfall Field Console", platform:"Raspberry Pi · ESP32", status:"Concept", tools:"Linux · C++",
+   desc:"A modular Raspberry Pi handheld and field computer for diagnostics and network tooling.",
+   highlights:["Pi Linux console","ESP32 dashboard","Built-in network tools","Serial testing","Field-ready diagnostics"]}
+];
+
+var ALSO = [
+  {name:"OpenClaw", platform:"macOS · Linux", status:"Active", tools:"Python",
+   desc:"Local-first AI operator and automation project for the home lab.",
+   highlights:["Local-first AI workflow","Task routing","System summaries","Automation helpers"]},
+  {name:"MakerBench", platform:"Linux · Lab", status:"Concept", tools:"Python · C++",
+   desc:"Embedded project workflow for Raspberry Pi, ESP32, RP2040/RP2350 and similar boards.",
+   highlights:["Board checks","Flash helpers","Project templates","Lab workflow"]},
+  {name:"Presence Tracker", platform:"Linux · Kali", status:"Prototype", tools:"Python",
+   desc:"Local Wi-Fi presence and zone tracking lab tool with a LAN dashboard.",
+   highlights:["Monitor-mode testing","Device detection","Zone estimates","Dashboard concept"]},
+  {name:"Family Hub", platform:"iOS · Web", status:"Concept", tools:"Swift",
+   desc:"Family calendar and chore chart to keep household tasks organized.",
+   highlights:["Shared calendar","Chore board","Reminders","Family dashboard"]},
+  {name:"SkyBrowser", platform:"Web", status:"Concept", tools:"TS · Web",
+   desc:"An early concept for a focused, developer-minded browsing tool.",
+   highlights:["Early concept stage","Developer-first ideas","Scope still forming"]}
+];
+
+var DOWNLOADS = [
+  {name:"SkyUSBInspector", platform:"macOS", status:"Coming soon", ready:false},
+  {name:"Shopping Saver", platform:"iOS", status:"Prototype", ready:false},
+  {name:"Skyfall Microscope", platform:"macOS", status:"In development", ready:false},
+  {name:"SkyBrowser", platform:"Web", status:"Concept", ready:false},
+  {name:"Developer Tools", platform:"macOS · Linux", status:"Planned", ready:false},
+  {name:"Templates", platform:"Docs · starter files", status:"Planned", ready:false},
+  {name:"Documentation", platform:"Web · PDF", status:"Planned", ready:false}
+];
+
+/* ---------- helpers ---------- */
+function el(tag, cls, html){var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e;}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function glyph(){return '<svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/><path d="M7 9l2.5 2.5L7 14M12 14h4"/></svg>';}
+function statusClass(s){return /coming|planned|concept/i.test(s) ? "badge badge-soon" : "badge badge-dot";}
+
+/* ---------- render: stack chips ---------- */
+(function(){var c=document.getElementById('stackChips'); STACK.forEach(function(s){c.appendChild(el('span','chip',esc(s)));});})();
+
+/* ---------- render: drifting tech ---------- */
+(function(){
+  var f=document.getElementById('driftField');
+  TECH.forEach(function(t,i){
+    var d=el('span','drift',esc(t));
+    var col=(i%6), row=Math.floor(i/6);
+    d.style.left=(6+col*15.5)+"%";
+    d.style.top=(8+row*30+ (col%2?10:0))+"%";
+    d.style.setProperty('--dur',(6+ (i%5))+"s");
+    d.style.setProperty('--del',(i*0.22)+"s");
+    f.appendChild(d);
+  });
+})();
+
+/* ---------- render: timeline ---------- */
+(function(){var t=document.getElementById('timeline'); TIMELINE.forEach(function(x){t.appendChild(el('span','tl-item','<span class="dot"></span>'+esc(x)));});})();
+
+/* ---------- render: future ---------- */
+(function(){var g=document.getElementById('futureGrid'); FUTURE.forEach(function(x){g.appendChild(el('div','future glass','<h4>'+esc(x)+'</h4><span class="badge badge-soon">Coming soon</span>'));});})();
+
+/* ---------- render: project cards ---------- */
+function projectCard(p, idx, listName){
+  var card=el('div','proj glass glow-card');
+  var meta='<span class="'+statusClass(p.status)+'">'+esc(p.status)+'</span>'
+          +'<span class="badge">'+esc(p.platform)+'</span>'
+          +'<span class="badge" style="font-family:var(--font-mono)">'+esc(p.tools)+'</span>';
+  card.innerHTML =
+    '<div class="thumb"><span class="scan"></span>'+glyph()+'</div>'
+    +'<div class="ptitle"><h3>'+esc(p.name)+'</h3></div>'
+    +'<div class="pmeta">'+meta+'</div>'
+    +'<p class="pdesc">'+esc(p.desc)+'</p>'
+    +'<div class="pbtns">'
+    +'<button class="btn btn-ghost btn-sm" data-proj="'+listName+'" data-idx="'+idx+'">Overview</button>'
+    +'<button class="btn btn-sm" disabled>Gallery — soon</button>'
+    +'<button class="btn btn-sm" disabled>Docs — soon</button>'
+    +'<button class="btn btn-sm" disabled>GitHub — soon</button>'
+    +'</div>';
+  return card;
+}
+(function(){
+  var fg=document.getElementById('featuredGrid');
+  FEATURED.forEach(function(p,i){fg.appendChild(projectCard(p,i,'F'));});
+  var ag=document.getElementById('alsoGrid');
+  ALSO.forEach(function(p,i){
+    var card=el('div','proj glass glow-card');
+    card.innerHTML='<div class="ptitle"><h3>'+esc(p.name)+'</h3></div>'
+      +'<div class="pmeta"><span class="'+statusClass(p.status)+'">'+esc(p.status)+'</span><span class="badge">'+esc(p.platform)+'</span></div>'
+      +'<p class="pdesc">'+esc(p.desc)+'</p>'
+      +'<div class="pbtns"><button class="btn btn-ghost btn-sm" data-proj="A" data-idx="'+i+'">Overview</button></div>';
+    ag.appendChild(card);
+  });
+})();
+
+/* ---------- render: downloads ---------- */
+(function(){
+  var r=document.getElementById('releases');
+  DOWNLOADS.forEach(function(d){
+    var row=el('div','release');
+    var btn = d.ready
+      ? '<a class="btn btn-primary btn-sm" href="#">Download</a>'
+      : '<button class="btn btn-sm" disabled>'+esc(d.status)+'</button>';
+    row.innerHTML='<div class="ricon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg></div>'
+      +'<div class="rmain"><h3>'+esc(d.name)+'</h3><div class="rsub"><span>'+esc(d.platform)+'</span><span>·</span><span>'+esc(d.status)+'</span></div></div>'
+      +'<div class="ract">'+btn+'</div>';
+    r.appendChild(row);
+  });
+})();
+
+/* ---------- project hub nodes ---------- */
+(function(){
+  var hub=document.getElementById('hub'), pop=document.getElementById('hubPop');
+  var pos=[{x:18,y:22},{x:84,y:24},{x:16,y:80},{x:86,y:80}];
+  FEATURED.forEach(function(p,i){
+    var n=el('div','node',esc(p.name));
+    n.style.left=pos[i].x+"%"; n.style.top=pos[i].y+"%";
+    n.setAttribute('tabindex','0');
+    function show(){
+      pop.innerHTML='<h4>'+esc(p.name)+'</h4><div class="meta"><span>'+esc(p.status)+'</span><span>'+esc(p.platform)+'</span></div><p>'+esc(p.desc)+'</p>';
+      pop.classList.add('show');
+    }
+    function hide(){pop.classList.remove('show');}
+    n.addEventListener('mouseenter',show); n.addEventListener('mouseleave',hide);
+    n.addEventListener('focus',show); n.addEventListener('blur',hide);
+    n.addEventListener('click',function(){openProj('F',i);});
+    hub.appendChild(n);
+  });
+})();
+
+/* ---------- modals ---------- */
+var lastFocus=null;
+function trap(modal){
+  var f=modal.querySelectorAll('button,a,input,select,textarea,[tabindex]');
+  if(!f.length)return; var first=f[0],last=f[f.length-1];
+  modal.addEventListener('keydown',function(e){
+    if(e.key!=='Tab')return;
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  });
+}
+function openModal(m){lastFocus=document.activeElement;m.classList.add('open');m.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';var fe=m.querySelector('button,a,input');if(fe)fe.focus();}
+function closeModal(m){m.classList.remove('open');m.setAttribute('aria-hidden','true');document.body.style.overflow='';if(lastFocus)lastFocus.focus();}
+
+var projModal=document.getElementById('projModal');
+function openProj(list, idx){
+  var p=(list==='F'?FEATURED:ALSO)[idx]; if(!p)return;
+  document.getElementById('pmTitle').textContent=p.name;
+  document.getElementById('pmMeta').innerHTML='<span class="'+statusClass(p.status)+'">'+esc(p.status)+'</span><span class="badge">'+esc(p.platform)+'</span><span class="badge">'+esc(p.tools)+'</span>';
+  document.getElementById('pmDesc').textContent=p.desc;
+  var ul=document.getElementById('pmList'); ul.innerHTML='';
+  p.highlights.forEach(function(h){ul.appendChild(el('li',null,esc(h)));});
+  openModal(projModal);
+}
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-proj]');
+  if(t){openProj(t.getAttribute('data-proj'),parseInt(t.getAttribute('data-idx'),10));}
+  if(e.target.closest('[data-open-contact]')){openModal(document.getElementById('contactModal'));}
+  if(e.target.closest('[data-close-modal]')||e.target.classList.contains('modal')){
+    var m=e.target.closest('.modal'); if(m)closeModal(m);
+  }
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal.open').forEach(closeModal);
+    var dr=document.getElementById('drawer'); if(dr.classList.contains('open'))closeDrawer();
+  }
+});
+trap(projModal); trap(document.getElementById('contactModal'));
+
+/* ---------- drawer ---------- */
+var drawer=document.getElementById('drawer'), toggle=document.querySelector('[data-open-drawer]');
+function openDrawer(){drawer.classList.add('open');drawer.setAttribute('aria-hidden','false');toggle.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';}
+function closeDrawer(){drawer.classList.remove('open');drawer.setAttribute('aria-hidden','true');toggle.setAttribute('aria-expanded','false');document.body.style.overflow='';}
+document.addEventListener('click',function(e){
+  if(e.target.closest('[data-open-drawer]'))openDrawer();
+  if(e.target.closest('[data-close-drawer]')||(e.target===drawer))closeDrawer();
+});
+
+/* ---------- contact form -> mailto ---------- */
+function v(id){return (document.getElementById(id).value||'').trim();}
+document.getElementById('sendBtn').addEventListener('click',function(){
+  var name=v('f-name'), company=v('f-company'), email=v('f-email'), project=v('f-project'),
+      budget=v('f-budget'), timeline=v('f-timeline'), desc=v('f-desc');
+  var subject='Skyfall Project Inquiry'+(project?(' — '+project):'');
+  var body=
+    'Name: '+name+'\n'+
+    'Company: '+company+'\n'+
+    'Email: '+email+'\n'+
+    'Project: '+project+'\n'+
+    'Budget: '+budget+'\n'+
+    'Timeline: '+timeline+'\n\n'+
+    'Description:\n'+desc+'\n';
+  var url='mailto:info@skyfallcreations.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  var a=document.createElement('a');a.href=url;a.style.display='none';document.body.appendChild(a);a.click();
+  setTimeout(function(){a.remove();},150);
+});
+document.getElementById('copyEmail').addEventListener('click',function(){
+  var btn=this;
+  function done(){var o=btn.textContent;btn.textContent='Copied';setTimeout(function(){btn.textContent=o;},1600);}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText('info@skyfallcreations.com').then(done,done);}
+  else{done();}
+});
+
+/* ---------- mouse glow ---------- */
+if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
+  var raf=false,evX=0,evY=0,curCard=null;
+  document.addEventListener('pointermove',function(e){
+    var c=e.target.closest('.glow-card'); curCard=c; evX=e.clientX; evY=e.clientY;
+    if(!raf){raf=true;requestAnimationFrame(function(){raf=false;if(!curCard)return;var r=curCard.getBoundingClientRect();curCard.style.setProperty('--mx',(evX-r.left)+'px');curCard.style.setProperty('--my',(evY-r.top)+'px');});}
+  });
+}
+
+/* ---------- starfield ---------- */
+(function(){
+  var reduce=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var canvas=document.getElementById('stars'), ctx=canvas.getContext('2d');
+  var dpr=Math.min(window.devicePixelRatio||1,2), stars=[], raf2=null;
+  var coarse=window.matchMedia('(pointer:coarse)').matches;
+  function size(){canvas.width=innerWidth*dpr;canvas.height=innerHeight*dpr;canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';}
+  function build(){var n=coarse?38:80;stars=[];for(var i=0;i<n;i++){stars.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:(Math.random()*1.3+.3)*dpr,a:Math.random()*.5+.2,tw:Math.random()*.02+.004,p:Math.random()*Math.PI*2});}}
+  function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);for(var i=0;i<stars.length;i++){var s=stars[i];s.p+=s.tw;var al=s.a+Math.sin(s.p)*.18;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.283);ctx.fillStyle='rgba(180,215,255,'+Math.max(0,al)+')';ctx.fill();}raf2=requestAnimationFrame(draw);}
+  function start(){if(reduce){size();build();ctx.clearRect(0,0,canvas.width,canvas.height);for(var i=0;i<stars.length;i++){var s=stars[i];ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.283);ctx.fillStyle='rgba(180,215,255,'+s.a+')';ctx.fill();}return;}cancelAnimationFrame(raf2);size();build();draw();}
+  function stop(){cancelAnimationFrame(raf2);}
+  document.addEventListener('visibilitychange',function(){if(document.hidden)stop();else if(!reduce)start();});
+  var rt;addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(start,200);});
+  start();
+})();
+
+document.getElementById('year').textContent=new Date().getFullYear();
 </script>
 </body>
 </html>
