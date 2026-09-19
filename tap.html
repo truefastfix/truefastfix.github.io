@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#020711">
   <title>Skyfall Creations</title>
   <style>
     html,body{height:100%;margin:0}
@@ -18,27 +19,70 @@
       background:#20bfff;box-shadow:0 0 18px #20bfff;
       margin:0 auto 14px;
     }
-    p{margin:0;color:#9fb1ca}
+    p{margin:0;color:#9fb1ca;font-size:18px}
   </style>
 </head>
 <body>
   <div class="box">
     <div class="dot"></div>
-    <p>Opening Skyfall Creations…</p>
+    <p id="status">Opening Skyfall Creations…</p>
   </div>
 
 <script>
 (function () {
+  const businessCard = "/skyfall_business_card.html";
+  const contactFile  = "/Brian-Secord.vcf";
+
   const ua = navigator.userAgent || "";
   const isIOS =
     /iPhone|iPad|iPod/i.test(ua) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-  if (isIOS) {
-    window.location.replace("/Brian-Secord.vcf");
-  } else {
-    window.location.replace("/skyfall_business_card.html");
+  // Android/desktop: go straight to the normal business-card page.
+  if (!isIOS) {
+    window.location.replace(businessCard);
+    return;
   }
+
+  // iPhone/iPad:
+  // 1. Open the vCard.
+  // 2. When the contact preview closes (or after a fallback delay),
+  //    continue to the normal Skyfall business-card page.
+  let sentToCard = false;
+  const started = Date.now();
+
+  function goToBusinessCard() {
+    if (sentToCard) return;
+    sentToCard = true;
+    document.getElementById("status").textContent = "Opening business card…";
+    window.location.replace(businessCard);
+  }
+
+  function returnedFromContact() {
+    // Avoid reacting to the initial page focus/visibility events.
+    if (Date.now() - started > 1200) {
+      setTimeout(goToBusinessCard, 250);
+    }
+  }
+
+  window.addEventListener("focus", returnedFromContact);
+  window.addEventListener("pageshow", function () {
+    if (Date.now() - started > 1200) returnedFromContact();
+  });
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState === "visible") returnedFromContact();
+  });
+
+  // Fallback: if iOS doesn't fire a return event, move the underlying
+  // Safari page to the business card after a few seconds.
+  setTimeout(goToBusinessCard, 7000);
+
+  // Give Safari a moment to finish rendering the NFC-opened page.
+  setTimeout(function () {
+    document.getElementById("status").textContent = "Opening contact…";
+    window.location.href = contactFile;
+  }, 350);
 })();
 </script>
 </body>
