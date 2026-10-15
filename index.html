@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#060a11">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Talk to Skyfall Creations about websites, apps, automation, AI-assisted systems, APIs, databases, prototypes and custom software.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="index,follow">
+  <meta property="og:title" content="Skyfall Creations — A developer portfolio you can talk to">
+  <meta property="og:description" content="Ask what Skyfall Creations can build. Explore capabilities through conversation instead of a traditional portfolio.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.skyfallcreations.com/">
+  <title>Skyfall Creations — Ask What We Can Build</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="preload" href="assets/office-hero.webp" as="image" type="image/webp">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#ask-input">Skip to Ask Skyfall</a>
+
+  <div class="experience" data-experience>
+    <div class="hero-media" aria-hidden="true">
+      <img src="assets/office-hero.webp" alt="">
+    </div>
+    <div class="hero-vignette" aria-hidden="true"></div>
+    <div class="hero-grid" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Skyfall Creations home">
+        <img src="assets/skyfall-mark.png" alt="" width="44" height="44">
+        <span>
+          <strong>Skyfall Creations</strong>
+          <small>Custom software & digital products</small>
+        </span>
+      </a>
+
+      <nav class="top-links" aria-label="Primary">
+        <a href="mailto:developer.skyfall@skyfallcreations.com?subject=Project%20inquiry%20for%20Skyfall%20Creations">Contact</a>
+      </nav>
+    </header>
+
+    <main class="stage" id="main">
+      <section class="intro" data-intro aria-labelledby="hero-title">
+        <p class="availability"><span></span> Available for project discussions</p>
+        <h1 id="hero-title">Hi, I’m Brian.<br><em>What would you like to build?</em></h1>
+        <p class="intro-copy">
+          Ask about websites, Apple or Android apps, desktop software, automation,
+          AI-assisted systems, prototypes, APIs, databases, or how to start a project.
+        </p>
+      </section>
+
+      <section class="conversation-shell" data-shell aria-label="Ask Skyfall Creations">
+        <div class="conversation" data-conversation aria-live="polite" aria-relevant="additions">
+          <div class="welcome-note" data-welcome>
+            <span class="assistant-mark">S</span>
+            <p>
+              I answer from a curated Skyfall Creations knowledge base.
+              If I do not have a grounded answer, I will say so instead of making one up.
+            </p>
+          </div>
+        </div>
+
+        <form class="ask-form" data-form novalidate>
+          <label class="sr-only" for="ask-input">Ask Skyfall Creations a question</label>
+          <div class="ask-field">
+            <span class="search-glyph" aria-hidden="true"></span>
+            <input
+              id="ask-input"
+              name="question"
+              type="text"
+              maxlength="260"
+              autocomplete="off"
+              autocapitalize="sentences"
+              spellcheck="true"
+              placeholder="Ask Skyfall anything about building your idea…"
+              aria-describedby="ask-help"
+            >
+            <span class="enter-hint" aria-hidden="true">Enter ↵</span>
+          </div>
+          <p id="ask-help" class="ask-help">
+            Try: “Can you build an iPhone app?” · “What languages do you use?” · “Can you prototype my idea?”
+          </p>
+        </form>
+      </section>
+    </main>
+
+    <aside class="side-note" aria-label="Skyfall Creations">
+      <span>SKYFALL</span>
+      <i></i>
+      <small>Anything is possible</small>
+    </aside>
+
+    <footer class="footer">
+      <span>© <span data-year></span> Skyfall Creations</span>
+      <span class="footer-separator" aria-hidden="true">•</span>
+      <a href="mailto:support@skyfallcreations.com?subject=Skyfall%20Creations%20website%20support">Website support</a>
+      <span class="footer-separator" aria-hidden="true">•</span>
+      <span>Auburn, Nebraska</span>
+    </footer>
+  </div>
+
+  <noscript>
+    <div class="noscript">
+      JavaScript is required for the conversational experience.
+      Contact developer.skyfall@skyfallcreations.com for project inquiries.
+    </div>
+  </noscript>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
