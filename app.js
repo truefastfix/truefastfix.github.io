@@ -23,7 +23,7 @@
     {
       id: "contact",
       phrases: ["contact", "email", "reach you", "reach skyfall", "hire you", "project inquiry", "talk to you", "get in touch"],
-      answer: "For a project discussion, email developer.skyfall@skyfallcreations.com. Your default mail app will open when you use the Contact link at the top of the page."
+      answer: "For a project discussion, email skyfall.developer@skyfallcreations.com. Your default mail app will open when you use the Contact link at the top of the page."
     },
     {
       id: "support",
@@ -162,8 +162,8 @@
     if (!best || best.score < 4) {
       return {
         text:
-          "I do not have a reliable predefined answer for that yet. I can answer about websites, Apple or Android apps, desktop software, automation, AI, APIs, databases, prototypes, programming skills, security, hosting, pricing, the current LLCC Team Maintenance project, or how to contact Skyfall Creations.\n\nFor a specific idea, email developer.skyfall@skyfallcreations.com.",
-        email: "developer.skyfall@skyfallcreations.com"
+          "I do not have a reliable predefined answer for that yet. I can answer about websites, Apple or Android apps, desktop software, automation, AI, APIs, databases, prototypes, programming skills, security, hosting, pricing, the current LLCC Team Maintenance project, or how to contact Skyfall Creations.\n\nFor a specific idea, email skyfall.developer@skyfallcreations.com.",
+        email: "skyfall.developer@skyfallcreations.com"
       };
     }
 
