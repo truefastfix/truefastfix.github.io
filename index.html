@@ -18,9 +18,7 @@
   <link rel="stylesheet" href="/styles.css?v=20261014-2238">
 
   <style>
-    /* Deployment-safe hero fallback.
-       The room image is applied directly to the experience container and the
-       layered image is kept above the background for Safari/iOS compatibility. */
+    /* Deployment-safe hero fallback. */
     .experience {
       background:
         linear-gradient(90deg, rgba(3,6,11,.18), rgba(3,6,11,.04)),
@@ -30,6 +28,104 @@
     .hero-media { z-index: 0 !important; pointer-events: none; }
     .hero-vignette { z-index: 1 !important; }
     .hero-grid { z-index: 2 !important; }
+
+    /* Contact / support form */
+    .contact-modal[hidden] { display: none !important; }
+    .contact-modal {
+      position: fixed;
+      z-index: 1000;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: rgba(2, 6, 12, .72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .contact-panel {
+      width: min(560px, 100%);
+      max-height: min(760px, calc(100svh - 44px));
+      overflow-y: auto;
+      padding: 24px;
+      border: 1px solid rgba(152, 197, 255, .24);
+      border-radius: 22px;
+      background: rgba(7, 12, 20, .96);
+      box-shadow: 0 30px 100px rgba(0,0,0,.52), inset 0 1px rgba(255,255,255,.04);
+    }
+    .contact-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+    .contact-head h2 { margin: 0 0 6px; font-size: 25px; }
+    .contact-head p { margin: 0; color: rgba(220,233,250,.64); font-size: 13px; line-height: 1.5; }
+    .contact-close {
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(152,197,255,.22);
+      border-radius: 12px;
+      color: white;
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+      font: inherit;
+      font-size: 20px;
+    }
+    .contact-form { display: grid; gap: 14px; }
+    .contact-field { display: grid; gap: 7px; }
+    .contact-field label {
+      color: rgba(235,244,255,.82);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .contact-field input,
+    .contact-field textarea {
+      width: 100%;
+      border: 1px solid rgba(150,190,241,.22);
+      border-radius: 13px;
+      outline: 0;
+      padding: 12px 13px;
+      color: white;
+      background: rgba(255,255,255,.035);
+      font: inherit;
+    }
+    .contact-field input:focus,
+    .contact-field textarea:focus {
+      border-color: rgba(89,174,255,.65);
+      box-shadow: 0 0 0 3px rgba(54,148,255,.08);
+    }
+    .contact-field textarea { min-height: 132px; resize: vertical; }
+    .contact-submit {
+      min-height: 48px;
+      border: 0;
+      border-radius: 14px;
+      color: white;
+      background: linear-gradient(135deg, #168efb, #5065ff);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 14px 34px rgba(32,132,255,.24);
+    }
+    .contact-submit:disabled { opacity: .58; cursor: wait; }
+    .contact-status {
+      min-height: 22px;
+      margin: 0;
+      color: rgba(220,233,250,.72);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .contact-status.is-success { color: #77e6b5; }
+    .contact-status.is-error { color: #ff9b9b; }
+    .contact-direct {
+      margin: -2px 0 0;
+      color: rgba(207,221,239,.46);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    .botcheck { display: none !important; }
   </style>
 </head>
 <body>
@@ -52,7 +148,7 @@
       </a>
 
       <nav class="top-links" aria-label="Primary">
-        <a href="mailto:skyfall.developer@skyfallcreations.com?subject=Project%20inquiry%20for%20Skyfall%20Creations">Contact</a>
+        <a href="#contact-form" data-contact-mode="project">Contact</a>
       </nav>
     </header>
 
@@ -110,19 +206,57 @@
     <footer class="footer">
       <span>© <span data-year></span> Skyfall Creations</span>
       <span class="footer-separator" aria-hidden="true">•</span>
-      <a href="mailto:support@skyfallcreations.com?subject=Skyfall%20Creations%20website%20support">Website issues / support</a>
+      <a href="#contact-form" data-contact-mode="support">Website issues / support</a>
       <span class="footer-separator" aria-hidden="true">•</span>
       <span>Auburn, Nebraska</span>
     </footer>
   </div>
 
+  <div class="contact-modal" id="contact-form" data-contact-modal hidden>
+    <section class="contact-panel" role="dialog" aria-modal="true" aria-labelledby="contact-title" aria-describedby="contact-copy">
+      <div class="contact-head">
+        <div>
+          <h2 id="contact-title" data-contact-title>Contact Skyfall Creations</h2>
+          <p id="contact-copy" data-contact-copy>Send a project inquiry directly from the website.</p>
+        </div>
+        <button class="contact-close" type="button" data-contact-close aria-label="Close contact form">×</button>
+      </div>
+
+      <form class="contact-form" id="web3forms-contact" data-contact-form>
+        <input type="hidden" name="subject" value="Skyfall Creations project inquiry" data-contact-subject>
+        <input type="hidden" name="from_name" value="Skyfall Creations Website">
+        <input type="hidden" name="contact_type" value="Project inquiry" data-contact-type>
+        <input type="checkbox" name="botcheck" class="botcheck" tabindex="-1" autocomplete="off">
+
+        <div class="contact-field">
+          <label for="contact-name">Your name</label>
+          <input id="contact-name" name="name" type="text" maxlength="120" autocomplete="name" required>
+        </div>
+
+        <div class="contact-field">
+          <label for="contact-email">Your email</label>
+          <input id="contact-email" name="email" type="email" maxlength="180" autocomplete="email" required>
+        </div>
+
+        <div class="contact-field">
+          <label for="contact-message">Message</label>
+          <textarea id="contact-message" name="message" maxlength="4000" required></textarea>
+        </div>
+
+        <button class="contact-submit" type="submit" data-contact-submit>Send message</button>
+        <p class="contact-status" data-contact-status aria-live="polite"></p>
+        <p class="contact-direct" data-contact-direct>Project inquiries are routed to skyfall.developer@skyfallcreations.com.</p>
+      </form>
+    </section>
+  </div>
+
   <noscript>
     <div class="noscript">
-      JavaScript is required for the conversational experience.
-      Contact skyfall.developer@skyfallcreations.com for project inquiries.
+      JavaScript is required for the conversational experience and website contact form.
+      Project contact: skyfall.developer@skyfallcreations.com · Website support: support@skyfallcreations.com
     </div>
   </noscript>
 
-  <script src="/app.js?v=20261016-email2" defer></script>
+  <script src="/app.js?v=20261016-web3forms" defer></script>
 </body>
 </html>
