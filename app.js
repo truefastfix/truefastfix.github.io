@@ -1,6 +1,7 @@
-
 (() => {
   "use strict";
+
+  const WEB3FORMS_ACCESS_KEY = "3b86676f-fd9e-4f89-ba35-643909efbccb";
 
   const experience = document.querySelector("[data-experience]");
   const form = document.querySelector("[data-form]");
@@ -9,6 +10,21 @@
   const welcome = document.querySelector("[data-welcome]");
   const year = document.querySelector("[data-year]");
   const heroImage = document.querySelector(".hero-media img");
+
+  const contactModal = document.querySelector("[data-contact-modal]");
+  const contactForm = document.querySelector("[data-contact-form]");
+  const contactClose = document.querySelector("[data-contact-close]");
+  const contactTitle = document.querySelector("[data-contact-title]");
+  const contactCopy = document.querySelector("[data-contact-copy]");
+  const contactSubject = document.querySelector("[data-contact-subject]");
+  const contactType = document.querySelector("[data-contact-type]");
+  const contactSubmit = document.querySelector("[data-contact-submit]");
+  const contactStatus = document.querySelector("[data-contact-status]");
+  const contactDirect = document.querySelector("[data-contact-direct]");
+  const contactName = document.querySelector("#contact-name");
+
+  let currentContactMode = "project";
+  let lastFocusedElement = null;
 
   if (year) year.textContent = new Date().getFullYear();
 
@@ -23,12 +39,12 @@
     {
       id: "contact",
       phrases: ["contact", "email", "reach you", "reach skyfall", "hire you", "project inquiry", "talk to you", "get in touch"],
-      answer: "For a project discussion, email skyfall.developer@skyfallcreations.com. Your default mail app will open when you use the Contact link at the top of the page."
+      answer: "For a project discussion, use the Contact link at the top of the page. It opens the secure website form for skyfall.developer@skyfallcreations.com."
     },
     {
       id: "support",
       phrases: ["support", "website support", "site problem", "website problem", "website issue", "help with this website"],
-      answer: "For help with the Skyfall Creations website itself, email support@skyfallcreations.com."
+      answer: "For help with the Skyfall Creations website itself, use Website issues / support at the bottom of the page. It opens the support form for support@skyfallcreations.com."
     },
     {
       id: "capabilities",
@@ -131,6 +147,110 @@
   let placeholderTimer = null;
   let hasInteracted = false;
 
+  const setContactStatus = (message = "", type = "") => {
+    if (!contactStatus) return;
+    contactStatus.textContent = message;
+    contactStatus.classList.remove("is-success", "is-error");
+    if (type) contactStatus.classList.add(`is-${type}`);
+  };
+
+  const setContactMode = (mode = "project") => {
+    currentContactMode = mode === "support" ? "support" : "project";
+    const isSupport = currentContactMode === "support";
+
+    if (contactTitle) contactTitle.textContent = isSupport ? "Website Support" : "Contact Skyfall Creations";
+    if (contactCopy) {
+      contactCopy.textContent = isSupport
+        ? "Report a problem with the Skyfall Creations website."
+        : "Tell me about the project or idea you want to build.";
+    }
+    if (contactSubject) {
+      contactSubject.value = isSupport
+        ? "Skyfall Creations website support"
+        : "Skyfall Creations project inquiry";
+    }
+    if (contactType) contactType.value = isSupport ? "Website support" : "Project inquiry";
+    if (contactDirect) {
+      contactDirect.textContent = isSupport
+        ? "Website support messages are for support@skyfallcreations.com."
+        : "Project inquiries are for skyfall.developer@skyfallcreations.com.";
+    }
+  };
+
+  const openContactModal = (mode = "project") => {
+    if (!contactModal) return;
+    lastFocusedElement = document.activeElement;
+    setContactMode(mode);
+    setContactStatus();
+    contactModal.hidden = false;
+    requestAnimationFrame(() => contactName?.focus());
+  };
+
+  const closeContactModal = () => {
+    if (!contactModal) return;
+    contactModal.hidden = true;
+    setContactStatus();
+    if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+      lastFocusedElement.focus();
+    }
+  };
+
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-contact-mode]");
+    if (trigger) {
+      event.preventDefault();
+      openContactModal(trigger.dataset.contactMode || "project");
+      return;
+    }
+
+    if (event.target === contactModal) closeContactModal();
+  });
+
+  contactClose?.addEventListener("click", closeContactModal);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && contactModal && !contactModal.hidden) {
+      closeContactModal();
+    }
+  });
+
+  contactForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!contactSubmit) return;
+
+    const originalText = contactSubmit.textContent;
+    contactSubmit.textContent = "Sending...";
+    contactSubmit.disabled = true;
+    setContactStatus("Sending your message...");
+
+    const formData = new FormData(contactForm);
+    formData.append("access_key", WEB3FORMS_ACCESS_KEY);
+    formData.append("source", window.location.href);
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+        headers: { Accept: "application/json" }
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok && data.success !== false) {
+        setContactStatus("Success! Your message has been sent.", "success");
+        contactForm.reset();
+        setContactMode(currentContactMode);
+      } else {
+        setContactStatus(data.message || "The message could not be sent. Please try again.", "error");
+      }
+    } catch (error) {
+      setContactStatus("Something went wrong. Please try again.", "error");
+    } finally {
+      contactSubmit.textContent = originalText;
+      contactSubmit.disabled = false;
+    }
+  });
+
   const words = (text) => normalize(text).split(" ").filter(Boolean);
 
   const scoreIntent = (question, intent) => {
@@ -162,8 +282,8 @@
     if (!best || best.score < 4) {
       return {
         text:
-          "I do not have a reliable predefined answer for that yet. I can answer about websites, Apple or Android apps, desktop software, automation, AI, APIs, databases, prototypes, programming skills, security, hosting, pricing, the current LLCC Team Maintenance project, or how to contact Skyfall Creations.\n\nFor a specific idea, email skyfall.developer@skyfallcreations.com.",
-        email: "skyfall.developer@skyfallcreations.com"
+          "I do not have a reliable predefined answer for that yet. I can answer about websites, Apple or Android apps, desktop software, automation, AI, APIs, databases, prototypes, programming skills, security, hosting, pricing, the current LLCC Team Maintenance project, or how to contact Skyfall Creations.\n\nFor a specific idea, use the Contact link at the top of the page.",
+        email: null
       };
     }
 
@@ -190,7 +310,8 @@
       const [before, after] = content.split(email);
       body.append(document.createTextNode(before));
       const link = document.createElement("a");
-      link.href = `mailto:${email}`;
+      link.href = "#contact-form";
+      link.dataset.contactMode = email.toLowerCase().startsWith("support@") ? "support" : "project";
       link.textContent = email;
       body.append(link);
       body.append(document.createTextNode(after || ""));
@@ -289,9 +410,7 @@
     });
 
     input.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && input.value) {
-        input.value = "";
-      }
+      if (event.key === "Escape" && input.value) input.value = "";
     });
 
     input.addEventListener("focus", () => {
