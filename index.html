@@ -52,12 +52,7 @@
       </a>
 
       <nav class="top-links" aria-label="Primary">
-        <a
-          href="mailto:skyfall.developer@skyfallcreations.com?subject=Project%20inquiry%20for%20Skyfall%20Creations"
-          target="_blank"
-          rel="noopener"
-          data-email-compose
-        >Contact</a>
+        <a href="mailto:skyfall.developer@skyfallcreations.com?subject=Project%20inquiry%20for%20Skyfall%20Creations">Contact</a>
       </nav>
     </header>
 
@@ -115,12 +110,7 @@
     <footer class="footer">
       <span>© <span data-year></span> Skyfall Creations</span>
       <span class="footer-separator" aria-hidden="true">•</span>
-      <a
-        href="mailto:support@skyfallcreations.com?subject=Skyfall%20Creations%20website%20support"
-        target="_blank"
-        rel="noopener"
-        data-email-compose
-      >Website issues / support</a>
+      <a href="mailto:support@skyfallcreations.com?subject=Skyfall%20Creations%20website%20support">Website issues / support</a>
       <span class="footer-separator" aria-hidden="true">•</span>
       <span>Auburn, Nebraska</span>
     </footer>
@@ -133,29 +123,6 @@
     </div>
   </noscript>
 
-  <script>
-    /*
-      Launch mail links from the user's click as a separate navigation so
-      desktop browsers have the best chance to hand the mailto: URL to the
-      configured mail application. If a popup is blocked, fall back to direct
-      navigation, which also invokes the operating system's mail handler.
-      Event delegation also covers email links created later by app.js.
-    */
-    document.addEventListener("click", function (event) {
-      const link = event.target.closest('a[href^="mailto:"]');
-      if (!link) return;
-
-      const href = link.getAttribute("href");
-      if (!href) return;
-
-      event.preventDefault();
-
-      const composeWindow = window.open(href, "_blank", "noopener");
-      if (!composeWindow) {
-        window.location.assign(href);
-      }
-    });
-  </script>
-  <script src="/app.js?v=20261016-email" defer></script>
+  <script src="/app.js?v=20261016-email2" defer></script>
 </body>
 </html>
