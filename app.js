@@ -1,7 +1,10 @@
 (() => {
   "use strict";
 
-  const WEB3FORMS_ACCESS_KEY = "3b86676f-fd9e-4f89-ba35-643909efbccb";
+  const WEB3FORMS_ACCESS_KEYS = Object.freeze({
+    project: "3b86676f-fd9e-4f89-ba35-643909efbccb",
+    support: "d880c966-a164-41a4-8e91-484aaf9c279a"
+  });
 
   const experience = document.querySelector("[data-experience]");
   const form = document.querySelector("[data-form]");
@@ -224,7 +227,7 @@
     setContactStatus("Sending your message...");
 
     const formData = new FormData(contactForm);
-    formData.append("access_key", WEB3FORMS_ACCESS_KEY);
+    formData.append("access_key", WEB3FORMS_ACCESS_KEYS[currentContactMode]);
     formData.append("source", window.location.href);
 
     try {
