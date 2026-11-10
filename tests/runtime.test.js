@@ -93,6 +93,7 @@ test('contact includes reviewed brief, routes correctly, deduplicates and keeps 
   const before=mailCalls;const b={id:crypto.randomUUID(),token:'contact',name:'Runtime visitor',email:'visitor@example.com',message:'Please discuss this plan.',includeBrief:true,mode:'project'};
   const r=await call('contact',b,s);assert.equal(r.status,200,await r.clone().text());const data=await r.json();assert.equal(data.status,'accepted');
   assert.equal((await call('contact',b,s)).status,200);assert.equal(mailCalls,before+1);
+  assert.equal((await call('contact',{...b,message:'Different unsent content'},s)).status,409);assert.equal(mailCalls,before+1);
   const sent=captured.filter(x=>x.access_key).at(-1);assert.equal(sent.access_key,'test-project-route');assert.match(sent.project_brief,/booking/);assert.equal(sent.project_reference,data.reference);
   const support=await call('contact',{...b,id:crypto.randomUUID(),mode:'support'},s);assert.equal(support.status,200);
   const last=captured.at(-1);assert.equal(last.access_key,'test-support-route');assert.equal(last.project_brief,'No design brief included.');

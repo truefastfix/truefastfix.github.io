@@ -208,8 +208,13 @@ export class Session extends Stored {
     const c = contactData(body); if (body.botcheck) fail(400, "Could not submit this form.");
     if (s.busy) fail(409, "Wait for the current request.");
     const hash = await digest(this.ctx.id.toString());
-    const existing = await this.env.DB.prepare("SELECT id, delivery_status FROM inquiries WHERE session_hash=? AND request_id=?").bind(hash,c.id).first();
-    if (existing?.delivery_status === "accepted") return { reference: existing.id, status: "accepted" };
+    const existing = await this.env.DB.prepare("SELECT id, delivery_status, name, email, message, mode, brief FROM inquiries WHERE session_hash=? AND request_id=?").bind(hash,c.id).first();
+    if (existing?.delivery_status === "accepted") {
+      if (existing.name !== c.name || existing.email !== c.email || existing.message !== c.message || existing.mode !== c.mode || Boolean(existing.brief) !== (body.includeBrief === true && c.mode === "project")) {
+        fail(409, `Inquiry ${existing.id} was already accepted with different content. Please use direct email for an update and include that reference.`);
+      }
+      return { reference: existing.id, status: "accepted" };
+    }
     if (existing && existing.delivery_status !== "rejected") fail(409, `Your inquiry ${existing.id} is saved, but delivery is unconfirmed. To avoid duplicates, contact Brian directly and include that reference.`);
     s = this.lock(s, c.id);
     const reference = existing?.id || `SKY-${crypto.randomUUID()}`;
