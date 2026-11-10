@@ -88,21 +88,27 @@ test('review decline clears session and sends no email',async()=>{
   const r=await call('chat',{id:crypto.randomUUID(),question:'No thanks, do not submit'},s);assert.equal((await r.json()).reset,true);
   assert.equal((await call('brief',{brief:'Old session'},s)).status,401);assert.equal(mailCalls,n);answer=validAnswer;
 });
-test('contact includes reviewed brief, routes correctly, deduplicates and keeps support separate',async()=>{
+test('contact prepares reviewed brief and public routing packet without backend forwarding',async()=>{
   const s=await session();await call('brief',{brief:'Confirmed requirements: build a simple booking website.'},s);
   const before=mailCalls;const b={id:crypto.randomUUID(),token:'contact',name:'Runtime visitor',email:'visitor@example.com',message:'Please discuss this plan.',includeBrief:true,mode:'project'};
-  const r=await call('contact',b,s);assert.equal(r.status,200,await r.clone().text());const data=await r.json();assert.equal(data.status,'accepted');
-  assert.equal((await call('contact',b,s)).status,200);assert.equal(mailCalls,before+1);
-  assert.equal((await call('contact',{...b,message:'Different unsent content'},s)).status,409);assert.equal(mailCalls,before+1);
-  const sent=captured.filter(x=>x.access_key).at(-1);assert.equal(sent.access_key,'test-project-route');assert.match(sent.project_brief,/booking/);assert.equal(sent.project_reference,data.reference);
+  const r=await call('contact',b,s);assert.equal(r.status,200,await r.clone().text());const data=await r.json();assert.equal(data.status,'prepared');
+  assert.equal(data.packet.access_key,'test-project-route');assert.match(data.packet.project_brief,/booking/);assert.equal(data.packet.project_reference,data.reference);
+  assert.equal(mailCalls,before);assert.equal((await call('contact',b,s)).status,409);
+  assert.equal((await call('delivery',{id:b.id,outcome:'accepted'},s)).status,200);
+  assert.equal((await call('contact',b,s)).status,200);
+  assert.equal((await call('contact',{...b,message:'Different unsent content'},s)).status,409);
   const support=await call('contact',{...b,id:crypto.randomUUID(),mode:'support'},s);assert.equal(support.status,200);
-  const last=captured.at(-1);assert.equal(last.access_key,'test-support-route');assert.equal(last.project_brief,'No design brief included.');
+  const last=await support.json();assert.equal(last.packet.access_key,'test-support-route');assert.equal(last.packet.project_brief,'No design brief included.');
 });
-test('malformed email success never becomes accepted; records persist for recovery',async()=>{
-  const s=await session();malformedMail=true;
-  const r=await call('contact',{id:crypto.randomUUID(),token:'contact',name:'Test',email:'test@example.com',message:'Please help.',mode:'project'},s);
-  assert.equal(r.status,502);malformedMail=false;
-  const rows=await db.prepare("SELECT delivery_status FROM inquiries WHERE name='Test'").all();assert.equal(rows.results.at(-1).delivery_status,'rejected');
+test('client delivery reports are explicitly unverified and isolated to their session',async()=>{
+  const s=await session(),other=await session();const id=crypto.randomUUID();
+  await call('contact',{id,token:'contact',name:'Evidence test',email:'test@example.com',message:'Test inquiry',mode:'project'},s);
+  assert.equal((await call('delivery',{id,outcome:'accepted'},other)).status,404);
+  assert.equal((await call('delivery',{id,outcome:'provider_verified'},s)).status,400);
+  assert.equal((await call('delivery',{id,outcome:'accepted'},s)).status,200);
+  await call('delivery',{id,outcome:'unknown'},s);
+  const row=await db.prepare("SELECT delivery_status,delivery_evidence FROM inquiries WHERE name='Evidence test'").first();
+  assert.equal(row.delivery_status,'accepted');assert.equal(row.delivery_evidence,'browser_report');
 });
 test('per-address rate limit rejects a burst',async()=>{
   const s=await session();let rejected=false;
@@ -115,9 +121,10 @@ test('provider outage fails honestly without losing the saved brief',async()=>{
  const r=await call('chat',{id:crypto.randomUUID(),question:'Help me refine it'},s);assert.equal(r.status,502);assert.match((await r.json()).error,/unavailable/);failAI=false;
  const reload=await call('session',{token:'session'},s);assert.equal((await reload.json()).brief,'Preserve this confirmed project.');
 });
-test('uncertain email delivery is saved and replay cannot send a duplicate',async()=>{
- const s=await session();const b={id:crypto.randomUUID(),token:'contact',name:'Uncertain test',email:'test@example.com',message:'Test inquiry',mode:'project'};const before=mailCalls;uncertainMail=true;
- assert.equal((await call('contact',b,s)).status,503);uncertainMail=false;
- assert.equal((await call('contact',b,s)).status,409);assert.equal(mailCalls,before+1);
+test('uncertain browser email delivery stays recoverable and cannot auto-resend',async()=>{
+ const s=await session();const b={id:crypto.randomUUID(),token:'contact',name:'Uncertain test',email:'test@example.com',message:'Test inquiry',mode:'project'};const before=mailCalls;
+ assert.equal((await call('contact',b,s)).status,200);
+ assert.equal((await call('delivery',{id:b.id,outcome:'unknown'},s)).status,200);
+ assert.equal((await call('contact',b,s)).status,409);assert.equal(mailCalls,before);
  const row=await db.prepare("SELECT delivery_status FROM inquiries WHERE name='Uncertain test'").first();assert.equal(row.delivery_status,'unknown');
 });

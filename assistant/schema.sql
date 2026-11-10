@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS inquiries (
   brief TEXT NOT NULL,
   conversation TEXT NOT NULL,
   delivery_status TEXT NOT NULL CHECK(delivery_status IN ('saved','sending','accepted','rejected','unknown')),
+  delivery_evidence TEXT NOT NULL DEFAULT 'unconfirmed',
   UNIQUE(session_hash, request_id)
 );
 CREATE INDEX IF NOT EXISTS inquiry_expiry ON inquiries(expires_at);

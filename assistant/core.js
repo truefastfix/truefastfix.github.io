@@ -37,13 +37,17 @@ export async function readJSON(request) {
 }
 export function validateAnswer(value, previousMode) {
   if (!value || typeof value !== "object") throw new PublicError(502, "The assistant could not finish. Please try again.");
-  const message = text(value.message, 10000, "assistant answer");
+  let message = text(value.message, 10000, "assistant answer");
   const brief = text(value.brief, 8000, "project brief", false);
   const memory = text(value.memory, 3000, "conversation summary", false);
   let next = value.next;
   if (!["qa", "offer", "design", "review", "contact", "reset"].includes(next)) throw new PublicError(502, "Invalid assistant response. Please try again.");
   if (next === "reset" && previousMode !== "review") next = "qa";
   if (next === "review" && !brief) next = "design";
+  // The brief has its own editable panel; do not duplicate it in chat.
+  // Submission prompts are deterministic interface copy, never an AI side effect.
+  if (next === "review") message = "Your project brief is ready below. Review it and make any changes. Would you like to submit this design to Skyfall?";
+  if (next === "offer" && !message.includes("?")) message += "\n\nWould you like help designing your idea here?";
   return { message, brief, memory, next };
 }
 export function reserveCost(payload) {

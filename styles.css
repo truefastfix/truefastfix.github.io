@@ -727,3 +727,8 @@ a { color: inherit; }
 .experience.is-active .stage {height:auto;min-height:100svh;justify-content:flex-start;padding-top:110px;padding-bottom:130px;}
 .experience.is-active .conversation {max-height:min(46svh,460px);}
 @media(max-width:600px){.experience.is-active .stage{padding-top:100px;}.brief-panel{padding:14px;}.ai-button{min-height:44px;}}
+/* Keep the send control in the input row at phone and tablet widths. */
+.ask-field {grid-template-columns:24px minmax(0,1fr) auto;}
+.ask-field input {min-width:0;width:100%;}
+.ask-field .ai-button {white-space:nowrap;align-self:center;}
+[data-ai-status] {display:block;opacity:1 !important;}

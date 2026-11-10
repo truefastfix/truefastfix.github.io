@@ -120,7 +120,26 @@
       if(attach){const r=await api('brief',{brief:briefInput.value});brief=r.brief;}
       const token=await securityToken('contact');const fd=new FormData(contact);
       const data=await api('contact',{id:contactId,name:fd.get('name'),email:fd.get('email'),message:fd.get('message'),botcheck:fd.get('botcheck'),mode:contactMode,includeBrief:attach,token});
-      status.textContent=`Email service accepted your message. Reference: ${data.reference}.`;status.className='contact-status is-success';contact.reset();contactId=crypto.randomUUID();attach=false;renderBrief();
+      if(data.status==='prepared'){
+        status.textContent='Sending your saved inquiry…';
+        let outcome='unknown';
+        try {
+          const response=await fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify(data.packet),signal:AbortSignal.timeout(25000)});
+          const result=await response.json().catch(()=>null);
+          if(response.ok&&result?.success===true)outcome='accepted';
+          else if(result?.success===false||[400,401,403,404,413,422,429].includes(response.status))outcome='rejected';
+        }catch{}
+        let logged=true;try{await api('delivery',{id:contactId,outcome});}catch{logged=false;}
+        if(outcome==='unknown')throw Error(`Your inquiry ${data.reference} is saved, but email delivery is unconfirmed. Contact Brian directly with this reference; do not resubmit.`);
+        if(outcome==='rejected'){
+          if(logged)contactId=crypto.randomUUID();
+          throw Error(`The email service rejected inquiry ${data.reference}. Your design is saved. Use direct email or retry later.`);
+        }
+        status.textContent=`Email service accepted your message. Reference: ${data.reference}.${logged?'':' Delivery logging is unconfirmed; please keep this reference.'}`;
+      }else{
+        status.textContent=`This inquiry was already reported accepted. Reference: ${data.reference}.`;
+      }
+      status.className='contact-status is-success';contact.reset();contactId=crypto.randomUUID();attach=false;renderBrief();
     }catch(e){status.textContent=e.message;status.className='contact-status is-error';}
     finally{submit.disabled=false;}
   });

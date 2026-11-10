@@ -44,7 +44,7 @@ export default {
       const url = new URL(request.url);
       const path = url.pathname.replace(/^\/api\/skyfall/, "");
       if (!url.pathname.startsWith("/api/skyfall/")) return json({ error: "Not found." }, 404);
-      if (request.method === "GET" && path === "/config") return json({ aiEnabled: ready(env), sitekey: env.TURNSTILE_SITEKEY || "", version: "2026-11-10.1", model: MODEL });
+      if (request.method === "GET" && path === "/config") return json({ aiEnabled: ready(env), sitekey: env.TURNSTILE_SITEKEY || "", version: "2026-11-10.2", model: MODEL, monthlyLimitUSD: MONTHLY_LIMIT / 1000000 });
       if (request.method !== "POST") return json({ error: "Method not allowed." }, 405, { Allow: "POST" });
       const origin = request.headers.get("origin");
       if (!allowed(env).includes(origin) || origin !== url.origin || request.headers.get("sec-fetch-site") === "cross-site") fail(403, "Use the form on the Skyfall website.");
@@ -62,7 +62,7 @@ export default {
       const id = sessionId(request);
       const actor = env.SESSIONS.getByName(id);
       if (path === "/contact") await turnstile(request, env, body.token, "contact");
-      if (!["/chat", "/contact", "/reset", "/brief"].includes(path)) fail(404, "Not found.");
+      if (!["/chat", "/contact", "/delivery", "/reset", "/brief"].includes(path)) fail(404, "Not found.");
       const result = await actor.perform(path, body, request.headers.get("X-Skyfall-CSRF"));
       return json(result.body, result.status, path === "/reset" ? { "Set-Cookie": `${COOKIE}=; Path=/; Secure; HttpOnly; SameSite=Strict; Max-Age=0` } : {});
     } catch (error) {
@@ -143,6 +143,7 @@ export class Session extends Stored {
       }
       if (path === "/chat") return { status: 200, body: await this.chat(s, body) };
       if (path === "/contact") return { status: 200, body: await this.contact(s, body) };
+      if (path === "/delivery") return { status: 200, body: await this.delivery(body) };
       fail(404, "Not found.");
     } catch (e) {
       return { status: e instanceof PublicError ? e.status : 503, body: { error: e instanceof PublicError ? e.message : "Could not finish. Your message has not been confirmed sent. Please try again or use direct email." } };
@@ -190,7 +191,7 @@ export class Session extends Stored {
       let parsed; try { parsed = JSON.parse(output); } catch { fail(502, "The assistant could not finish. Please try again."); }
       const answer = validateAnswer(parsed, s.mode);
       const live = this.current(id);
-      if (answer.next === "reset") { await this.ctx.storage.deleteAll(); return { reset: true, message: "No inquiry was sent. You're back at the start." }; }
+      if (answer.next === "reset") { await this.ctx.storage.deleteAll(); return { reset: true, message: "No new inquiry was sent. You're back at the start." }; }
       live.mode = answer.next === "contact" ? s.mode : answer.next;
       live.brief = answer.brief; live.memory = answer.memory; live.count++;
       live.turns = [...live.turns, { role: "user", content: question }, { role: "assistant", content: answer.message }].slice(-10);
@@ -224,25 +225,25 @@ export class Session extends Stored {
       await this.env.DB.prepare(`INSERT INTO inquiries (id,session_hash,request_id,created_at,expires_at,mode,name,email,message,brief,conversation,delivery_status) VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(session_hash,request_id) DO UPDATE SET name=excluded.name,email=excluded.email,message=excluded.message,brief=excluded.brief,conversation=excluded.conversation,mode=excluded.mode,delivery_status='saved'`)
         .bind(reference,hash,c.id,Date.now(),Date.now()+90*DAY,c.mode,c.name,c.email,c.message,brief,brief ? JSON.stringify({ memory:s.memory, turns:s.turns }) : "", "saved").run();
       await this.env.DB.prepare("UPDATE inquiries SET delivery_status='sending' WHERE id=?").bind(reference).run();
-      let data; let response;
-      try {
-        response = await fetch("https://api.web3forms.com/submit", {
-          method:"POST", headers:{"Content-Type":"application/json",Accept:"application/json"}, signal:AbortSignal.timeout(20000),
-          body:JSON.stringify({ access_key:c.mode === "support" ? this.env.WEB3_SUPPORT_KEY : this.env.WEB3_PROJECT_KEY,
-            name:c.name,email:c.email,replyto:c.email,from_name:"Skyfall Creations Website",
-            subject:`Skyfall ${c.mode === "support" ? "website support" : "project inquiry"} — ${reference}`,
-            message:c.message,project_reference:reference,project_brief:brief || "No design brief included.",source:"Skyfall website" })
-        });
-        data = await boundedJSON(response,20000);
-      } catch {
-        await this.env.DB.prepare("UPDATE inquiries SET delivery_status='unknown' WHERE id=?").bind(reference).run();
-        fail(503, `Your inquiry ${reference} is saved, but email delivery is unconfirmed. Please contact Brian directly with this reference; do not resubmit.`);
-      }
-      const accepted = response.ok && data.success === true;
-      await this.env.DB.prepare("UPDATE inquiries SET delivery_status=? WHERE id=?").bind(accepted?"accepted":"rejected",reference).run();
-      if (!accepted) fail(502, `Email service rejected inquiry ${reference}. Your inquiry is saved. Please retry or use direct email.`);
-      return { reference, status:"accepted" };
+      // Web3Forms free tier requires delivery directly from the visitor browser.
+      // These are public form identifiers, never the OpenAI credential.
+      return { reference, status:"prepared", packet:{
+        access_key:c.mode === "support" ? this.env.WEB3_SUPPORT_KEY : this.env.WEB3_PROJECT_KEY,
+        name:c.name,email:c.email,replyto:c.email,from_name:"Skyfall Creations Website",
+        subject:`Skyfall ${c.mode === "support" ? "website support" : "project inquiry"} — ${reference}`,
+        message:c.message,project_reference:reference,project_brief:brief || "No design brief included.",source:"Skyfall website"
+      }};
     } finally { const live=this.get("session"); if(live?.busy?.id===c.id){live.busy=null;this.put("session",live);} }
+  }
+  async delivery(body) {
+    const id=requestId(body.id);
+    if (!["accepted","rejected","unknown"].includes(body.outcome)) fail(400,"Invalid delivery report.");
+    const hash=await digest(this.ctx.id.toString());
+    const row=await this.env.DB.prepare("SELECT id,delivery_status FROM inquiries WHERE session_hash=? AND request_id=?").bind(hash,id).first();
+    if(!row) fail(404,"Inquiry not found in this session.");
+    // This is intentionally NOT provider-verified evidence: the client is untrusted.
+    await this.env.DB.prepare("UPDATE inquiries SET delivery_status=?,delivery_evidence='browser_report' WHERE id=? AND delivery_status='sending'").bind(body.outcome,row.id).run();
+    return {reference:row.id,evidence:"browser_report"};
   }
   async alarm() { await this.ctx.storage.deleteAll(); }
 }
