@@ -88,6 +88,12 @@ test('review decline clears session and sends no email',async()=>{
   const r=await call('chat',{id:crypto.randomUUID(),question:'No thanks, do not submit'},s);assert.equal((await r.json()).reset,true);
   assert.equal((await call('brief',{brief:'Old session'},s)).status,401);assert.equal(mailCalls,n);answer=validAnswer;
 });
+test('explicit review acceptance opens contact even when model would repeat review',async()=>{
+  const s=await session();await call('brief',{brief:'Reviewed repair website design'},s);const before=aiCalls;
+  answer={message:'Review it again.',brief:'Reviewed repair website design',memory:'',next:'review'};
+  const r=await call('chat',{id:crypto.randomUUID(),question:'Yes, I want to submit this reviewed design.'},s);
+  const body=await r.json();assert.equal(body.openContact,true);assert.equal(aiCalls,before);assert.match(body.message,/Nothing has been sent/);answer=validAnswer;
+});
 test('contact prepares reviewed brief and public routing packet without backend forwarding',async()=>{
   const s=await session();await call('brief',{brief:'Confirmed requirements: build a simple booking website.'},s);
   const before=mailCalls;const b={id:crypto.randomUUID(),token:'contact',name:'Runtime visitor',email:'visitor@example.com',message:'Please discuss this plan.',includeBrief:true,mode:'project'};

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { budgetDecision, usageCost, reserveCost, readJSON, contactData, validateAnswer } from '../assistant/core.js';
+import { budgetDecision, usageCost, reserveCost, readJSON, contactData, validateAnswer, reviewDecision } from '../assistant/core.js';
 
 test('budget refuses over-allocation, invalid reservations and accounts for pending calls',()=>{
   assert.equal(budgetDecision(4_800_000,190_000,10_000),true);
@@ -26,4 +26,10 @@ test('reset is gated by review, incomplete brief cannot enter review',()=>{
   assert.equal(validateAnswer(a,'qa').next,'qa'); assert.equal(validateAnswer(a,'review').next,'reset');
   assert.equal(validateAnswer({...a,next:'review'},'design').next,'design');
   assert.throws(()=>validateAnswer({...a,next:'send_email'},'review'));
+});
+test('clear review choices bypass model ambiguity; qualified replies do not',()=>{
+  for(const q of ['Yes','Yes, I want to submit this reviewed design.','Sure, send it','Please submit my design'])assert.equal(reviewDecision('review',q),'contact');
+  for(const q of ['No','No thanks, do not submit it; return me to the start.'])assert.equal(reviewDecision('review',q),'reset');
+  for(const q of ['Maybe','Yes, but do not submit yet','No, I want to change the features','Sure, how does submission work?','Not yet, please revise it','No worries, please send it'])assert.equal(reviewDecision('review',q),null);
+  assert.equal(reviewDecision('offer','Yes'),null);
 });

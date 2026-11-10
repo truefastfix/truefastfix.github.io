@@ -1,6 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
 import { INSTRUCTIONS } from "./knowledge.js";
-import { PublicError, MODEL, OUTPUT_LIMIT, MONTHLY_LIMIT, ANSWER_SCHEMA, text, requestId, readJSON, validateAnswer, reserveCost, usageCost, budgetDecision, contactData } from "./core.js";
+import { PublicError, MODEL, OUTPUT_LIMIT, MONTHLY_LIMIT, ANSWER_SCHEMA, text, requestId, readJSON, validateAnswer, reserveCost, usageCost, budgetDecision, contactData, reviewDecision } from "./core.js";
 
 const DAY = 86400000;
 const COOKIE = "__Host-skyfall";
@@ -44,7 +44,7 @@ export default {
       const url = new URL(request.url);
       const path = url.pathname.replace(/^\/api\/skyfall/, "");
       if (!url.pathname.startsWith("/api/skyfall/")) return json({ error: "Not found." }, 404);
-      if (request.method === "GET" && path === "/config") return json({ aiEnabled: ready(env), sitekey: env.TURNSTILE_SITEKEY || "", version: "2026-11-10.2", model: MODEL, monthlyLimitUSD: MONTHLY_LIMIT / 1000000 });
+      if (request.method === "GET" && path === "/config") return json({ aiEnabled: ready(env), sitekey: env.TURNSTILE_SITEKEY || "", version: "2026-11-10.3", model: MODEL, monthlyLimitUSD: MONTHLY_LIMIT / 1000000 });
       if (request.method !== "POST") return json({ error: "Method not allowed." }, 405, { Allow: "POST" });
       const origin = request.headers.get("origin");
       if (!allowed(env).includes(origin) || origin !== url.origin || request.headers.get("sec-fetch-site") === "cross-site") fail(403, "Use the form on the Skyfall website.");
@@ -157,10 +157,18 @@ export class Session extends Stored {
   }
   current(id) { const s = this.get("session"); if (!s || s.closed || s.expires < Date.now() || s.busy?.id !== id) fail(409, "This conversation was closed or changed."); return s; }
   async chat(s, body) {
-    if (!ready(this.env)) fail(503, "The AI assistant is unavailable. You can still contact Brian directly.");
     const id = requestId(body.id); const question = text(body.question, 2000, "your question");
     const replay = s.replay.find(r => r.id === id);
     if (replay) { if (replay.question !== question) fail(409, "Request reference already used."); return replay.result; }
+    const decision = reviewDecision(s.mode, question);
+    if (decision) {
+      s = this.lock(s, id);
+      if (decision === "reset") { await this.ctx.storage.deleteAll(); return { reset:true, message:"No new inquiry was sent. You're back at the start." }; }
+      const result = { message:"The contact form is ready. Nothing has been sent yet; review the form and submit it when ready.", mode:"review", brief:s.brief, openContact:true };
+      s.replay = [...s.replay,{id,question,result}].slice(-3); s.busy=null; this.put("session",s);
+      return result;
+    }
+    if (!ready(this.env)) fail(503, "The AI assistant is unavailable. You can still contact Brian directly.");
     if (s.count >= 40) fail(429, "This session has reached its limit. Save your brief or contact Brian.");
     s = this.lock(s, id);
     const payload = {

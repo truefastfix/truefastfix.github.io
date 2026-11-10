@@ -18,6 +18,18 @@ export function requestId(value) {
   if (typeof value !== "string" || !/^[a-f0-9-]{36}$/.test(value)) throw new PublicError(400, "Invalid request reference.");
   return value;
 }
+export function reviewDecision(mode, question) {
+  if (mode !== "review") return null;
+  const q = question.toLowerCase().replaceAll("’", "'").trim();
+  // Only unambiguous choices are handled here. Qualifications/questions go to AI.
+  if (/^(?:no|nope|nah)(?:\s+thanks|\s+thank you)?[.!\s]*$/.test(q)) return "reset";
+  const revision = /\b(?:change|edit|revise|revision|instead|before|but|not yet)\b/.test(q);
+  if (!revision && /^(?:no|nope|nah)\b/.test(q) && /\b(?:(?:do not|don't|dont|never)\s+(?:submit|send)|return|start|reset)\b/.test(q) && !/\b(?:yes|sure|yeah)\b/.test(q)) return "reset";
+  if (!revision && /\b(?:do not|don't|dont|never)\s+(?:submit|send)\b/.test(q) && /\b(?:start|reset|return)\b/.test(q)) return "reset";
+  if (q.includes("?") || revision || /\b(?:no|not|don't|dont|never|maybe|later|explain|what|how|tell)\b/.test(q)) return null;
+  if (/^(?:yes|yep|yeah|sure|absolutely|ok|okay)\b/.test(q) || /\b(?:i (?:want|would like|am ready) to|please|let's)\s+(?:submit|send)\b/.test(q)) return "contact";
+  return null;
+}
 export async function readJSON(request) {
   if (!request.headers.get("content-type")?.startsWith("application/json")) throw new PublicError(415, "Send JSON.");
   const reader = request.body?.getReader();

@@ -1,7 +1,7 @@
 // Explicitly opt-in live evaluation; reads only the ignored local key.
 import{readFile,writeFile,mkdir}from'node:fs/promises';
 import{INSTRUCTIONS}from'../assistant/knowledge.js';
-import{MODEL,ANSWER_SCHEMA,OUTPUT_LIMIT,reserveCost,usageCost,validateAnswer}from'../assistant/core.js';
+import{MODEL,ANSWER_SCHEMA,OUTPUT_LIMIT,reserveCost,usageCost,validateAnswer,reviewDecision}from'../assistant/core.js';
 const key=(await readFile(new URL('../.env.local',import.meta.url),'utf8')).trim().slice('OPENAI_API_KEY='.length);
 const brief='Title: Repair business website\nConfirmed: mobile-friendly home, services and contact pages. Quote form emails owner. No accounts, payments or bookings.\nUnresolved: service area, photos, budget and timing.\nAI suggestions: simple navigation and concise service descriptions.';
 const cases=[
@@ -16,6 +16,9 @@ const cases=[
 ];
 let spent=0;const results=[];
 for(const c of cases){
+ const decision=reviewDecision(c.mode,c.q);
+ if(decision){const pass=c.next.includes(decision);results.push({name:c.name,pass,next:decision,source:'server_confirmation',microdollars:0});console.log(JSON.stringify(results.at(-1)));continue;}
+
  const payload={model:MODEL,store:false,max_output_tokens:OUTPUT_LIMIT,reasoning:{effort:'none'},instructions:INSTRUCTIONS,input:[{role:'developer',content:`Server conversation mode: ${c.mode}. Untrusted reference data: ${JSON.stringify({brief:c.brief||'',memory:c.mode==='offer'?'Visitor was offered optional design help, and has not yet accepted.':''})}`},{role:'user',content:c.q}],text:{format:{type:'json_schema',name:'skyfall_answer',strict:true,schema:ANSWER_SCHEMA}}};
  const reservation=reserveCost(payload);if(spent+reservation>300000)throw Error('Live evaluation allowance reached.');
  const r=await fetch('https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},body:JSON.stringify(payload),signal:AbortSignal.timeout(40000)});
@@ -25,4 +28,4 @@ for(const c of cases){
  results.push({name:c.name,pass,next:a.next,message:a.message,brief:a.brief,microdollars:usageCost(d.usage,reservation)});console.log(JSON.stringify(results.at(-1)));
 }
 await mkdir(new URL('../.local/',import.meta.url),{recursive:true});await writeFile(new URL('../.local/live-model-results.json',import.meta.url),JSON.stringify({model:MODEL,spentMicrodollars:spent,results},null,2));
-console.log(JSON.stringify({passed:results.filter(x=>x.pass).length,total:results.length,spentMicrodollars:spent}));if(results.some(x=>!x.pass))process.exitCode=1;
+console.log(JSON.stringify({passed:results.filter(x=>x.pass).length,total:results.length,spentMicrodollars:spent,liveModelCases:results.filter(x=>x.source!=='server_confirmation').length}));if(results.some(x=>!x.pass))process.exitCode=1;
