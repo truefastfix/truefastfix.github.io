@@ -708,3 +708,22 @@ a { color: inherit; }
     transform: scale(1.025) !important;
   }
 }
+
+/* Ask Skyfall: preserve the existing visual identity and allow long briefs. */
+[hidden] { display:none !important; }
+.ai-button { font:inherit; font-size:13px; color:#d9f0ff; background:#153b60; border:1px solid #5282ac; border-radius:10px; padding:9px 13px; cursor:pointer; min-height:42px; }
+.ai-button:disabled { opacity:.5; cursor:wait; }
+.ai-button:focus-visible, .brief-panel textarea:focus-visible {outline:2px solid #8bdbff;outline-offset:3px;}
+.ai-tools {display:flex;gap:9px;flex-wrap:wrap;margin:10px 0;}
+.brief-panel {margin:18px 0;padding:20px;border-radius:18px;background:rgba(7,12,20,.95);border:1px solid #3e6589;}
+.brief-panel h2 {font-size:20px;margin-top:0;}
+.brief-panel p,.ai-privacy {font-size:13px;color:#c3d4e9;line-height:1.6;}
+.brief-panel label {display:block;margin-bottom:8px;font-size:13px;}
+.brief-panel textarea {width:100%;box-sizing:border-box;background:#0b1725;border:1px solid #3e6589;border-radius:10px;color:#eef6ff;padding:12px;font:14px/1.6 inherit;resize:vertical;min-height:220px;}
+.ai-privacy {margin:14px 0;max-width:70ch;}
+.ai-privacy summary {cursor:pointer;}
+.security-check {position:fixed;z-index:2000;left:50%;top:35%;transform:translateX(-50%);padding:20px;background:#0b1725;border:1px solid #5282ac;border-radius:16px;max-width:95vw;}
+.experience.is-active {height:auto;min-height:100svh;}
+.experience.is-active .stage {height:auto;min-height:100svh;justify-content:flex-start;padding-top:110px;padding-bottom:130px;}
+.experience.is-active .conversation {max-height:min(46svh,460px);}
+@media(max-width:600px){.experience.is-active .stage{padding-top:100px;}.brief-panel{padding:14px;}.ai-button{min-height:44px;}}

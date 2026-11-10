@@ -1,0 +1,13 @@
+{
+  "name": "skyfall-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test --test-timeout=30000 tests/*.test.js",
+    "check": "node --check app.js && node --check assistant/worker.js && node --check assistant/core.js",
+    "build:preview": "node scripts/build-preview.mjs"
+  },
+  "devDependencies": {
+    "miniflare": "4.20260730.0"
+  }
+}
