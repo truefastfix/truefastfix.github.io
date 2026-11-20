@@ -94,6 +94,14 @@ test('explicit review acceptance opens contact even when model would repeat revi
   const r=await call('chat',{id:crypto.randomUUID(),question:'Yes, I want to submit this reviewed design.'},s);
   const body=await r.json();assert.equal(body.openContact,true);assert.equal(aiCalls,before);assert.match(body.message,/Nothing has been sent/);answer=validAnswer;
 });
+test('draft-only review response keeps brief and never opens contact or invokes model',async()=>{
+  const s=await session();await call('brief',{brief:'Draft stays private'},s);const before=aiCalls;
+  const r=await call('chat',{id:crypto.randomUUID(),question:'Yes, keep this as a draft only.'},s);
+  assert.equal(r.status,200);const result=await r.json();
+  assert.equal(result.mode,'review');assert.equal(result.openContact,false);assert.equal(result.brief,'Draft stays private');
+  assert.match(result.message,/Nothing has been sent/);assert.equal(aiCalls,before);
+  assert.equal((await (await call('session',{token:'session'},s)).json()).brief,'Draft stays private');
+});
 test('contact prepares reviewed brief and public routing packet without backend forwarding',async()=>{
   const s=await session();await call('brief',{brief:'Confirmed requirements: build a simple booking website.'},s);
   const before=mailCalls;const b={id:crypto.randomUUID(),token:'contact',name:'Runtime visitor',email:'visitor@example.com',message:'Please discuss this plan.',includeBrief:true,mode:'project'};
@@ -103,6 +111,8 @@ test('contact prepares reviewed brief and public routing packet without backend 
   assert.equal((await call('delivery',{id:b.id,outcome:'accepted'},s)).status,200);
   assert.equal((await call('contact',b,s)).status,200);
   assert.equal((await call('contact',{...b,message:'Different unsent content'},s)).status,409);
+  assert.equal((await call('brief',{brief:'A materially changed project specification'},s)).status,200);
+  assert.equal((await call('contact',b,s)).status,409);
   const support=await call('contact',{...b,id:crypto.randomUUID(),mode:'support'},s);assert.equal(support.status,200);
   const last=await support.json();assert.equal(last.packet.access_key,'test-support-route');assert.equal(last.packet.project_brief,'No design brief included.');
 });

@@ -54,8 +54,8 @@
     })().catch(e => {sessionPromise=null; throw e;});
     return sessionPromise;
   }
-  function renderBrief() {
-    briefBox.hidden = !brief; briefInput.value = brief;
+  function renderBrief(syncText = true) {
+    briefBox.hidden = !brief; if (syncText) briefInput.value = brief;
     $('[data-review-actions]').hidden = mode !== 'review';
     $('[data-include-brief]').hidden = !(attach && brief && contactMode === 'project');
   }
@@ -65,12 +65,12 @@
     $('[data-contact-copy]').textContent = attach ? 'Your reviewed project brief will be included with your message.' : 'Send your message to Brian.';
     const address = contactMode === 'support' ? 'support@skyfallcreations.com' : 'skyfall.developer@skyfallcreations.com';
     const link = $('[data-contact-direct]'); link.textContent = `Or email ${address}`; link.href = `mailto:${address}`;
-    status.textContent = ''; modal.hidden = false; renderBrief(); $('#contact-name').focus();
+    status.textContent = ''; modal.hidden = false; renderBrief(false); $('#contact-name').focus();
   }
   function closeContact() {if (submit.disabled) return; modal.hidden=true; lastFocus?.focus();}
   async function reset(serverCleared = false) {
     if (busy) return;
-    try {if (!serverCleared) {await session(); await api('reset', {});} csrf=null; sessionPromise=null; brief=''; mode='qa'; pendingQuestion=null; chat.querySelectorAll('.turn').forEach(n=>n.remove()); experience.classList.remove('is-active'); input.value=''; renderBrief(); input.focus();}
+    try {if (!serverCleared) {await session(); await api('reset', {});} csrf=null; sessionPromise=null; brief=''; mode='qa'; pendingQuestion=null; $('[data-retry]').hidden=true; chat.querySelectorAll('.turn').forEach(n=>n.remove()); experience.classList.remove('is-active'); input.value=''; renderBrief(); input.focus();}
     catch(e) {notice.textContent=e.message;}
   }
   async function ask(question, isRetry = false) {
@@ -85,7 +85,7 @@
       thinking=message('assistant','Thinking…'); thinking.setAttribute('aria-busy','true');
       const data=await api('chat',pending); thinking.remove(); thinking=null;
       if (data.reset) {busy=false; await reset(true); notice.textContent=data.message; return;}
-      mode=data.mode; brief=data.brief; message('assistant',data.message); renderBrief(); pendingQuestion=null; $('[data-retry]').hidden=true;
+      mode=data.mode; brief=data.brief; message('assistant',data.message); renderBrief(); notice.textContent='AI assistant · No email needed to explore your idea.'; pendingQuestion=null; $('[data-retry]').hidden=true;
       if (data.openContact) openContact('project',!!brief);
     } catch(e) {thinking?.remove(); message('assistant',e.message); $('[data-retry]').hidden=!pendingQuestion; input.value=question;}
     finally {busy=false; input.disabled=false; $('[data-ask-submit]').disabled=false; input.focus();}

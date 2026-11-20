@@ -33,3 +33,17 @@ test('clear review choices bypass model ambiguity; qualified replies do not',()=
   for(const q of ['Maybe','Yes, but do not submit yet','No, I want to change the features','Sure, how does submission work?','Not yet, please revise it','No worries, please send it'])assert.equal(reviewDecision('review',q),null);
   assert.equal(reviewDecision('offer','Yes'),null);
 });
+test('review draft and explicit submission intents are distinguished',()=>{
+  for(const q of ['Yes, keep this as a draft only.','Keep this as a draft','Save it as a draft, please.'])
+    assert.equal(reviewDecision('review',q),'draft',q);
+  for(const q of ['Yes, but only show me a draft.','Yes, but do not submit yet','No worries, please send it','Can you send it tomorrow?','Please save, do not send it'])
+    assert.equal(reviewDecision('review',q),null,q);
+  for(const q of ['Yes','Yes, I want to submit this reviewed design.','Sure, send it','Please submit my design'])
+    assert.equal(reviewDecision('review',q),'contact',q);
+});
+test('review follow-up questions retain generated answers while first review uses fixed UI copy',()=>{
+  const answer={message:'Nothing has been built or deployed. Prices and timelines are not guaranteed.',brief:'Maintenance app scope',memory:'',next:'review'};
+  assert.equal(validateAnswer(answer,'review').message,answer.message);
+  assert.match(validateAnswer(answer,'design').message,/Your project brief is ready below/);
+});
+

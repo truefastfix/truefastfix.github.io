@@ -164,7 +164,9 @@ export class Session extends Stored {
     if (decision) {
       s = this.lock(s, id);
       if (decision === "reset") { await this.ctx.storage.deleteAll(); return { reset:true, message:"No new inquiry was sent. You're back at the start." }; }
-      const result = { message:"The contact form is ready. Nothing has been sent yet; review the form and submit it when ready.", mode:"review", brief:s.brief, openContact:true };
+      const result = decision === "draft"
+        ? { message:"Your project remains a draft. Nothing has been sent. You can keep editing the brief or ask more questions.", mode:"review", brief:s.brief, openContact:false }
+        : { message:"The contact form is ready. Nothing has been sent yet; review the form and submit it when ready.", mode:"review", brief:s.brief, openContact:true };
       s.replay = [...s.replay,{id,question,result}].slice(-3); s.busy=null; this.put("session",s);
       return result;
     }
@@ -219,7 +221,7 @@ export class Session extends Stored {
     const hash = await digest(this.ctx.id.toString());
     const existing = await this.env.DB.prepare("SELECT id, delivery_status, name, email, message, mode, brief FROM inquiries WHERE session_hash=? AND request_id=?").bind(hash,c.id).first();
     if (existing?.delivery_status === "accepted") {
-      if (existing.name !== c.name || existing.email !== c.email || existing.message !== c.message || existing.mode !== c.mode || Boolean(existing.brief) !== (body.includeBrief === true && c.mode === "project")) {
+      if (existing.name !== c.name || existing.email !== c.email || existing.message !== c.message || existing.mode !== c.mode || existing.brief !== (body.includeBrief === true && c.mode === "project" ? s.brief : "")) {
         fail(409, `Inquiry ${existing.id} was already accepted with different content. Please use direct email for an update and include that reference.`);
       }
       return { reference: existing.id, status: "accepted" };
