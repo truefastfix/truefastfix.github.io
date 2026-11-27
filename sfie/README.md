@@ -1,0 +1,3 @@
+# SFIE observation v1
+
+Coarse, daily aggregate TLS, HTTP, client family, fetch mode and existing honeypot classification. No new persistent identifiers, IPs, raw headers or request content. Normal requests are sampled at 10%; suspicious heuristic categories are not sampled. These are not accuracy or unique visitor metrics. The existing honeypot is separate and has legacy logs. Only the existing authenticated dashboard may render results. Retention: daily cleanup; seven-day display. Free-plan quotas may drop telemetry. Deploy as an additive module to both Workers; keep prior deployment versions for rollback. No 99.9% claim.
