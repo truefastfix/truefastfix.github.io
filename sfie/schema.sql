@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS sfie_daily_v1 (day TEXT NOT NULL,label TEXT NOT NULL,browser TEXT NOT NULL,protocol TEXT NOT NULL,tls TEXT NOT NULL,cipher_family TEXT NOT NULL,bot TEXT NOT NULL,fetch_mode TEXT NOT NULL,n INTEGER NOT NULL CHECK(n>0),PRIMARY KEY(day,label,browser,protocol,tls,cipher_family,bot,fetch_mode));
